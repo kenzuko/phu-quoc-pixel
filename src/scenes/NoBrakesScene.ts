@@ -4,10 +4,19 @@ import { inputActions } from '../core/input/InputActions';
 import { flowController } from '../core/navigation/FlowController';
 import { progressStore } from '../core/progress/ProgressStore';
 import { PerspectiveRoad } from '../games/no-brakes/PerspectiveRoad';
+import {
+  createObstacleVisual,
+  createRiderVisual,
+  type ObstacleKind,
+  type ObstacleVisual
+} from '../games/no-brakes/RideVisuals';
 import { createButton } from '../ui/createButton';
 
 const GAME_ID = 'no-brakes';
 const PLAYER_BASE_Y = 870;
+const PLAYER_DEPTH = 0.94;
+const LANES = [-1, 0, 1] as const;
+const OBSTACLE_KINDS: ObstacleKind[] = ['bougainvillea-planter', 'hotel-cart', 'market-crates'];
 
 interface Difficulty {
   depthSpeed: number;
@@ -20,6 +29,7 @@ export class NoBrakesScene extends Phaser.Scene {
   private player!: Phaser.GameObjects.Container;
   private playerShadow!: Phaser.GameObjects.Ellipse;
   private obstacle!: Phaser.GameObjects.Container;
+  private obstacleVisual!: ObstacleVisual;
   private coin!: Phaser.GameObjects.Image;
   private scoreText!: Phaser.GameObjects.Text;
   private joText!: Phaser.GameObjects.Text;
@@ -46,6 +56,10 @@ export class NoBrakesScene extends Phaser.Scene {
   private trainingRescueUntil = 0;
   private toastUntil = 0;
   private rideClock = 0;
+  private playerLane = 0;
+  private obstacleLane = 0;
+  private coinLane = 0;
+  private controlsReadyAt = 0;
 
   constructor() {
     super(SceneKeys.NoBrakes);
@@ -62,9 +76,11 @@ export class NoBrakesScene extends Phaser.Scene {
     this.road = new PerspectiveRoad(this);
     this.buildHud();
 
-    this.playerShadow = this.add.ellipse(width / 2, PLAYER_BASE_Y + 14, 94, 22, 0x13222b, 0.28);
-    this.player = this.buildRiderProxy(width / 2, PLAYER_BASE_Y);
-    this.obstacle = this.buildPlanterProxy();
+    const playerX = this.playerLaneX(0);
+    this.playerShadow = this.add.ellipse(playerX, PLAYER_BASE_Y + 14, 94, 22, 0x13222b, 0.28).setDepth(78);
+    this.player = createRiderVisual(this, playerX, PLAYER_BASE_Y).setDepth(80);
+    this.obstacleVisual = createObstacleVisual(this);
+    this.obstacle = this.obstacleVisual.container;
     this.coin = this.add.image(width / 2, 500, 'jo-coin').setVisible(false);
 
     this.speedText = this.add
@@ -75,7 +91,8 @@ export class NoBrakesScene extends Phaser.Scene {
         stroke: '#24333a',
         strokeThickness: 3
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(120);
 
     this.toastText = this.add
       .text(width / 2, 176, '', {
@@ -87,13 +104,22 @@ export class NoBrakesScene extends Phaser.Scene {
         strokeThickness: 5
       })
       .setOrigin(0.5)
-      .setVisible(false);
+      .setVisible(false)
+      .setDepth(140);
 
     this.tutorialLayer = this.buildTutorial();
     this.resultLayer = this.buildResult();
 
-    inputActions.bindPrimary(this, () => {
-      if (this.running) this.jump();
+    inputActions.bindRideControls(this, {
+      onTap: () => {
+        if (this.canControl()) this.jump();
+      },
+      onLeft: () => {
+        if (this.canControl()) this.shiftLane(-1);
+      },
+      onRight: () => {
+        if (this.canControl()) this.shiftLane(1);
+      }
     });
     inputActions.bindBack(this, () => {
       if (!this.running) flowController.go(this, SceneKeys.IslandMap);
@@ -130,12 +156,13 @@ export class NoBrakesScene extends Phaser.Scene {
       this.obstacleDepth += difficulty.depthSpeed * dt;
       this.placeObstacle();
 
-      if (this.obstacleDepth >= 0.82 && this.obstacleDepth <= 0.98 && this.onGround) {
+      const obstacleHitsLane = this.obstacleLane === this.playerLane;
+      if (this.obstacleDepth >= 0.82 && this.obstacleDepth <= 0.98 && this.onGround && obstacleHitsLane) {
         if (this.obstacleTraining) {
           if (time >= this.trainingRescueUntil) {
             this.trainingRescueUntil = time + 500;
             this.jump(true);
-            this.toast('HOP EARLIER!', 720);
+            this.toast('TAP TO HOP · SWIPE TO DODGE', 820);
           }
         } else {
           this.endRun();
@@ -156,7 +183,7 @@ export class NoBrakesScene extends Phaser.Scene {
     if (time >= this.nextCoinAt) {
       this.coinDepth += difficulty.depthSpeed * 0.94 * dt;
       this.placeCoin();
-      if (this.coinDepth >= 0.84 && this.coinDepth <= 0.99) {
+      if (this.coinDepth >= 0.84 && this.coinDepth <= 0.99 && this.coinLane === this.playerLane) {
         this.runJo += 1;
         this.joText.setText(`JO\n${String(this.runJo).padStart(3, '0')}`);
         this.toast('+1 JO', 430);
@@ -174,9 +201,9 @@ export class NoBrakesScene extends Phaser.Scene {
 
   private buildHud(): void {
     const { width } = this.scale;
-    this.add.rectangle(92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95);
-    this.add.rectangle(width / 2, 54, 142, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95);
-    this.add.rectangle(width - 92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95);
+    this.add.rectangle(92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
+    this.add.rectangle(width / 2, 54, 142, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
+    this.add.rectangle(width - 92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
 
     this.scoreText = this.hudText(92, 54, 'SCORE\n0000');
     this.joText = this.hudText(width / 2, 54, 'JO\n000');
@@ -191,7 +218,8 @@ export class NoBrakesScene extends Phaser.Scene {
         stroke: '#26333a',
         strokeThickness: 4
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(120);
     this.add
       .text(width / 2, 151, 'NO BRAKES', {
         fontFamily: 'monospace',
@@ -201,7 +229,8 @@ export class NoBrakesScene extends Phaser.Scene {
         stroke: '#ffffff',
         strokeThickness: 2
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(120);
   }
 
   private hudText(x: number, y: number, text: string): Phaser.GameObjects.Text {
@@ -216,55 +245,27 @@ export class NoBrakesScene extends Phaser.Scene {
         strokeThickness: 3,
         lineSpacing: 2
       })
-      .setOrigin(0.5);
-  }
-
-  private buildRiderProxy(x: number, y: number): Phaser.GameObjects.Container {
-    const c = this.add.container(x, y);
-    const rearWheel = this.add.rectangle(0, -8, 28, 44, 0x20252a).setStrokeStyle(3, 0x0f1317);
-    const body = this.add.rectangle(0, -54, 72, 64, 0xe33f31).setStrokeStyle(4, 0x7e1e1b);
-    const tail = this.add.rectangle(0, -50, 24, 15, 0xffc22d).setStrokeStyle(2, 0x5c291e);
-    const torso = this.add.rectangle(0, -112, 58, 62, 0xf4efe5).setStrokeStyle(4, 0x24343c);
-    const backpack = this.add.rectangle(0, -108, 48, 48, 0x197b7e).setStrokeStyle(4, 0x0c4f56);
-    const helmet = this.add.ellipse(0, -162, 62, 52, 0xf5f0e6).setStrokeStyle(4, 0x26343b);
-    const stripe = this.add.rectangle(0, -162, 12, 50, 0x1b6874);
-    const armL = this.add.rectangle(-38, -112, 36, 13, 0xf4efe5).setAngle(-24).setStrokeStyle(3, 0x24343c);
-    const armR = this.add.rectangle(38, -112, 36, 13, 0xf4efe5).setAngle(24).setStrokeStyle(3, 0x24343c);
-    const mirrorL = this.add.circle(-48, -126, 7, 0xdce5e4).setStrokeStyle(3, 0x24343c);
-    const mirrorR = this.add.circle(48, -126, 7, 0xdce5e4).setStrokeStyle(3, 0x24343c);
-    const jo = this.add.text(0, -108, 'JO', { fontFamily: 'monospace', fontSize: '15px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    c.add([rearWheel, body, tail, torso, backpack, helmet, stripe, armL, armR, mirrorL, mirrorR, jo]);
-    return c;
-  }
-
-  private buildPlanterProxy(): Phaser.GameObjects.Container {
-    const c = this.add.container(270, 500).setVisible(false);
-    const box = this.add.rectangle(0, 0, 104, 64, 0xe0b17d).setStrokeStyle(5, 0x8d6040);
-    const inset = this.add.rectangle(0, 3, 78, 36, 0xf0d8b3).setStrokeStyle(2, 0x9a704f);
-    const label = this.add.text(0, 4, 'PHU QUOC', { fontFamily: 'monospace', fontSize: '11px', fontStyle: 'bold', color: '#6b4632' }).setOrigin(0.5);
-    const greens = [-38, -22, -6, 10, 26, 40].map((x, i) => this.add.circle(x, -37 - (i % 2) * 5, 16, i % 2 ? 0xd43b7b : 0xe45b94));
-    const leaves = [-34, -14, 8, 30].map((x) => this.add.circle(x, -29, 13, 0x4f8b50));
-    c.add([box, inset, ...leaves, ...greens, label]);
-    return c;
+      .setOrigin(0.5)
+      .setDepth(121);
   }
 
   private buildTutorial(): Phaser.GameObjects.Container {
     const { width, height } = this.scale;
-    const layer = this.add.container(0, 0);
+    const layer = this.add.container(0, 0).setDepth(200);
     const shade = this.add.rectangle(width / 2, height / 2, width, height, 0x031721, 0.64);
-    const panel = this.add.rectangle(width / 2, 488, 430, 374, 0x0c3143, 0.97).setStrokeStyle(3, 0xfcbd22, 0.9);
-    const eyebrow = this.add.text(width / 2, 370, 'FAST START · FRIENDLY FIRST', { fontFamily: 'monospace', fontSize: '12px', fontStyle: 'bold', color: '#8ff3a6' }).setOrigin(0.5);
-    const title = this.add.text(width / 2, 414, 'NO BRAKES', { fontFamily: 'monospace', fontSize: '38px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
-    const copy = this.add.text(width / 2, 496, 'THE ROAD COMES AT YOU FAST.\nTAP ONCE TO HOP.\n\nFIRST 2 OBSTACLES TEACH THE RHYTHM.\nTHEY CANNOT END YOUR RUN.', { fontFamily: 'monospace', fontSize: '13px', align: 'center', color: '#d7e7eb', lineSpacing: 7 }).setOrigin(0.5);
-    const start = createButton(this, width / 2, 622, 'START RIDE', () => this.startRun(), { width: 300, fontSize: 18 });
-    const back = createButton(this, width / 2, 684, 'BACK TO MAP', () => flowController.go(this, SceneKeys.IslandMap), { width: 260, fontSize: 13, backgroundColor: '#164b61', color: '#ffffff' });
+    const panel = this.add.rectangle(width / 2, 488, 430, 398, 0x0c3143, 0.97).setStrokeStyle(3, 0xfcbd22, 0.9);
+    const eyebrow = this.add.text(width / 2, 354, 'FAST START · TWO MOVES', { fontFamily: 'monospace', fontSize: '12px', fontStyle: 'bold', color: '#8ff3a6' }).setOrigin(0.5);
+    const title = this.add.text(width / 2, 398, 'NO BRAKES', { fontFamily: 'monospace', fontSize: '38px', fontStyle: 'bold', color: '#ffffff' }).setOrigin(0.5);
+    const copy = this.add.text(width / 2, 492, 'TAP TO HOP.\nSWIPE LEFT / RIGHT TO DODGE.\n\nKEYBOARD: SPACE + ← →\nFIRST 2 OBSTACLES CANNOT END YOUR RUN.', { fontFamily: 'monospace', fontSize: '13px', align: 'center', color: '#d7e7eb', lineSpacing: 7 }).setOrigin(0.5);
+    const start = createButton(this, width / 2, 624, 'START RIDE', () => this.startRun(), { width: 300, fontSize: 18 });
+    const back = createButton(this, width / 2, 686, 'BACK TO MAP', () => flowController.go(this, SceneKeys.IslandMap), { width: 260, fontSize: 13, backgroundColor: '#164b61', color: '#ffffff' });
     layer.add([shade, panel, eyebrow, title, copy, start, back]);
     return layer;
   }
 
   private buildResult(): Phaser.GameObjects.Container {
     const { width, height } = this.scale;
-    const layer = this.add.container(0, 0).setVisible(false);
+    const layer = this.add.container(0, 0).setVisible(false).setDepth(200);
     const shade = this.add.rectangle(width / 2, height / 2, width, height, 0x031721, 0.72);
     const panel = this.add.rectangle(width / 2, 486, 420, 354, 0x0c3143, 0.98).setStrokeStyle(3, 0xfcbd22, 0.9);
     const eyebrow = this.add.text(width / 2, 372, 'SUNSET TOWN', { fontFamily: 'monospace', fontSize: '12px', fontStyle: 'bold', color: '#fcbd22' }).setOrigin(0.5);
@@ -292,9 +293,9 @@ export class NoBrakesScene extends Phaser.Scene {
     this.ended = false;
     this.onGround = true;
     this.velocityY = 0;
-    this.player.y = PLAYER_BASE_Y;
-    this.player.setAngle(0).setScale(1);
-    this.playerShadow.setScale(1).setAlpha(0.28);
+    this.playerLane = 0;
+    this.player.setPosition(this.playerLaneX(0), PLAYER_BASE_Y).setAngle(0).setScale(1);
+    this.playerShadow.setPosition(this.playerLaneX(0), PLAYER_BASE_Y + 14).setScale(1).setAlpha(0.28);
     this.obstaclesSpawned = 0;
     this.trainingRescueUntil = 0;
     this.best = progressStore.getProgress().bestScores[GAME_ID] ?? 0;
@@ -304,6 +305,7 @@ export class NoBrakesScene extends Phaser.Scene {
     this.tutorialLayer.setVisible(false);
     this.resultLayer.setVisible(false);
     this.running = true;
+    this.controlsReadyAt = this.time.now + 260;
     this.scheduleObstacle(this.time.now, true);
     this.scheduleCoin(this.time.now, true);
   }
@@ -315,8 +317,12 @@ export class NoBrakesScene extends Phaser.Scene {
     if (this.runJo > 0) progressStore.addJo(this.runJo);
     this.best = progressStore.setBestScore(GAME_ID, this.score);
     this.bestText.setText(`BEST\n${String(this.best).padStart(4, '0')}`);
-    this.resultText.setText(`SCORE ${this.score} · JO +${this.runJo}\nBEST ${this.best}\n\n${this.score < 5 ? 'FAST GAME. TRY THE RHYTHM AGAIN.' : 'NICE RUN.'}`);
+    this.resultText.setText(`SCORE ${this.score} · JO +${this.runJo}\nBEST ${this.best}\n\n${this.score < 5 ? 'TAP OR DODGE. FIND YOUR LINE.' : 'NICE RUN.'}`);
     this.resultLayer.setVisible(true);
+  }
+
+  private canControl(): boolean {
+    return this.running && !this.ended && this.time.now >= this.controlsReadyAt;
   }
 
   private jump(auto = false): void {
@@ -324,20 +330,49 @@ export class NoBrakesScene extends Phaser.Scene {
     this.velocityY = -745;
     this.onGround = false;
     this.player.setAngle(auto ? -4 : -2);
-    this.time.delayedCall(150, () => this.player.setAngle(0));
+    this.time.delayedCall(150, () => {
+      if (this.player.active) this.player.setAngle(0);
+    });
+  }
+
+  private shiftLane(direction: -1 | 1): void {
+    const nextLane = Phaser.Math.Clamp(this.playerLane + direction, -1, 1);
+    if (nextLane === this.playerLane) return;
+
+    this.playerLane = nextLane;
+    const targetX = this.playerLaneX(nextLane);
+    const lean = direction * 7;
+
+    this.tweens.killTweensOf(this.player);
+    this.tweens.killTweensOf(this.playerShadow);
+    this.tweens.add({
+      targets: this.player,
+      x: targetX,
+      angle: lean,
+      duration: 115,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        if (!this.player.active) return;
+        this.tweens.add({ targets: this.player, angle: 0, duration: 90, ease: 'Quad.Out' });
+      }
+    });
+    this.tweens.add({ targets: this.playerShadow, x: targetX, duration: 115, ease: 'Quad.Out' });
   }
 
   private animateRide(): void {
     if (!this.onGround) return;
     const bob = Math.sin(this.rideClock / 72) * 2.4;
     this.player.y = PLAYER_BASE_Y + bob;
-    this.player.setAngle(Math.sin(this.rideClock / 145) * 0.7);
+    if (!this.tweens.isTweening(this.player)) this.player.setAngle(Math.sin(this.rideClock / 145) * 0.7);
   }
 
   private scheduleObstacle(time: number, initial = false): void {
     const d = this.difficulty();
     this.obstacleDepth = initial ? 0.08 : 0.03;
     this.obstacleTraining = this.obstaclesSpawned < 2;
+    this.obstacleLane = this.obstacleTraining ? 0 : Phaser.Utils.Array.GetRandom([...LANES]);
+    const kind = Phaser.Utils.Array.GetRandom(OBSTACLE_KINDS);
+    this.obstacleVisual.setKind(kind);
     this.obstaclesSpawned += 1;
     this.nextObstacleAt = time + (initial ? 540 : Phaser.Math.Between(d.gapMinMs, d.gapMaxMs));
     this.obstacle.setVisible(true);
@@ -346,21 +381,26 @@ export class NoBrakesScene extends Phaser.Scene {
 
   private scheduleCoin(time: number, initial = false): void {
     this.coinDepth = initial ? 0.16 : 0.04;
+    this.coinLane = initial ? 0 : Phaser.Utils.Array.GetRandom([...LANES]);
     this.nextCoinAt = time + (initial ? 980 : Phaser.Math.Between(800, 1500));
     this.coin.setVisible(true);
     this.placeCoin();
   }
 
   private placeObstacle(): void {
-    const p = this.road.project(this.obstacleDepth, 0);
+    const p = this.road.project(this.obstacleDepth, this.obstacleLane);
     this.obstacle.setPosition(p.x, p.y - 8).setScale(p.scale);
     this.obstacle.setDepth(20 + Math.floor(this.obstacleDepth * 60));
   }
 
   private placeCoin(): void {
-    const p = this.road.project(this.coinDepth, 0);
+    const p = this.road.project(this.coinDepth, this.coinLane);
     this.coin.setPosition(p.x, p.y - 72 * p.scale).setScale(p.scale * 0.7);
     this.coin.setDepth(20 + Math.floor(this.coinDepth * 60));
+  }
+
+  private playerLaneX(lane: number): number {
+    return this.road.project(PLAYER_DEPTH, lane).x;
   }
 
   private difficulty(): Difficulty {
