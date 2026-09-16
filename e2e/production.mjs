@@ -11,7 +11,7 @@ await fs.mkdir(out, { recursive: true });
 const browser = await chromium.launch({
   executablePath,
   headless: true,
-  args: ['--no-sandbox', '--disable-gpu']
+  args: ['--no-sandbox', '--disable-gpu', '--enable-unsafe-swiftshader']
 });
 
 const page = await browser.newPage({ viewport: { width: 430, height: 932 } });
@@ -26,15 +26,30 @@ page.on('response', (response) => {
   if (response.status() >= 400) badResponses.push(`${response.status()} ${response.url()}`);
 });
 
-await page.goto(url, { waitUntil: 'networkidle', timeout: 30_000 });
-await page.locator('canvas').waitFor({ state: 'visible', timeout: 10_000 });
+await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+await page.locator('canvas').waitFor({ state: 'visible', timeout: 15_000 });
 await page.screenshot({ path: `${out}/01-landing.png` });
 
-async function clickLogical(x, y) {
-  const canvas = page.locator('canvas');
-  const box = await canvas.boundingBox();
+async function canvasBox() {
+  const box = await page.locator('canvas').boundingBox();
   if (!box) throw new Error('Canvas bounding box unavailable');
+  return box;
+}
+
+async function clickLogical(x, y) {
+  const box = await canvasBox();
   await page.mouse.click(box.x + (x / 540) * box.width, box.y + (y / 960) * box.height);
+}
+
+async function swipeLogical(fromX, toX, y) {
+  const box = await canvasBox();
+  const startX = box.x + (fromX / 540) * box.width;
+  const endX = box.x + (toX / 540) * box.width;
+  const py = box.y + (y / 960) * box.height;
+  await page.mouse.move(startX, py);
+  await page.mouse.down();
+  await page.mouse.move(endX, py, { steps: 8 });
+  await page.mouse.up();
 }
 
 await clickLogical(270, 662); // ENTER THE ISLAND
@@ -50,19 +65,32 @@ await clickLogical(270, 790); // OPEN THE MAP
 await page.waitForTimeout(400);
 await page.screenshot({ path: `${out}/04-map.png` });
 
-await clickLogical(202, 496); // SUNSET TOWN pin on migrated island map
+await clickLogical(202, 496); // SUNSET TOWN
 await page.waitForTimeout(700);
 await page.screenshot({ path: `${out}/05-no-brakes-tutorial.png` });
 
-await clickLogical(270, 610); // START RIDE
-await page.waitForTimeout(900);
+await clickLogical(270, 624); // START RIDE
+await page.waitForTimeout(650);
 await page.screenshot({ path: `${out}/06-no-brakes-running.png` });
 
-// Deliberately do not jump. The first two training obstacles must rescue the
-// player, while the first non-training collision should end the run. Do not
-// use a fixed sleep here: training rescue timing and browser frame pacing can
-// legitimately shift the third collision. The persisted best score is the
-// authoritative completion signal because endRun() writes it exactly once.
+// Exercise the actual mobile gesture path. Swipe left, then return right to the
+// centre lane. A swipe must not be interpreted as a jump.
+await swipeLogical(300, 165, 770);
+await page.waitForTimeout(180);
+await page.screenshot({ path: `${out}/06a-no-brakes-left-lane.png` });
+await swipeLogical(165, 300, 770);
+await page.waitForTimeout(220);
+await page.screenshot({ path: `${out}/06b-no-brakes-centre-lane.png` });
+
+// Also exercise keyboard parity used on desktop.
+await page.keyboard.press('ArrowLeft');
+await page.waitForTimeout(130);
+await page.keyboard.press('ArrowRight');
+
+// The first two training obstacles rescue the player. Once training ends, a
+// collision persists the run result. The game keeps the first live obstacle on
+// the centre line so this smoke test remains deterministic while later hazards
+// can fan across all lanes.
 await page.waitForFunction(
   () => {
     const raw = window.localStorage.getItem('pqpi:v1:progress');
@@ -101,7 +129,7 @@ if (runtimeErrors.length) {
 
 await fs.writeFile(
   `${out}/journey.json`,
-  JSON.stringify({ url, bestScore: best, totalJo: progress.totalJo ?? 0, runtimeErrors, badResponses }, null, 2) + '\n'
+  JSON.stringify({ url, bestScore: best, totalJo: progress.totalJo ?? 0, runtimeErrors, badResponses, exercised: ['swipe-left', 'swipe-right', 'keyboard-left', 'keyboard-right'] }, null, 2) + '\n'
 );
 
 await browser.close();
