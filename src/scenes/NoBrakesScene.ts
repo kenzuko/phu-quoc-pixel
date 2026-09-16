@@ -4,6 +4,7 @@ import { inputActions } from '../core/input/InputActions';
 import { flowController } from '../core/navigation/FlowController';
 import { progressStore } from '../core/progress/ProgressStore';
 import { PerspectiveRoad } from '../games/no-brakes/PerspectiveRoad';
+import { RideEffects } from '../games/no-brakes/RideEffects';
 import {
   createObstacleVisual,
   createRiderVisual,
@@ -26,6 +27,7 @@ interface Difficulty {
 
 export class NoBrakesScene extends Phaser.Scene {
   private road!: PerspectiveRoad;
+  private effects!: RideEffects;
   private player!: Phaser.GameObjects.Container;
   private playerShadow!: Phaser.GameObjects.Ellipse;
   private obstacle!: Phaser.GameObjects.Container;
@@ -42,6 +44,7 @@ export class NoBrakesScene extends Phaser.Scene {
 
   private running = false;
   private ended = false;
+  private crashing = false;
   private onGround = true;
   private velocityY = 0;
   private score = 0;
@@ -74,6 +77,7 @@ export class NoBrakesScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#72c4ec');
 
     this.road = new PerspectiveRoad(this);
+    this.effects = new RideEffects(this);
     this.buildHud();
 
     const playerX = this.playerLaneX(0);
@@ -122,7 +126,7 @@ export class NoBrakesScene extends Phaser.Scene {
       }
     });
     inputActions.bindBack(this, () => {
-      if (!this.running) flowController.go(this, SceneKeys.IslandMap);
+      if (!this.running && !this.crashing) flowController.go(this, SceneKeys.IslandMap);
     });
 
     this.prepareIdleState();
@@ -148,6 +152,7 @@ export class NoBrakesScene extends Phaser.Scene {
         this.velocityY = 0;
         this.onGround = true;
         this.playerShadow.setScale(1).setAlpha(0.28);
+        this.effects.landing(this.player.x, PLAYER_BASE_Y);
         this.cameras.main.shake(60, 0.0015);
       }
     }
@@ -165,7 +170,7 @@ export class NoBrakesScene extends Phaser.Scene {
             this.toast('TAP TO HOP · SWIPE TO DODGE', 820);
           }
         } else {
-          this.endRun();
+          this.crashRun();
           return;
         }
       }
@@ -174,8 +179,14 @@ export class NoBrakesScene extends Phaser.Scene {
         this.score += 1;
         this.scoreText.setText(`SCORE\n${String(this.score).padStart(4, '0')}`);
         if (this.score === 1) this.toast('THAT\'S IT.');
-        if (this.score === 5) this.toast('NOW WE RIDE.');
-        if (this.score === 25) this.toast('FASTER!');
+        if (this.score === 5) {
+          this.toast('NOW WE RIDE.');
+          this.effects.milestone(this.scale.width / 2, 226);
+        }
+        if (this.score === 25) {
+          this.toast('FASTER!');
+          this.effects.milestone(this.scale.width / 2, 226);
+        }
         this.scheduleObstacle(time);
       }
     }
@@ -184,6 +195,7 @@ export class NoBrakesScene extends Phaser.Scene {
       this.coinDepth += difficulty.depthSpeed * 0.94 * dt;
       this.placeCoin();
       if (this.coinDepth >= 0.84 && this.coinDepth <= 0.99 && this.coinLane === this.playerLane) {
+        this.effects.coinPickup(this.coin.x, this.coin.y);
         this.runJo += 1;
         this.joText.setText(`JO\n${String(this.runJo).padStart(3, '0')}`);
         this.toast('+1 JO', 430);
@@ -291,9 +303,12 @@ export class NoBrakesScene extends Phaser.Scene {
     this.score = 0;
     this.runJo = 0;
     this.ended = false;
+    this.crashing = false;
     this.onGround = true;
     this.velocityY = 0;
     this.playerLane = 0;
+    this.tweens.killTweensOf(this.player);
+    this.tweens.killTweensOf(this.playerShadow);
     this.player.setPosition(this.playerLaneX(0), PLAYER_BASE_Y).setAngle(0).setScale(1);
     this.playerShadow.setPosition(this.playerLaneX(0), PLAYER_BASE_Y + 14).setScale(1).setAlpha(0.28);
     this.obstaclesSpawned = 0;
@@ -310,9 +325,41 @@ export class NoBrakesScene extends Phaser.Scene {
     this.scheduleCoin(this.time.now, true);
   }
 
-  private endRun(): void {
-    if (!this.running || this.ended) return;
+  private crashRun(): void {
+    if (!this.running || this.ended || this.crashing) return;
+
     this.running = false;
+    this.crashing = true;
+    const fallDirection = this.playerLane < 0 ? -1 : this.playerLane > 0 ? 1 : Phaser.Math.Between(0, 1) === 0 ? -1 : 1;
+
+    this.effects.crash(this.player.x, this.player.y);
+    this.cameras.main.shake(240, 0.006);
+    this.cameras.main.flash(80, 255, 221, 158, false);
+    this.tweens.killTweensOf(this.player);
+    this.tweens.add({
+      targets: this.player,
+      angle: fallDirection * 14,
+      y: PLAYER_BASE_Y + 17,
+      x: this.player.x + fallDirection * 18,
+      duration: 260,
+      ease: 'Quad.Out'
+    });
+    this.tweens.add({
+      targets: this.playerShadow,
+      x: this.playerShadow.x + fallDirection * 16,
+      scaleX: 1.15,
+      alpha: 0.2,
+      duration: 260,
+      ease: 'Quad.Out'
+    });
+
+    this.time.delayedCall(340, () => this.endRun());
+  }
+
+  private endRun(): void {
+    if (this.ended) return;
+    this.running = false;
+    this.crashing = false;
     this.ended = true;
     if (this.runJo > 0) progressStore.addJo(this.runJo);
     this.best = progressStore.setBestScore(GAME_ID, this.score);
@@ -322,7 +369,7 @@ export class NoBrakesScene extends Phaser.Scene {
   }
 
   private canControl(): boolean {
-    return this.running && !this.ended && this.time.now >= this.controlsReadyAt;
+    return this.running && !this.ended && !this.crashing && this.time.now >= this.controlsReadyAt;
   }
 
   private jump(auto = false): void {
@@ -339,9 +386,10 @@ export class NoBrakesScene extends Phaser.Scene {
     const nextLane = Phaser.Math.Clamp(this.playerLane + direction, -1, 1);
     if (nextLane === this.playerLane) return;
 
+    this.effects.laneSkid(this.player.x, PLAYER_BASE_Y, direction);
     this.playerLane = nextLane;
     const targetX = this.playerLaneX(nextLane);
-    const lean = direction * 7;
+    const lean = direction * 8;
 
     this.tweens.killTweensOf(this.player);
     this.tweens.killTweensOf(this.playerShadow);
@@ -349,14 +397,14 @@ export class NoBrakesScene extends Phaser.Scene {
       targets: this.player,
       x: targetX,
       angle: lean,
-      duration: 115,
+      duration: 120,
       ease: 'Quad.Out',
       onComplete: () => {
         if (!this.player.active) return;
-        this.tweens.add({ targets: this.player, angle: 0, duration: 90, ease: 'Quad.Out' });
+        this.tweens.add({ targets: this.player, angle: 0, duration: 105, ease: 'Quad.Out' });
       }
     });
-    this.tweens.add({ targets: this.playerShadow, x: targetX, duration: 115, ease: 'Quad.Out' });
+    this.tweens.add({ targets: this.playerShadow, x: targetX, duration: 120, ease: 'Quad.Out' });
   }
 
   private animateRide(): void {
