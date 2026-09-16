@@ -1,0 +1,48 @@
+name: Bootstrap Pixel Island repository
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout new repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pull clean Pixel foundation from JoTrip Lab
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --branch feat/phu-quoc-pixel-architecture-v1 \
+            https://github.com/kenzuko/Jotrip-Lab.git /tmp/jotrip-lab
+          rsync -a --delete \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            /tmp/jotrip-lab/phu-quoc-pixel/ ./
+          mkdir -p public
+          printf '%s\n' 'pixel.openphuquoc.com' > public/CNAME
+
+      - name: Commit clean foundation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'jotrip-pixel-bot'
+          git config user.email 'jotrip-pixel-bot@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Repository already bootstrapped'
+            exit 0
+          fi
+          git commit -m 'chore: bootstrap standalone Pixel Island repository'
+          git push origin HEAD:main
