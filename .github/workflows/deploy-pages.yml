@@ -33,6 +33,7 @@ jobs:
           npm run build
           test -f dist/CNAME
           grep -qx 'pixel.openphuquoc.com' dist/CNAME
+          printf '%s\n' "$GITHUB_SHA" > dist/build.txt
           touch dist/.nojekyll
 
       - name: Publish dist to gh-pages
@@ -59,18 +60,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for attempt in $(seq 1 12); do
+          for attempt in $(seq 1 18); do
             code="$(curl -L -sS -o /tmp/pixel-live.html -w '%{http_code}' https://pixel.openphuquoc.com/ || true)"
-            echo "Attempt ${attempt}: HTTP ${code}"
+            live_sha="$(curl -L -fsSL https://pixel.openphuquoc.com/build.txt 2>/dev/null | tr -d '\r\n' || true)"
+            echo "Attempt ${attempt}: HTTP ${code}, build ${live_sha:-missing}"
             if [ "$code" = '200' ] \
+              && [ "$live_sha" = "$GITHUB_SHA" ] \
               && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-live.html \
               && grep -Eq 'src="(\./)?assets/index-[^"]+\.js"' /tmp/pixel-live.html \
               && ! grep -q '/src/main.ts' /tmp/pixel-live.html; then
-              echo 'Custom domain is serving the compiled Pixel Island artifact'
+              echo 'Custom domain is serving this exact compiled Pixel Island commit'
               exit 0
             fi
             sleep 5
           done
-          echo 'Custom domain is not serving the compiled gh-pages artifact yet.'
-          echo 'Expected Pages source: gh-pages / (root).'
+          echo 'Custom domain has not reached this deploy commit yet.'
+          echo "Expected build: $GITHUB_SHA"
+          echo "Observed build: ${live_sha:-missing}"
           exit 1
