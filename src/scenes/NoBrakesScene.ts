@@ -370,7 +370,9 @@ export class NoBrakesScene extends Phaser.Scene {
     const d = this.difficulty();
     this.obstacleDepth = initial ? 0.08 : 0.03;
     this.obstacleTraining = this.obstaclesSpawned < 2;
-    this.obstacleLane = this.obstacleTraining ? 0 : Phaser.Utils.Array.GetRandom([...LANES]);
+    // Keep the first two training hazards and the first live hazard centred.
+    // The player learns the timing first; lane randomness begins after that.
+    this.obstacleLane = this.obstaclesSpawned < 3 ? 0 : Phaser.Utils.Array.GetRandom([...LANES]);
     const kind = Phaser.Utils.Array.GetRandom(OBSTACLE_KINDS);
     this.obstacleVisual.setKind(kind);
     this.obstaclesSpawned += 1;
