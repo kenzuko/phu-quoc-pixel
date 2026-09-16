@@ -18,7 +18,10 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   backgroundColor: '#05263a',
   pixelArt: true,
   scale: {
-    mode: Phaser.Scale.FIT,
+    // EXPAND gives Phaser the full visible parent area while preserving the
+    // 540x960 design scale. This removes FIT letterboxing on tall phones
+    // without using ENVELOP, which would crop large areas on desktop.
+    mode: Phaser.Scale.EXPAND,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: GAME_WIDTH,
     height: GAME_HEIGHT
