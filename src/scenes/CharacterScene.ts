@@ -37,7 +37,7 @@ export class CharacterScene extends Phaser.Scene {
     this.add
       .text(width / 2, 62, 'CHOOSE YOUR TRAVELER', {
         fontFamily: 'monospace',
-        fontSize: '29px',
+        fontSize: '27px',
         fontStyle: 'bold',
         color: '#ffffff',
         stroke: '#061c27',
@@ -48,7 +48,7 @@ export class CharacterScene extends Phaser.Scene {
     this.add
       .text(width / 2, 102, 'A FACE FOR YOUR PHU QUOC STORY', {
         fontFamily: 'monospace',
-        fontSize: '11px',
+        fontSize: '10px',
         color: '#bfe6eb'
       })
       .setOrigin(0.5);
@@ -76,21 +76,21 @@ export class CharacterScene extends Phaser.Scene {
     CHARACTERS.forEach((character, index) => {
       const col = index % 2;
       const row = Math.floor(index / 2);
-      const x = col === 0 ? 143 : 397;
+      const x = col === 0 ? 155 : 385;
       const y = 226 + row * 132;
       const card = this.add
-        .rectangle(x, y, 220, 112, 0x0b3545, 0.94)
+        .rectangle(x, y, 206, 112, 0x0b3545, 0.94)
         .setStrokeStyle(2, 0x8ab9c1, 0.38)
         .setInteractive({ useHandCursor: true });
       cards.set(character.id, card);
 
-      const portrait = createCharacterPortrait(this, character.id, x - 57, y - 2, 0.72);
+      const portrait = createCharacterPortrait(this, character.id, x - 52, y - 2, 0.68);
       portrait.setDepth(2);
 
       this.add
-        .text(x + 36, y - 20, character.label, {
+        .text(x + 34, y - 20, character.label, {
           fontFamily: 'monospace',
-          fontSize: character.label.length > 9 ? '12px' : '14px',
+          fontSize: character.label.length > 9 ? '11px' : '13px',
           fontStyle: 'bold',
           color: '#ffffff'
         })
@@ -98,7 +98,7 @@ export class CharacterScene extends Phaser.Scene {
         .setDepth(3);
 
       this.add
-        .text(x + 36, y + 11, character.note, {
+        .text(x + 34, y + 11, character.note, {
           fontFamily: 'monospace',
           fontSize: '8px',
           color: '#a8d8df'
@@ -111,8 +111,8 @@ export class CharacterScene extends Phaser.Scene {
         syncSelection(character.id);
         this.tweens.add({
           targets: portrait,
-          scaleX: 0.8,
-          scaleY: 0.8,
+          scaleX: 0.76,
+          scaleY: 0.76,
           yoyo: true,
           duration: 90,
           ease: 'Quad.Out'
@@ -120,7 +120,7 @@ export class CharacterScene extends Phaser.Scene {
       };
 
       card.on('pointerdown', choose);
-      portrait.setSize(95, 105).setInteractive({ useHandCursor: true }).on('pointerdown', choose);
+      portrait.setSize(90, 102).setInteractive({ useHandCursor: true }).on('pointerdown', choose);
     });
 
     syncSelection(progressStore.getProfile().characterId);
@@ -128,13 +128,13 @@ export class CharacterScene extends Phaser.Scene {
     this.add
       .text(width / 2, 770, 'YOUR CHARACTER TRAVELS WITH YOU AROUND THE ISLAND', {
         fontFamily: 'monospace',
-        fontSize: '9px',
+        fontSize: '8px',
         color: '#b6dbe1'
       })
       .setOrigin(0.5);
 
     createButton(this, width / 2, 838, 'OPEN THE ISLAND MAP', () => {
       flowController.go(this, SceneKeys.IslandMap);
-    }, { width: 330, fontSize: 16 });
+    }, { width: 320, fontSize: 15 });
   }
 }
