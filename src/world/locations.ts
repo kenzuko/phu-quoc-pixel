@@ -3,17 +3,22 @@ export type LocationStatus = 'available' | 'locked' | 'coming-soon';
 export interface IslandLocation {
   id: string;
   label: string;
-  mapPosition: { x: number; y: number };
+  coordinates: { lat: number; lon: number };
   status: LocationStatus;
   miniGameId?: string;
   assetGroup?: string;
 }
 
+/**
+ * Geographic anchors used by the island map. These are real-world latitude /
+ * longitude positions rather than hand-placed normalized percentages, so pins
+ * keep their north-south / east-west relationship when the map art changes.
+ */
 export const ISLAND_LOCATIONS: readonly IslandLocation[] = Object.freeze([
   {
     id: 'sunset-town',
     label: 'SUNSET TOWN',
-    mapPosition: { x: 0.31, y: 0.72 },
+    coordinates: { lat: 10.02942, lon: 104.00709 },
     status: 'available',
     miniGameId: 'no-brakes',
     assetGroup: 'location-sunset-town'
@@ -21,31 +26,31 @@ export const ISLAND_LOCATIONS: readonly IslandLocation[] = Object.freeze([
   {
     id: 'hon-thom',
     label: 'HON THOM',
-    mapPosition: { x: 0.49, y: 0.91 },
+    coordinates: { lat: 9.955, lon: 104.017 },
     status: 'locked'
   },
   {
     id: 'bai-sao',
     label: 'BAI SAO',
-    mapPosition: { x: 0.63, y: 0.67 },
+    coordinates: { lat: 10.049993, lon: 104.036407 },
     status: 'locked'
   },
   {
     id: 'night-market',
     label: 'NIGHT MARKET',
-    mapPosition: { x: 0.39, y: 0.49 },
+    coordinates: { lat: 10.2163, lon: 103.96058 },
     status: 'locked'
   },
   {
     id: 'grand-world',
     label: 'GRAND WORLD',
-    mapPosition: { x: 0.35, y: 0.24 },
+    coordinates: { lat: 10.32459, lon: 103.85536 },
     status: 'locked'
   },
   {
     id: 'safari',
     label: 'SAFARI',
-    mapPosition: { x: 0.44, y: 0.17 },
+    coordinates: { lat: 10.33987, lon: 103.89582 },
     status: 'locked'
   }
 ]);
