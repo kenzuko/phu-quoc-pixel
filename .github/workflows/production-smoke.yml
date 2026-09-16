@@ -1,0 +1,90 @@
+name: Pixel Island Production Smoke
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pixel-production-smoke
+  cancel-in-progress: true
+
+env:
+  PREVIEW_URL: https://pixel.openphuquoc.com/
+
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Wait for production deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          ok=false
+          for attempt in $(seq 1 30); do
+            if curl -fsSL "$PREVIEW_URL" -o /tmp/pixel-index.html && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-index.html; then
+              ok=true
+              break
+            fi
+            sleep 4
+          done
+          test "$ok" = true
+
+      - name: Chrome render smoke - mobile and desktop
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+
+          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+            --window-size=430,932 --virtual-time-budget=3500 \
+            --dump-dom "$PREVIEW_URL" > /tmp/pixel-mobile-dom.html
+          grep -q '<canvas' /tmp/pixel-mobile-dom.html
+          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+            --window-size=430,932 --virtual-time-budget=3500 \
+            --screenshot=/tmp/pixel-mobile.png "$PREVIEW_URL"
+
+          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+            --window-size=1440,900 --virtual-time-budget=3500 \
+            --dump-dom "$PREVIEW_URL" > /tmp/pixel-desktop-dom.html
+          grep -q '<canvas' /tmp/pixel-desktop-dom.html
+          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+            --window-size=1440,900 --virtual-time-budget=3500 \
+            --screenshot=/tmp/pixel-desktop.png "$PREVIEW_URL"
+
+      - name: Install interaction harness
+        run: npm install --no-save --package-lock=false --no-audit --no-fund playwright-core@1.55.0
+
+      - name: Production journey E2E
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
+          test -n "$CHROME"
+          PREVIEW_URL="$PREVIEW_URL" CHROME_BIN="$CHROME" E2E_OUT=/tmp/pixel-e2e node e2e/production.mjs
+
+      - name: Upload smoke evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pixel-production-smoke
+          path: |
+            /tmp/pixel-mobile.png
+            /tmp/pixel-desktop.png
+            /tmp/pixel-mobile-dom.html
+            /tmp/pixel-desktop-dom.html
+            /tmp/pixel-e2e
+          retention-days: 7
