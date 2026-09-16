@@ -1,6 +1,12 @@
 import Phaser from 'phaser';
 
-export type ObstacleKind = 'large-planter' | 'rolling-suitcase' | 'menu-board';
+export type ObstacleKind =
+  | 'large-planter'
+  | 'rolling-suitcase'
+  | 'menu-board'
+  | 'bougainvillea-planter'
+  | 'hotel-cart'
+  | 'market-crates';
 
 const OUTLINE = 0x17232a;
 
@@ -149,10 +155,21 @@ export function createObstacleVisual(scene: Phaser.Scene): ObstacleVisual {
 
   const setKind = (kind: ObstacleKind): void => {
     g.clear();
-    planter.setVisible(kind === 'large-planter');
 
-    if (kind === 'rolling-suitcase') drawRollingSuitcase(g);
-    if (kind === 'menu-board') drawMenuBoard(g);
+    // Old gameplay ids are accepted only as compatibility aliases. The visuals
+    // shown to players now come from the approved Task 02 obstacle family.
+    const visualKind =
+      kind === 'bougainvillea-planter'
+        ? 'large-planter'
+        : kind === 'hotel-cart'
+          ? 'rolling-suitcase'
+          : kind === 'market-crates'
+            ? 'menu-board'
+            : kind;
+
+    planter.setVisible(visualKind === 'large-planter');
+    if (visualKind === 'rolling-suitcase') drawRollingSuitcase(g);
+    if (visualKind === 'menu-board') drawMenuBoard(g);
   };
 
   setKind('large-planter');
