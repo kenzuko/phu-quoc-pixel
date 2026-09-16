@@ -28,24 +28,28 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Wait for compiled production deploy
+      - name: Wait for exact production deploy
         shell: bash
         run: |
           set -euo pipefail
           ok=false
-          for attempt in $(seq 1 30); do
+          for attempt in $(seq 1 36); do
+            live_sha="$(curl -L -fsSL "${PREVIEW_URL}build.txt" 2>/dev/null | tr -d '\r\n' || true)"
             if curl -fsSL "$PREVIEW_URL" -o /tmp/pixel-index.html \
+              && [ "$live_sha" = "$GITHUB_SHA" ] \
               && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-index.html \
               && grep -Eq 'src="(\./)?assets/index-[^"]+\.js"' /tmp/pixel-index.html \
               && ! grep -q '/src/main.ts' /tmp/pixel-index.html; then
               ok=true
               break
             fi
+            echo "Waiting for production commit $GITHUB_SHA, observed ${live_sha:-missing}"
             sleep 4
           done
           if [ "$ok" != true ]; then
-            echo 'Production is not serving compiled dist output.'
-            echo 'GitHub Pages must use gh-pages / (root), not main / (root).'
+            echo 'Production is not serving this exact compiled commit.'
+            echo "Expected build: $GITHUB_SHA"
+            echo "Observed build: ${live_sha:-missing}"
             cat /tmp/pixel-index.html || true
             exit 1
           fi
@@ -57,19 +61,19 @@ jobs:
           CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || command -v chromium-browser || true)"
           test -n "$CHROME"
 
-          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader \
             --window-size=430,932 --virtual-time-budget=3500 \
             --dump-dom "$PREVIEW_URL" > /tmp/pixel-mobile-dom.html
           grep -q '<canvas' /tmp/pixel-mobile-dom.html
-          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader \
             --window-size=430,932 --virtual-time-budget=3500 \
             --screenshot=/tmp/pixel-mobile.png "$PREVIEW_URL"
 
-          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader \
             --window-size=1440,900 --virtual-time-budget=3500 \
             --dump-dom "$PREVIEW_URL" > /tmp/pixel-desktop-dom.html
           grep -q '<canvas' /tmp/pixel-desktop-dom.html
-          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+          "$CHROME" --headless=new --no-sandbox --disable-gpu --enable-unsafe-swiftshader \
             --window-size=1440,900 --virtual-time-budget=3500 \
             --screenshot=/tmp/pixel-desktop.png "$PREVIEW_URL"
 
