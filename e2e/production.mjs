@@ -57,16 +57,20 @@ await page.waitForTimeout(250);
 await page.screenshot({ path: `${out}/02-airport.png` });
 
 await clickLogical(270, 670); // LET'S GO
-await page.waitForTimeout(250);
+await page.waitForTimeout(300);
 await page.screenshot({ path: `${out}/03-character.png` });
 
-await clickLogical(155, 235); // TRAVELER
-await clickLogical(270, 790); // OPEN THE MAP
-await page.waitForTimeout(400);
+await clickLogical(143, 226); // TRAVELER avatar card
+await page.waitForTimeout(120);
+await clickLogical(270, 838); // OPEN THE ISLAND MAP
+await page.waitForTimeout(600);
 await page.screenshot({ path: `${out}/04-map.png` });
 
-await clickLogical(202, 496); // SUNSET TOWN
-await page.waitForTimeout(700);
+// Sunset Town is projected from its geographic coordinate, not a hand-placed
+// normalized map percentage. This point is the production map projection for
+// the current geography-led Phu Quoc map art.
+await clickLogical(335, 619); // SUNSET TOWN geographic pin
+await page.waitForTimeout(850);
 await page.screenshot({ path: `${out}/05-no-brakes-tutorial.png` });
 
 await clickLogical(270, 624); // START RIDE
@@ -117,7 +121,7 @@ const best = progress.bestScores?.['no-brakes'] ?? 0;
 if (best < 2) throw new Error(`Expected training run best score >= 2, got ${best}`);
 
 await clickLogical(270, 655); // BACK TO MAP
-await page.waitForTimeout(450);
+await page.waitForTimeout(500);
 await page.screenshot({ path: `${out}/08-return-map.png` });
 
 if (badResponses.length) {
@@ -129,7 +133,22 @@ if (runtimeErrors.length) {
 
 await fs.writeFile(
   `${out}/journey.json`,
-  JSON.stringify({ url, bestScore: best, totalJo: progress.totalJo ?? 0, runtimeErrors, badResponses, exercised: ['swipe-left', 'swipe-right', 'keyboard-left', 'keyboard-right'] }, null, 2) + '\n'
+  JSON.stringify({
+    url,
+    bestScore: best,
+    totalJo: progress.totalJo ?? 0,
+    runtimeErrors,
+    badResponses,
+    exercised: [
+      'visual-character-avatar',
+      'geographic-island-map',
+      'sunset-town-raster-background',
+      'swipe-left',
+      'swipe-right',
+      'keyboard-left',
+      'keyboard-right'
+    ]
+  }, null, 2) + '\n'
 );
 
 await browser.close();
