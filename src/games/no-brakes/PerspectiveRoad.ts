@@ -19,8 +19,8 @@ export interface RoadProjection {
  */
 const HORIZON_Y = 438;
 const ROAD_BOTTOM_Y = 986;
-const ROAD_TOP_HALF = 28;
-const ROAD_BOTTOM_HALF = 246;
+const ROAD_TOP_HALF = 26;
+const ROAD_BOTTOM_HALF = 200;
 const CENTER_X = 270;
 const ROAD_SEGMENTS = 42;
 const DEPTH_EXPONENT = 2.05;
@@ -52,10 +52,12 @@ export class PerspectiveRoad {
     const baseHalfWidth = Phaser.Math.Linear(ROAD_TOP_HALF, ROAD_BOTTOM_HALF, eased);
     const halfWidth = baseHalfWidth * route.halfWidthScale;
 
-    const centerShift = route.centerOffset * baseHalfWidth * 1.2;
-    const curveBulge = route.curve * baseHalfWidth * Math.sin(Math.PI * z) * 0.36;
+    // Keep enough lateral route character to feel like a Sunset Town descent,
+    // while leaving visible town/promenade on both sides of the near camera.
+    const centerShift = route.centerOffset * baseHalfWidth;
+    const curveBulge = route.curve * baseHalfWidth * Math.sin(Math.PI * z) * 0.5;
     const centerX = CENTER_X + centerShift + curveBulge;
-    const laneOffset = lane * halfWidth * 0.58;
+    const laneOffset = lane * halfWidth * 0.61;
     const gradeOffset = route.grade * 28 * Math.sin(Math.PI * z);
 
     return {
@@ -77,9 +79,10 @@ export class PerspectiveRoad {
       const z1 = (i + 1) / ROAD_SEGMENTS;
       const a = this.project(z0);
       const b = this.project(z1);
-      const shoulderA = a.halfWidth + Phaser.Math.Linear(12, 78, Math.pow(z0, 1.7));
-      const shoulderB = b.halfWidth + Phaser.Math.Linear(12, 78, Math.pow(z1, 1.7));
+      const shoulderA = a.halfWidth + Phaser.Math.Linear(10, 48, Math.pow(z0, 1.7));
+      const shoulderB = b.halfWidth + Phaser.Math.Linear(10, 48, Math.pow(z1, 1.7));
 
+      // Warm limestone / promenade shoulder from the Sunset Town palette.
       g.fillStyle(0xe5d4bd, 1);
       this.fillQuad(
         g,
@@ -138,13 +141,28 @@ export class PerspectiveRoad {
       }
     }
 
-    // Near-camera streaks are deliberately subtle. They reinforce forward
-    // speed without turning the Sunset Town scenery into generic racing VFX.
-    g.lineStyle(2, 0xffffff, 0.11);
-    for (let i = 0; i < 6; i += 1) {
-      const y = 790 + i * 29;
-      const x = 50 + i * 90;
-      g.lineBetween(x, y, x - 15, y + 24);
+    // Stone promenade joints flow toward the rider. These are tied to the same
+    // perspective projection as the road, creating speed without generic racing
+    // streaks or a moving-background cheat.
+    g.fillStyle(0xb29b82, 0.42);
+    for (let i = 0; i < 10; i += 1) {
+      const depth = (i / 10 + phase * 0.82) % 1;
+      if (depth < 0.07) continue;
+      const p = this.project(depth);
+      const seamW = Math.max(2, 12 * p.scale);
+      const seamH = Math.max(1, 3 * p.scale);
+      const curbGap = Phaser.Math.Linear(9, 31, depth);
+      g.fillRect(p.x - p.halfWidth - curbGap - seamW, p.y, seamW, seamH);
+      g.fillRect(p.x + p.halfWidth + curbGap, p.y, seamW, seamH);
+    }
+
+    // Very subtle near-camera surface scratches give the asphalt texture while
+    // leaving landmarks and player silhouette dominant.
+    g.lineStyle(2, 0xffffff, 0.09);
+    for (let i = 0; i < 5; i += 1) {
+      const y = 808 + i * 31;
+      const x = 82 + i * 93;
+      g.lineBetween(x, y, x - 12, y + 19);
     }
   }
 
