@@ -42,24 +42,34 @@ export class AirportScene extends Phaser.Scene {
     const plane = this.createLandingPlane(width / 2, 250);
     this.tweens.add({
       targets: plane,
-      y: 542,
-      scaleX: 1.62,
-      scaleY: 1.62,
+      y: 510,
+      scaleX: 0.92,
+      scaleY: 0.92,
       angle: 0,
       duration: 1500,
       ease: 'Quad.In',
       onComplete: () => {
         this.cameras.main.shake(110, 0.0025);
-        this.spawnTouchdownPuffs(width / 2, 578);
+        this.spawnTouchdownPuffs(width / 2, 570);
         this.tweens.add({ targets: touchdown, alpha: 1, scale: 1, duration: 180, ease: 'Back.Out' });
         this.time.delayedCall(720, () => this.tweens.add({ targets: touchdown, alpha: 0, duration: 260 }));
+        this.tweens.add({
+          targets: plane,
+          y: 676,
+          scaleX: 1.08,
+          scaleY: 1.08,
+          alpha: 0,
+          duration: 900,
+          delay: 120,
+          ease: 'Quad.In'
+        });
       }
     });
 
     const dialogue = this.buildKenArrivalCard(width, height).setAlpha(0).setY(38);
     this.tweens.add({ targets: dialogue, alpha: 1, y: 0, duration: 460, delay: 1750, ease: 'Back.Out' });
 
-    const button = createButton(this, width / 2, 850, "MEET YOUR TRAVELER", () => {
+    const button = createButton(this, width / 2, 850, 'MEET YOUR TRAVELER', () => {
       flowController.go(this, SceneKeys.Character);
     }, { width: 330, fontSize: 16 })
       .setAlpha(0)
@@ -79,15 +89,12 @@ export class AirportScene extends Phaser.Scene {
 
   private drawAirportWorld(width: number, height: number): void {
     const g = this.add.graphics();
-
-    // Tropical morning sky.
     const bands = [0x70c7ed, 0x83d1ef, 0x9fdcf0, 0xbce6ec];
     bands.forEach((color, index) => {
       g.fillStyle(color, 1);
       g.fillRect(0, index * 105, width, 110);
     });
 
-    // Distant Phu Quoc tree line.
     g.fillStyle(0x315d4d, 1);
     g.fillRect(0, 365, width, 95);
     g.fillStyle(0x477b5b, 1);
@@ -95,7 +102,7 @@ export class AirportScene extends Phaser.Scene {
       g.fillTriangle(x, 390, x + 17, 332 - (x % 4) * 7, x + 34, 390);
     }
 
-    // Terminal and control tower silhouettes.
+    // Terminal and control tower stay understated so the runway owns the shot.
     g.fillStyle(0xe9e3d2, 1);
     g.fillRect(34, 402, 212, 74);
     g.fillStyle(0x3f7180, 1);
@@ -107,7 +114,6 @@ export class AirportScene extends Phaser.Scene {
     g.fillStyle(0xf6c760, 1);
     g.fillRect(420, 334, 24, 8);
 
-    // Runway perspective from horizon to camera.
     g.fillStyle(0x36434a, 1);
     g.beginPath();
     g.moveTo(width / 2 - 45, 430);
@@ -117,7 +123,6 @@ export class AirportScene extends Phaser.Scene {
     g.closePath();
     g.fillPath();
 
-    // Runway shoulders.
     g.fillStyle(0x78936d, 1);
     g.beginPath();
     g.moveTo(0, 430);
@@ -134,7 +139,6 @@ export class AirportScene extends Phaser.Scene {
     g.closePath();
     g.fillPath();
 
-    // Perspective centreline.
     g.fillStyle(0xf6f2d9, 0.95);
     for (let i = 0; i < 9; i += 1) {
       const depth = i / 9;
@@ -144,7 +148,6 @@ export class AirportScene extends Phaser.Scene {
       g.fillRect(width / 2 - w / 2, y, w, h);
     }
 
-    // Runway edge lights.
     for (let i = 0; i < 10; i += 1) {
       const t = i / 9;
       const y = 458 + Math.pow(t, 1.7) * 420;
@@ -165,14 +168,52 @@ export class AirportScene extends Phaser.Scene {
 
   private createLandingPlane(x: number, y: number): Phaser.GameObjects.Container {
     const plane = this.add.container(x, y).setScale(0.34).setAngle(-2).setDepth(30);
-    const wing = this.add.triangle(0, 24, 0, 0, 132, 44, -132, 44, 0xddebf0).setStrokeStyle(4, 0x274755, 1);
-    const body = this.add.ellipse(0, 0, 88, 176, 0xf7fbff).setStrokeStyle(4, 0x274755, 1);
-    const nose = this.add.circle(0, 76, 25, 0xf7fbff).setStrokeStyle(4, 0x274755, 1);
-    const tail = this.add.triangle(0, -72, 0, 0, 0, -70, 42, -8, 0xe86043).setStrokeStyle(4, 0x274755, 1);
-    const window = this.add.rectangle(0, 57, 32, 10, 0x4b8da6);
-    const leftWheel = this.add.circle(-24, 62, 9, 0x20292d);
-    const rightWheel = this.add.circle(24, 62, 9, 0x20292d);
-    plane.add([wing, body, nose, tail, window, leftWheel, rightWheel]);
+    const art = this.add.graphics();
+
+    // Symmetric rear-view airliner silhouette, tuned for the runway camera.
+    art.lineStyle(4, 0x274755, 1);
+    art.fillStyle(0xdcecf1, 1);
+    art.beginPath();
+    art.moveTo(-13, -48);
+    art.lineTo(-20, 5);
+    art.lineTo(-112, 44);
+    art.lineTo(-106, 58);
+    art.lineTo(-18, 34);
+    art.lineTo(-13, 67);
+    art.lineTo(13, 67);
+    art.lineTo(18, 34);
+    art.lineTo(106, 58);
+    art.lineTo(112, 44);
+    art.lineTo(20, 5);
+    art.lineTo(13, -48);
+    art.closePath();
+    art.fillPath();
+    art.strokePath();
+
+    art.fillStyle(0xf7fbff, 1);
+    art.lineStyle(4, 0x274755, 1);
+    art.fillRoundedRect(-15, -58, 30, 128, 14);
+    art.strokeRoundedRect(-15, -58, 30, 128, 14);
+
+    art.fillStyle(0xe86043, 1);
+    art.beginPath();
+    art.moveTo(0, -82);
+    art.lineTo(-25, -43);
+    art.lineTo(-10, -38);
+    art.lineTo(0, -54);
+    art.lineTo(10, -38);
+    art.lineTo(25, -43);
+    art.closePath();
+    art.fillPath();
+    art.strokePath();
+
+    art.fillStyle(0x4b8da6, 1);
+    art.fillRect(-9, 38, 18, 8);
+    art.fillStyle(0x20292d, 1);
+    art.fillCircle(-17, 58, 7);
+    art.fillCircle(17, 58, 7);
+
+    plane.add(art);
     return plane;
   }
 
@@ -195,11 +236,11 @@ export class AirportScene extends Phaser.Scene {
 
   private buildKenArrivalCard(width: number, height: number): Phaser.GameObjects.Container {
     const layer = this.add.container(0, 0).setDepth(70);
-    const panel = this.add.rectangle(width / 2, 700, 448, 194, 0x082e3f, 0.96).setStrokeStyle(3, 0xfcbd22, 0.9);
-    const avatarRing = this.add.circle(96, 674, 42, 0x174f60, 1).setStrokeStyle(3, 0xfcbd22, 1);
-    const head = this.add.circle(96, 665, 16, 0xd99a69, 1);
-    const hair = this.add.arc(96, 658, 18, 180, 360, false, 0x202b2f, 1);
-    const shirt = this.add.triangle(96, 700, 0, 0, 31, 0, 15, -30, 0x77944c, 1);
+    const panel = this.add.rectangle(width / 2, 700, 438, 194, 0x082e3f, 0.96).setStrokeStyle(3, 0xfcbd22, 0.9);
+    const avatarRing = this.add.circle(100, 674, 42, 0x174f60, 1).setStrokeStyle(3, 0xfcbd22, 1);
+    const head = this.add.circle(100, 665, 16, 0xd99a69, 1);
+    const hair = this.add.arc(100, 658, 18, 180, 360, false, 0x202b2f, 1);
+    const shirt = this.add.triangle(100, 700, 0, 0, 31, 0, 15, -30, 0x77944c, 1);
     const name = this.add.text(158, 642, 'KEN · LOCAL GUIDE', {
       fontFamily: 'monospace',
       fontSize: '13px',
