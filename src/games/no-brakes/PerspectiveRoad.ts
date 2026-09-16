@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { SunsetForegroundLayer } from '../../world/sunset/SunsetForegroundLayer';
 import { SunsetWorldLayer } from '../../world/sunset/SunsetWorldLayer';
 import { sampleRoute } from './RouteProfile';
 
@@ -33,6 +34,7 @@ export class PerspectiveRoad {
 
   constructor(scene: Phaser.Scene) {
     this.world = new SunsetWorldLayer(scene);
+    new SunsetForegroundLayer(scene);
     this.road = scene.add.graphics().setDepth(-20);
     this.motion = scene.add.graphics().setDepth(-10);
     this.drawRoadBase();
