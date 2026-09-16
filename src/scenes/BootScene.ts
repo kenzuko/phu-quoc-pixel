@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { SceneKeys } from '../app/scene-keys';
+import { APPROVED_REAR_RIDER_DATA_URI } from '../art/ApprovedChaseArt';
 import { assetRegistry } from '../core/assets/AssetRegistry';
 
 export class BootScene extends Phaser.Scene {
@@ -9,6 +10,7 @@ export class BootScene extends Phaser.Scene {
 
   preload(): void {
     assetRegistry.queueGroup(this, 'shell-map');
+    this.load.image('approved-rear-rider', APPROVED_REAR_RIDER_DATA_URI);
   }
 
   create(): void {
