@@ -29,10 +29,13 @@ export class IslandMapScene extends Phaser.Scene {
     header.fillStyle(0x0c5167, 0.9);
     header.fillRect(0, 150, width, height - 150);
 
+    const safeLeft = 64;
+    const safeRight = width - 64;
+
     this.add
-      .text(34, 34, `WELCOME, ${profile.displayName.toUpperCase()}`, {
+      .text(safeLeft, 34, `WELCOME, ${profile.displayName.toUpperCase()}`, {
         fontFamily: 'monospace',
-        fontSize: '13px',
+        fontSize: '12px',
         fontStyle: 'bold',
         color: '#fcbd22'
       })
@@ -40,9 +43,9 @@ export class IslandMapScene extends Phaser.Scene {
       .setDepth(20);
 
     this.add
-      .text(34, 69, 'WHERE TO NEXT?', {
+      .text(safeLeft, 69, 'WHERE TO NEXT?', {
         fontFamily: 'monospace',
-        fontSize: '29px',
+        fontSize: '26px',
         fontStyle: 'bold',
         color: '#ffffff',
         stroke: '#061b24',
@@ -52,20 +55,20 @@ export class IslandMapScene extends Phaser.Scene {
       .setDepth(20);
 
     this.add
-      .text(34, 108, `JO ${progress.totalJo}  ·  EXPLORE PHU QUOC`, {
+      .text(safeLeft, 108, `JO ${progress.totalJo} · EXPLORE PHU QUOC`, {
         fontFamily: 'monospace',
-        fontSize: '10px',
+        fontSize: '9px',
         color: '#b8dfe5'
       })
       .setOrigin(0, 0.5)
       .setDepth(20);
 
-    this.add.circle(472, 69, 43, 0x0b4254, 1).setStrokeStyle(3, 0xfcbd22, 0.7).setDepth(20);
-    createCharacterPortrait(this, profile.characterId, 472, 73, 0.44).setDepth(22);
+    this.add.circle(448, 69, 38, 0x0b4254, 1).setStrokeStyle(3, 0xfcbd22, 0.7).setDepth(20);
+    createCharacterPortrait(this, profile.characterId, 448, 73, 0.4).setDepth(22);
 
-    const mapLeft = 54;
+    const mapLeft = 64;
     const mapTop = 154;
-    const mapWidth = 432;
+    const mapWidth = 412;
     const mapHeight = 548;
     const map = new PhuQuocMapArt(this, mapLeft, mapTop, mapWidth, mapHeight);
 
@@ -85,12 +88,12 @@ export class IslandMapScene extends Phaser.Scene {
     let selected: IslandLocation | undefined;
 
     const labelOffsets: Record<string, { x: number; y: number }> = {
-      'sunset-town': { x: -48, y: 18 },
-      'hon-thom': { x: 41, y: 2 },
-      'bai-sao': { x: 43, y: 2 },
-      'night-market': { x: -54, y: -8 },
-      'grand-world': { x: -50, y: 16 },
-      safari: { x: 46, y: -4 }
+      'sunset-town': { x: -42, y: 18 },
+      'hon-thom': { x: 36, y: 2 },
+      'bai-sao': { x: 38, y: 2 },
+      'night-market': { x: -48, y: -8 },
+      'grand-world': { x: -42, y: 16 },
+      safari: { x: 39, y: -4 }
     };
 
     const choose = (location: IslandLocation): void => {
@@ -142,7 +145,7 @@ export class IslandMapScene extends Phaser.Scene {
       const label = this.add
         .text(p.x + offset.x, p.y + offset.y, location.label, {
           fontFamily: 'monospace',
-          fontSize: available ? '10px' : '7px',
+          fontSize: available ? '9px' : '7px',
           fontStyle: 'bold',
           color: available ? '#ffffff' : '#d1e0df',
           backgroundColor: available ? '#07374ae8' : '#07374abb',
@@ -168,17 +171,17 @@ export class IslandMapScene extends Phaser.Scene {
 
     createButton(
       this,
-      108,
+      142,
       height - 43,
       'CHARACTER',
       () => flowController.go(this, SceneKeys.Character),
-      { width: 170, fontSize: 12, backgroundColor: '#164b61', color: '#ffffff' }
+      { width: 160, fontSize: 11, backgroundColor: '#164b61', color: '#ffffff' }
     ).setDepth(30);
 
     this.add
-      .text(width - 28, height - 43, '1 STORY OPEN · MORE SOON', {
+      .text(safeRight, height - 43, '1 STORY OPEN · MORE SOON', {
         fontFamily: 'monospace',
-        fontSize: '9px',
+        fontSize: '8px',
         fontStyle: 'bold',
         color: '#fcbd22'
       })
@@ -193,20 +196,20 @@ export class IslandMapScene extends Phaser.Scene {
     button: Phaser.GameObjects.Text;
   } {
     const layer = this.add.container(0, 0).setVisible(false).setDepth(40);
-    const panel = this.add.rectangle(width / 2, 806, 470, 138, 0x082d3d, 0.97).setStrokeStyle(3, 0xfcbd22, 0.8);
-    const title = this.add.text(56, 768, 'DESTINATION', {
+    const panel = this.add.rectangle(width / 2, 806, 412, 138, 0x082d3d, 0.97).setStrokeStyle(3, 0xfcbd22, 0.8);
+    const title = this.add.text(76, 768, 'DESTINATION', {
       fontFamily: 'monospace',
       fontSize: '17px',
       fontStyle: 'bold',
       color: '#fcbd22'
     });
-    const copy = this.add.text(56, 799, '', {
+    const copy = this.add.text(76, 799, '', {
       fontFamily: 'monospace',
-      fontSize: '10px',
+      fontSize: '9px',
       color: '#d8edf0',
       lineSpacing: 4
     });
-    const button = createButton(this, 421, 809, 'RIDE NOW', () => undefined, { width: 130, fontSize: 11 });
+    const button = createButton(this, 408, 809, 'RIDE NOW', () => undefined, { width: 124, fontSize: 10 });
     layer.add([panel, title, copy, button]);
     return { layer, title, copy, button };
   }
@@ -220,7 +223,7 @@ export class IslandMapScene extends Phaser.Scene {
     const pulse = this.add.circle(airport.x, airport.y, 14, 0x8ee8ff, 0.3).setDepth(11);
     this.tweens.add({ targets: pulse, scale: 1.7, alpha: 0, duration: 900, repeat: -1 });
     this.add.circle(airport.x, airport.y, 6, 0xeafcff, 1).setStrokeStyle(2, 0x0b5366, 1).setDepth(12);
-    this.add.text(airport.x + 24, airport.y - 4, 'PQC · YOU ARE HERE', {
+    this.add.text(airport.x + 22, airport.y - 4, 'PQC · YOU ARE HERE', {
       fontFamily: 'monospace',
       fontSize: '7px',
       fontStyle: 'bold',
