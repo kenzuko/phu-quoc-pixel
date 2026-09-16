@@ -54,7 +54,7 @@ jobs:
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin gh-pages
 
-      - name: Probe custom domain
+      - name: Probe compiled custom domain
         continue-on-error: true
         shell: bash
         run: |
@@ -62,11 +62,15 @@ jobs:
           for attempt in $(seq 1 12); do
             code="$(curl -L -sS -o /tmp/pixel-live.html -w '%{http_code}' https://pixel.openphuquoc.com/ || true)"
             echo "Attempt ${attempt}: HTTP ${code}"
-            if [ "$code" = '200' ] && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-live.html; then
-              echo 'Custom domain is serving Pixel Island'
+            if [ "$code" = '200' ] \
+              && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-live.html \
+              && grep -Eq 'src="(\./)?assets/index-[^"]+\.js"' /tmp/pixel-live.html \
+              && ! grep -q '/src/main.ts' /tmp/pixel-live.html; then
+              echo 'Custom domain is serving the compiled Pixel Island artifact'
               exit 0
             fi
             sleep 5
           done
-          echo 'Custom domain is not live yet. GitHub Pages may still need one-time enablement in repository settings.'
+          echo 'Custom domain is not serving the compiled gh-pages artifact yet.'
+          echo 'Expected Pages source: gh-pages / (root).'
           exit 1
