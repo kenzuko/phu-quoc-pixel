@@ -3,8 +3,6 @@ name: Bootstrap Pixel Island repository
 on:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/bootstrap.yml'
   workflow_dispatch:
 
 permissions:
@@ -12,6 +10,7 @@ permissions:
 
 jobs:
   bootstrap:
+    if: ${{ hashFiles('.bootstrap-complete') == '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -20,7 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Skip if repository is already bootstrapped
+        id: gate
+        shell: bash
+        run: |
+          if [ -f .bootstrap-complete ]; then
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'skip=false' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Pull clean Pixel foundation from JoTrip Lab
+        if: steps.gate.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
@@ -32,17 +42,15 @@ jobs:
             /tmp/jotrip-lab/phu-quoc-pixel/ ./
           mkdir -p public
           printf '%s\n' 'pixel.openphuquoc.com' > public/CNAME
+          printf '%s\n' 'standalone-repo-bootstrap-v1' > .bootstrap-complete
 
       - name: Commit clean foundation
+        if: steps.gate.outputs.skip == 'false'
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'jotrip-pixel-bot'
           git config user.email 'jotrip-pixel-bot@users.noreply.github.com'
           git add -A
-          if git diff --cached --quiet; then
-            echo 'Repository already bootstrapped'
-            exit 0
-          fi
           git commit -m 'chore: bootstrap standalone Pixel Island repository'
           git push origin HEAD:main
