@@ -60,12 +60,15 @@ await clickLogical(270, 670); // LET'S GO
 await page.waitForTimeout(250);
 await page.screenshot({ path: `${out}/03-character.png` });
 
-await clickLogical(155, 235); // TRAVELER
-await clickLogical(270, 790); // OPEN THE MAP
-await page.waitForTimeout(400);
+await clickLogical(143, 226); // TRAVELER CARD
+await clickLogical(270, 838); // OPEN THE ISLAND MAP
+await page.waitForTimeout(450);
 await page.screenshot({ path: `${out}/04-map.png` });
 
-await clickLogical(202, 496); // SUNSET TOWN
+// Sunset Town is projected from its geographic coordinates onto the real-island
+// map. Keep the smoke click tied to that projected location, not the old fantasy
+// map percentage.
+await clickLogical(335, 619); // SUNSET TOWN
 await page.waitForTimeout(700);
 await page.screenshot({ path: `${out}/05-no-brakes-tutorial.png` });
 
@@ -116,7 +119,7 @@ if (!progress) throw new Error('ProgressStore did not persist after a completed 
 const best = progress.bestScores?.['no-brakes'] ?? 0;
 if (best < 2) throw new Error(`Expected training run best score >= 2, got ${best}`);
 
-await clickLogical(270, 655); // BACK TO MAP
+await clickLogical(270, 657); // BACK TO MAP
 await page.waitForTimeout(450);
 await page.screenshot({ path: `${out}/08-return-map.png` });
 
