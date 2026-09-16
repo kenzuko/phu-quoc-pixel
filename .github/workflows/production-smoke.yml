@@ -28,24 +28,32 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Wait for compiled production deploy
+      - name: Wait for exact production deploy
         shell: bash
         run: |
           set -euo pipefail
           ok=false
-          for attempt in $(seq 1 30); do
+          for attempt in $(seq 1 45); do
+            html_ok=false
             if curl -fsSL "$PREVIEW_URL" -o /tmp/pixel-index.html \
               && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-index.html \
               && grep -Eq 'src="(\./)?assets/index-[^"]+\.js"' /tmp/pixel-index.html \
               && ! grep -q '/src/main.ts' /tmp/pixel-index.html; then
+              html_ok=true
+            fi
+
+            live_sha="$(curl -L -fsSL "${PREVIEW_URL}build-sha.txt" 2>/dev/null | tr -d '\r\n' || true)"
+            printf '%s\n' "$live_sha" > /tmp/pixel-build-sha.txt
+            echo "Attempt ${attempt}: expected ${GITHUB_SHA}, live ${live_sha:-missing}"
+
+            if [ "$html_ok" = true ] && [ "$live_sha" = "$GITHUB_SHA" ]; then
               ok=true
               break
             fi
             sleep 4
           done
           if [ "$ok" != true ]; then
-            echo 'Production is not serving compiled dist output.'
-            echo 'GitHub Pages must use gh-pages / (root), not main / (root).'
+            echo "Production did not reach exact build ${GITHUB_SHA}."
             cat /tmp/pixel-index.html || true
             exit 1
           fi
@@ -91,6 +99,7 @@ jobs:
           name: pixel-production-smoke
           path: |
             /tmp/pixel-index.html
+            /tmp/pixel-build-sha.txt
             /tmp/pixel-mobile.png
             /tmp/pixel-desktop.png
             /tmp/pixel-mobile-dom.html
