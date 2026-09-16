@@ -28,7 +28,6 @@ page.on('response', (response) => {
 
 await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
 await page.locator('canvas').waitFor({ state: 'visible', timeout: 15_000 });
-await page.screenshot({ path: `${out}/01-landing.png` });
 
 async function canvasBox() {
   const box = await page.locator('canvas').boundingBox();
@@ -52,24 +51,31 @@ async function swipeLogical(fromX, toX, y) {
   await page.mouse.up();
 }
 
-await clickLogical(270, 662); // ENTER THE ISLAND
-await page.waitForTimeout(250);
-await page.screenshot({ path: `${out}/02-airport.png` });
+// Let the welcome animation settle so visual QA captures the intended frame.
+await page.waitForTimeout(1500);
+await page.screenshot({ path: `${out}/01-landing.png` });
+await clickLogical(270, 720); // ENTER THE ISLAND
 
-await clickLogical(270, 670); // LET'S GO
-await page.waitForTimeout(250);
+// Capture both the approach and the settled touchdown state.
+await page.waitForTimeout(420);
+await page.screenshot({ path: `${out}/02-airport-approach.png` });
+await page.waitForTimeout(1850);
+await page.screenshot({ path: `${out}/02a-airport-touchdown.png` });
+await clickLogical(270, 830); // MEET YOUR TRAVELER
+
+await page.waitForTimeout(350);
 await page.screenshot({ path: `${out}/03-character.png` });
-
 await clickLogical(143, 226); // TRAVELER CARD
 await clickLogical(270, 838); // OPEN THE ISLAND MAP
-await page.waitForTimeout(450);
+await page.waitForTimeout(650);
 await page.screenshot({ path: `${out}/04-map.png` });
 
-// Sunset Town is projected from its geographic coordinates onto the real-island
-// map. Keep the smoke click tied to that projected location, not the old fantasy
-// map percentage.
-await clickLogical(335, 619); // SUNSET TOWN
-await page.waitForTimeout(700);
+// Sunset Town is projected from geographic coordinates onto the real-island map.
+await clickLogical(339, 600); // SUNSET TOWN
+await page.waitForTimeout(350);
+await page.screenshot({ path: `${out}/04a-map-selected.png` });
+await clickLogical(421, 809); // RIDE NOW
+await page.waitForTimeout(650);
 await page.screenshot({ path: `${out}/05-no-brakes-tutorial.png` });
 
 await clickLogical(270, 624); // START RIDE
@@ -91,9 +97,8 @@ await page.waitForTimeout(130);
 await page.keyboard.press('ArrowRight');
 
 // The first two training obstacles rescue the player. Once training ends, a
-// collision persists the run result. The game keeps the first live obstacle on
-// the centre line so this smoke test remains deterministic while later hazards
-// can fan across all lanes.
+// collision persists the run result. The first live obstacle stays centred so
+// this smoke test is deterministic while later hazards can fan across lanes.
 await page.waitForFunction(
   () => {
     const raw = window.localStorage.getItem('pqpi:v1:progress');
@@ -132,7 +137,23 @@ if (runtimeErrors.length) {
 
 await fs.writeFile(
   `${out}/journey.json`,
-  JSON.stringify({ url, bestScore: best, totalJo: progress.totalJo ?? 0, runtimeErrors, badResponses, exercised: ['swipe-left', 'swipe-right', 'keyboard-left', 'keyboard-right'] }, null, 2) + '\n'
+  JSON.stringify({
+    url,
+    bestScore: best,
+    totalJo: progress.totalJo ?? 0,
+    runtimeErrors,
+    badResponses,
+    exercised: [
+      'welcome-animation',
+      'airport-approach',
+      'airport-touchdown',
+      'map-select-sunset-town',
+      'swipe-left',
+      'swipe-right',
+      'keyboard-left',
+      'keyboard-right'
+    ]
+  }, null, 2) + '\n'
 );
 
 await browser.close();
