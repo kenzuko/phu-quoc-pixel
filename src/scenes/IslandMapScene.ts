@@ -92,7 +92,7 @@ export class IslandMapScene extends Phaser.Scene {
       'hon-thom': { x: 36, y: 2 },
       'bai-sao': { x: 38, y: 2 },
       'night-market': { x: -48, y: -8 },
-      'grand-world': { x: -42, y: 16 },
+      'grand-world': { x: 42, y: 16 },
       safari: { x: 39, y: -4 }
     };
 
