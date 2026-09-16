@@ -28,19 +28,27 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Wait for production deploy
+      - name: Wait for compiled production deploy
         shell: bash
         run: |
           set -euo pipefail
           ok=false
           for attempt in $(seq 1 30); do
-            if curl -fsSL "$PREVIEW_URL" -o /tmp/pixel-index.html && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-index.html; then
+            if curl -fsSL "$PREVIEW_URL" -o /tmp/pixel-index.html \
+              && grep -q 'PHU QUOC: PIXEL ISLAND' /tmp/pixel-index.html \
+              && grep -Eq 'src="(\./)?assets/index-[^"]+\.js"' /tmp/pixel-index.html \
+              && ! grep -q '/src/main.ts' /tmp/pixel-index.html; then
               ok=true
               break
             fi
             sleep 4
           done
-          test "$ok" = true
+          if [ "$ok" != true ]; then
+            echo 'Production is not serving compiled dist output.'
+            echo 'GitHub Pages must use gh-pages / (root), not main / (root).'
+            cat /tmp/pixel-index.html || true
+            exit 1
+          fi
 
       - name: Chrome render smoke - mobile and desktop
         shell: bash
@@ -82,6 +90,7 @@ jobs:
         with:
           name: pixel-production-smoke
           path: |
+            /tmp/pixel-index.html
             /tmp/pixel-mobile.png
             /tmp/pixel-desktop.png
             /tmp/pixel-mobile-dom.html
