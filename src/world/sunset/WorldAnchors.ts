@@ -11,35 +11,41 @@ export interface WorldAnchor {
   approved: boolean;
 }
 
+/**
+ * Reality-led anchor contract for Sunset Town.
+ *
+ * Art direction may compress depth for gameplay, but it may not swap landmark
+ * relationships or add an unverified landmark merely to make the frame busy.
+ */
 export const SUNSET_WORLD_ANCHORS: readonly WorldAnchor[] = [
   {
     id: 'central-village-clock-tower',
     label: 'Central Village Clock Tower',
-    source: 'https://sunworld.vn/en/hon-thom/travel-guide/kinh-nghiem-du-lich-sunset-town-phu-quoc-tron-ven-va-tiet-kiem-17546',
+    source: 'https://sungroup.com.vn/en/sunsettown',
     realWorldRelationship:
-      'Major Central Village landmark near the waterfront / La Festa area, distinct from the An Thoi cable-car station.',
-    routeDepthRange: [0.2, 0.72],
+      'Sea-facing Central Village / La Festa landmark. Official Sunset Town material describes the red-brick clock tower as a primary locator near the waterfront.',
+    routeDepthRange: [0.18, 0.7],
     screenSector: 'left',
-    minimumReadableSize: 44,
+    minimumReadableSize: 48,
     approved: true
   },
   {
     id: 'kiss-bridge',
     label: 'Kiss Bridge',
-    source: 'https://sunsettown.com.vn/en/sunsettown-map',
+    source: 'https://sungroup.com.vn/en/tin-tuc/kiss-bridge-a-new-iconic-destination-in-vietnam-4737',
     realWorldRelationship:
-      'Offshore waterfront landmark across the bay. It must never be represented as a normal road bridge carrying the player route.',
-    routeDepthRange: [0.46, 0.98],
+      'Offshore waterfront landmark. Two bridge branches extend over the sea and approach each other without touching. It must never carry the player road.',
+    routeDepthRange: [0.44, 1],
     screenSector: 'right',
-    minimumReadableSize: 72,
+    minimumReadableSize: 82,
     approved: true
   },
   {
     id: 'an-thoi-cable-car-station',
     label: 'An Thoi Cable Car Station',
-    source: 'https://mapcarta.com/W1185867234',
+    source: 'https://sungroup.com.vn/en/sunsettown',
     realWorldRelationship:
-      'Cable-car departure node at Anh Duong Square. It is geographically distinct from Central Village and should appear only when the chosen route sightline supports it.',
+      'The Hon Thom cable-car departure node is in An Thoi and geographically distinct from Central Village. Cabins/line are allowed only after a route-specific sightline is verified.',
     routeDepthRange: [0, 1],
     screenSector: 'center',
     minimumReadableSize: 52,
@@ -49,4 +55,8 @@ export const SUNSET_WORLD_ANCHORS: readonly WorldAnchor[] = [
 
 export function approvedSunsetAnchors(): readonly WorldAnchor[] {
   return SUNSET_WORLD_ANCHORS.filter((anchor) => anchor.approved);
+}
+
+export function isSunsetAnchorApproved(id: string): boolean {
+  return SUNSET_WORLD_ANCHORS.some((anchor) => anchor.id === id && anchor.approved);
 }
