@@ -23,6 +23,10 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   height: GAME_HEIGHT,
   backgroundColor: '#05263a',
   pixelArt: true,
+  render: {
+    antialias: false,
+    roundPixels: true
+  },
   scale: {
     // Keep the 540x960 logical coordinate system intact. Tall phone screens use
     // ENVELOP so the game fills the physical viewport without stretching pixel
