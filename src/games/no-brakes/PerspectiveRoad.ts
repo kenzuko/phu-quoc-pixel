@@ -85,7 +85,7 @@ export class PerspectiveRoad {
       const shoulderB = b.halfWidth + Phaser.Math.Linear(10, 48, Math.pow(z1, 1.7));
 
       // Warm limestone / promenade shoulder from the Sunset Town palette.
-      g.fillStyle(0xe5d4bd, 1);
+      g.fillStyle(0xbfae96, 1);
       this.fillQuad(
         g,
         a.x - shoulderA,
@@ -100,7 +100,7 @@ export class PerspectiveRoad {
 
       // Asphalt is intentionally slightly warm so it sits inside the approved
       // Sunset Town palette instead of reading as a debug-grey block.
-      g.fillStyle(0x5d6069, 1);
+      g.fillStyle(0x69696d, 1);
       this.fillQuad(
         g,
         a.x - a.halfWidth,
@@ -116,7 +116,7 @@ export class PerspectiveRoad {
 
     // Bright road edges make the converging chase-camera geometry readable at
     // phone scale without changing the geographic background art.
-    g.lineStyle(4, 0xf4ead7, 0.94);
+    g.lineStyle(3, 0xe8ddcf, 0.82);
     for (let i = 0; i < ROAD_SEGMENTS; i += 1) {
       const a = this.project(i / ROAD_SEGMENTS);
       const b = this.project((i + 1) / ROAD_SEGMENTS);
@@ -131,7 +131,7 @@ export class PerspectiveRoad {
 
     // Two dashed dividers define three soft lanes. Their perspective spacing is
     // what makes swipe-left/right feel like lateral movement in the world.
-    g.fillStyle(0xf7f0d9, 0.9);
+    g.fillStyle(0xf3eadc, 0.82);
     for (const lane of [-0.5, 0.5]) {
       for (let i = 0; i < 11; i += 1) {
         const depth = (i / 11 + phase) % 1;
@@ -146,7 +146,7 @@ export class PerspectiveRoad {
     // Stone promenade joints flow toward the rider. These are tied to the same
     // perspective projection as the road, creating speed without generic racing
     // streaks or a moving-background cheat.
-    g.fillStyle(0xb29b82, 0.42);
+    g.fillStyle(0x9f8a76, 0.28);
     for (let i = 0; i < 10; i += 1) {
       const depth = (i / 10 + phase * 0.82) % 1;
       if (depth < 0.07) continue;
@@ -160,7 +160,7 @@ export class PerspectiveRoad {
 
     // Very subtle near-camera surface scratches give the asphalt texture while
     // leaving landmarks and player silhouette dominant.
-    g.lineStyle(2, 0xffffff, 0.09);
+    g.lineStyle(2, 0xe8ded2, 0.08);
     for (let i = 0; i < 5; i += 1) {
       const y = 808 + i * 31;
       const x = 82 + i * 93;
