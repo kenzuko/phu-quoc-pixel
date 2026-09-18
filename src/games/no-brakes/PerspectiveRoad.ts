@@ -12,8 +12,8 @@ export interface RoadProjection {
 
 const HORIZON_Y = 438;
 const ROAD_BOTTOM_Y = 986;
-const ROAD_TOP_HALF = 26;
-const ROAD_BOTTOM_HALF = 200;
+const ROAD_TOP_HALF = 34;
+const ROAD_BOTTOM_HALF = 224;
 const CENTER_X = 270;
 const ROAD_SEGMENTS = 48;
 const DEPTH_EXPONENT = 2.05;
@@ -73,7 +73,7 @@ export class PerspectiveRoad {
 
     // Subtle depth-band variation gives the road the same textured character as
     // the master art without moving or changing collision geometry.
-    const roadTones = [0x706a69, 0x746e6b, 0x6c6869, 0x726c6b] as const;
+    const roadTones = [0x706b6b, 0x716b6a, 0x706a6b, 0x716b6b] as const;
     for (let i = 0; i < ROAD_SEGMENTS; i += 1) {
       const z0 = i / ROAD_SEGMENTS;
       const z1 = (i + 1) / ROAD_SEGMENTS;
@@ -93,6 +93,22 @@ export class PerspectiveRoad {
         b.y
       );
     }
+
+    // One transparent wash visually unifies all depth strips.
+    const farLeft = this.project(0);
+    const nearLeft = this.project(1);
+    g.fillStyle(0x6f6a6b, 0.26);
+    this.fillQuad(
+      g,
+      farLeft.x - farLeft.halfWidth,
+      farLeft.y,
+      farLeft.x + farLeft.halfWidth,
+      farLeft.y,
+      nearLeft.x + nearLeft.halfWidth,
+      nearLeft.y,
+      nearLeft.x - nearLeft.halfWidth,
+      nearLeft.y
+    );
 
     // Late-afternoon side shade from the dense town edge.
     for (let i = 8; i < ROAD_SEGMENTS; i += 1) {
