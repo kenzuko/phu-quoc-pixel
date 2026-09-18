@@ -12,6 +12,7 @@ export class BootScene extends Phaser.Scene {
     assetRegistry.queueGroup(this, 'shell-map');
     this.load.image('approved-rear-rider', APPROVED_REAR_RIDER_DATA_URI);
     this.load.image('no-brakes-master-horizon', './assets/world/sunset/no-brakes-master-horizon.webp');
+    this.load.image('no-brakes-master-sides', './assets/world/sunset/no-brakes-master-sides.webp');
   }
 
   create(): void {
