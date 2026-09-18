@@ -17,7 +17,7 @@ const GAME_ID = 'no-brakes';
 const PLAYER_BASE_Y = 870;
 const PLAYER_DEPTH = 0.94;
 const LANES = [-1, 0, 1] as const;
-const OBSTACLE_KINDS: ObstacleKind[] = ['bougainvillea-planter', 'hotel-cart', 'market-crates'];
+const OBSTACLE_KINDS: ObstacleKind[] = ['large-planter', 'electric-shuttle', 'menu-board', 'rolling-suitcase', 'cafe-chair'];
 
 interface Difficulty {
   depthSpeed: number;
@@ -213,49 +213,113 @@ export class NoBrakesScene extends Phaser.Scene {
 
   private buildHud(): void {
     const { width } = this.scale;
-    this.add.rectangle(92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
-    this.add.rectangle(width / 2, 54, 142, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
-    this.add.rectangle(width - 92, 54, 166, 82, 0x102d42, 0.94).setStrokeStyle(3, 0xe9dfc8, 0.95).setDepth(120);
+    const g = this.add.graphics().setDepth(120);
 
-    this.scoreText = this.hudText(92, 54, 'SCORE\n0000');
-    this.joText = this.hudText(width / 2, 54, 'JO\n000');
-    this.bestText = this.hudText(width - 92, 54, 'BEST\n0000');
+    // One continuous pixel HUD band keeps the stats inside the same visual world
+    // instead of three floating debug boxes.
+    g.fillStyle(0x102f3d, 0.94);
+    g.fillPoints([
+      new Phaser.Geom.Point(31, 21),
+      new Phaser.Geom.Point(width - 31, 21),
+      new Phaser.Geom.Point(width - 21, 31),
+      new Phaser.Geom.Point(width - 21, 88),
+      new Phaser.Geom.Point(width - 31, 98),
+      new Phaser.Geom.Point(31, 98),
+      new Phaser.Geom.Point(21, 88),
+      new Phaser.Geom.Point(21, 31)
+    ], true);
+    g.lineStyle(3, 0xf0c67d, 0.96);
+    g.strokePoints([
+      new Phaser.Geom.Point(31, 21),
+      new Phaser.Geom.Point(width - 31, 21),
+      new Phaser.Geom.Point(width - 21, 31),
+      new Phaser.Geom.Point(width - 21, 88),
+      new Phaser.Geom.Point(width - 31, 98),
+      new Phaser.Geom.Point(31, 98),
+      new Phaser.Geom.Point(21, 88),
+      new Phaser.Geom.Point(21, 31)
+    ], true);
+
+    // Internal dividers and tiny decorative notches repeat the facade / signage
+    // pixel language used in Sunset Town.
+    g.lineStyle(2, 0xe8d7ad, 0.48);
+    g.lineBetween(178, 30, 178, 89);
+    g.lineBetween(362, 30, 362, 89);
+    g.fillStyle(0xe84e78, 1);
+    g.fillRect(31, 29, 13, 5);
+    g.fillRect(width - 44, 29, 13, 5);
+    g.fillStyle(0x397b76, 1);
+    g.fillRect(width / 2 - 14, 28, 28, 5);
+
+    // JO coin icon is deliberately pixel-built so it belongs to the HUD rather
+    // than looking like a separate image pasted over the scene.
+    g.fillStyle(0x8c5a28, 1);
+    g.fillRect(width / 2 - 50, 48, 22, 22);
+    g.fillStyle(0xf3b645, 1);
+    g.fillRect(width / 2 - 47, 45, 22, 22);
+    g.fillStyle(0xffdc74, 1);
+    g.fillRect(width / 2 - 42, 49, 8, 4);
+    g.fillRect(width / 2 - 42, 55, 4, 8);
+
+    this.scoreText = this.hudText(100, 59, 'SCORE\n0000');
+    this.joText = this.hudText(width / 2 + 18, 59, 'JO\n000');
+    this.bestText = this.hudText(width - 100, 59, 'BEST\n0000');
+
+    // Compact title plaque sits on the same art system without covering the
+    // horizon, which is the important gameplay/readability zone.
+    g.fillStyle(0x9d493d, 0.96);
+    g.fillPoints([
+      new Phaser.Geom.Point(width / 2 - 118, 106),
+      new Phaser.Geom.Point(width / 2 + 118, 106),
+      new Phaser.Geom.Point(width / 2 + 128, 116),
+      new Phaser.Geom.Point(width / 2 + 118, 145),
+      new Phaser.Geom.Point(width / 2 - 118, 145),
+      new Phaser.Geom.Point(width / 2 - 128, 116)
+    ], true);
+    g.lineStyle(2, 0xf6dfb3, 0.9);
+    g.strokePoints([
+      new Phaser.Geom.Point(width / 2 - 118, 106),
+      new Phaser.Geom.Point(width / 2 + 118, 106),
+      new Phaser.Geom.Point(width / 2 + 128, 116),
+      new Phaser.Geom.Point(width / 2 + 118, 145),
+      new Phaser.Geom.Point(width / 2 - 118, 145),
+      new Phaser.Geom.Point(width / 2 - 128, 116)
+    ], true);
 
     this.add
-      .text(width / 2, 126, 'SUNSET TOWN · PHU QUOC', {
+      .text(width / 2, 116, 'SUNSET TOWN · PHU QUOC', {
         fontFamily: 'monospace',
-        fontSize: '12px',
+        fontSize: '10px',
         fontStyle: 'bold',
-        color: '#ffffff',
-        stroke: '#26333a',
-        strokeThickness: 4
+        color: '#fff0ce'
       })
       .setOrigin(0.5)
-      .setDepth(120);
+      .setDepth(121);
+
     this.add
-      .text(width / 2, 151, 'NO BRAKES', {
+      .text(width / 2, 135, 'NO BRAKES', {
         fontFamily: 'monospace',
-        fontSize: '24px',
+        fontSize: '20px',
         fontStyle: 'bold',
-        color: '#e85d32',
-        stroke: '#ffffff',
+        color: '#ffffff',
+        stroke: '#6f342d',
         strokeThickness: 2
       })
       .setOrigin(0.5)
-      .setDepth(120);
+      .setDepth(121);
   }
 
   private hudText(x: number, y: number, text: string): Phaser.GameObjects.Text {
     return this.add
       .text(x, y, text, {
         fontFamily: 'monospace',
-        fontSize: '17px',
+        fontSize: '16px',
         fontStyle: 'bold',
         align: 'center',
-        color: '#ffffff',
-        stroke: '#14232d',
+        color: '#fff4d7',
+        stroke: '#10242c',
         strokeThickness: 3,
-        lineSpacing: 2
+        lineSpacing: 1
       })
       .setOrigin(0.5)
       .setDepth(121);
