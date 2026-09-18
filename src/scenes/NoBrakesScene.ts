@@ -74,7 +74,7 @@ export class NoBrakesScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.scale;
-    this.cameras.main.setBackgroundColor('#72c4ec');
+    this.cameras.main.setBackgroundColor('#bda78c');
 
     this.road = new PerspectiveRoad(this);
     this.effects = new RideEffects(this);
