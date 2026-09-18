@@ -6,11 +6,11 @@ const HORIZON = 438;
 const LOWER_HEIGHT = 522;
 
 /**
- * Near-camera environment from the owner's locked rear-chase master.
+ * Master-art foreground edge for the rear-chase camera.
  *
- * The raster art only occupies the outer scenic edges. A restrained stone
- * foundation sits beneath it so transparent gaps never reveal browser/camera
- * blue, while the center remains reserved for the projected gameplay road.
+ * Real Sunset Town pixel art owns the scenic edges. The generated foundation is
+ * intentionally limited to promenade paving underneath transparent gaps, so it
+ * never competes with the master artwork or reads like a placeholder cliff.
  */
 export class SunsetForegroundLayer {
   private readonly foundation: Phaser.GameObjects.Graphics;
@@ -21,9 +21,9 @@ export class SunsetForegroundLayer {
     this.drawFoundation();
 
     this.masterSides = scene.add
-      .image(0, HORIZON, 'no-brakes-master-sides')
+      .image(-5, HORIZON - 2, 'no-brakes-master-sides')
       .setOrigin(0, 0)
-      .setDisplaySize(WIDTH, LOWER_HEIGHT)
+      .setDisplaySize(WIDTH + 10, LOWER_HEIGHT + 4)
       .setDepth(-15);
 
     this.masterSides.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
@@ -33,26 +33,51 @@ export class SunsetForegroundLayer {
     const g = this.foundation;
     g.clear();
 
-    // Warm limestone, sampled from the locked master rather than the old bright
-    // cream debug wedges.
-    g.fillStyle(0xbda78c, 1);
-    this.fillQuad(g, 0, HORIZON, 226, HORIZON, 150, HEIGHT, 0, HEIGHT);
-    this.fillQuad(g, 314, HORIZON, WIDTH, HORIZON, WIDTH, HEIGHT, 390, HEIGHT);
+    // Warm limestone paving sampled from the approved master palette.
+    g.fillStyle(0xb5a18a, 1);
+    this.fillQuad(g, 0, HORIZON, 226, HORIZON, 148, HEIGHT, 0, HEIGHT);
+    this.fillQuad(g, 314, HORIZON, WIDTH, HORIZON, WIDTH, HEIGHT, 392, HEIGHT);
 
-    // Slight darker outer stone keeps the road edge readable behind photo-rich
-    // master art without rebuilding cafes / palms procedurally.
-    g.fillStyle(0x927f6d, 0.42);
-    this.fillQuad(g, 0, HORIZON, 72, HORIZON + 2, 84, HEIGHT, 0, HEIGHT);
-    this.fillQuad(g, WIDTH - 72, HORIZON + 2, WIDTH, HORIZON, WIDTH, HEIGHT, WIDTH - 84, HEIGHT);
+    // Camera-side shade from buildings / railings gives the paving volume.
+    g.fillStyle(0x786d63, 0.22);
+    this.fillQuad(g, 0, HORIZON, 78, HORIZON + 5, 92, HEIGHT, 0, HEIGHT);
+    this.fillQuad(g, WIDTH - 74, HORIZON + 6, WIDTH, HORIZON, WIDTH, HEIGHT, WIDTH - 90, HEIGHT);
 
-    // Sparse perspective joints only. No decorative placeholder objects.
-    g.lineStyle(2, 0xe1cfb4, 0.28);
-    for (const y of [510, 592, 692, 814, 936]) {
+    // Inner curb shadow and thin sun-facing highlight.
+    g.lineStyle(5, 0x71685f, 0.42);
+    g.lineBetween(226, HORIZON, 148, HEIGHT);
+    g.lineBetween(314, HORIZON, 392, HEIGHT);
+    g.lineStyle(2, 0xe0cdb0, 0.72);
+    g.lineBetween(221, HORIZON + 1, 143, HEIGHT);
+    g.lineBetween(319, HORIZON + 1, 397, HEIGHT);
+
+    // Perspective paving joints. They converge with the gameplay road instead
+    // of forming horizontal debug slabs.
+    g.lineStyle(1, 0xe6d7c0, 0.24);
+    for (const x of [18, 48, 82, 116, 424, 458, 492, 526]) {
+      const target = x < WIDTH / 2 ? 229 : 311;
+      g.lineBetween(target, HORIZON, x, HEIGHT);
+    }
+
+    for (const y of [490, 550, 620, 702, 798, 908]) {
       const t = (y - HORIZON) / (HEIGHT - HORIZON);
-      const leftInner = Phaser.Math.Linear(216, 146, t);
-      const rightInner = Phaser.Math.Linear(324, 394, t);
-      g.lineBetween(0, y, leftInner, y - 4);
-      g.lineBetween(rightInner, y - 4, WIDTH, y);
+      const leftInner = Phaser.Math.Linear(218, 145, t);
+      const rightInner = Phaser.Math.Linear(322, 395, t);
+      g.lineStyle(1 + Math.floor(t * 2), 0x8f7e6c, 0.24);
+      g.lineBetween(0, y, leftInner, y - 3);
+      g.lineBetween(rightInner, y - 3, WIDTH, y);
+    }
+
+    // A few restrained stone variations break large flat areas without
+    // introducing new fake objects.
+    const patches = [
+      [31, 666, 34, 9], [67, 744, 46, 10], [18, 842, 52, 11],
+      [472, 690, 39, 10], [438, 778, 48, 10], [489, 886, 34, 10]
+    ] as const;
+    for (let i = 0; i < patches.length; i += 1) {
+      const [x, y, w, h] = patches[i];
+      g.fillStyle(i % 2 === 0 ? 0x8f806f : 0xd2bea1, 0.16);
+      g.fillRect(x, y, w, h);
     }
   }
 
