@@ -217,28 +217,28 @@ export class NoBrakesScene extends Phaser.Scene {
 
     // One continuous pixel HUD band keeps the stats inside the same visual world
     // instead of three floating debug boxes.
-    g.fillStyle(0x102f3d, 0.94);
-    g.fillPoints([
-      new Phaser.Geom.Point(31, 21),
-      new Phaser.Geom.Point(width - 31, 21),
-      new Phaser.Geom.Point(width - 21, 31),
-      new Phaser.Geom.Point(width - 21, 88),
-      new Phaser.Geom.Point(width - 31, 98),
-      new Phaser.Geom.Point(31, 98),
-      new Phaser.Geom.Point(21, 88),
-      new Phaser.Geom.Point(21, 31)
-    ], true);
-    g.lineStyle(3, 0xf0c67d, 0.96);
-    g.strokePoints([
-      new Phaser.Geom.Point(31, 21),
-      new Phaser.Geom.Point(width - 31, 21),
-      new Phaser.Geom.Point(width - 21, 31),
-      new Phaser.Geom.Point(width - 21, 88),
-      new Phaser.Geom.Point(width - 31, 98),
-      new Phaser.Geom.Point(31, 98),
-      new Phaser.Geom.Point(21, 88),
-      new Phaser.Geom.Point(21, 31)
-    ], true);
+    const drawPixelPolygon = (points: ReadonlyArray<readonly [number, number]>, fill: number, alpha: number, stroke: number, strokeAlpha: number): void => {
+      g.fillStyle(fill, alpha);
+      g.beginPath();
+      g.moveTo(points[0][0], points[0][1]);
+      for (let i = 1; i < points.length; i += 1) g.lineTo(points[i][0], points[i][1]);
+      g.closePath();
+      g.fillPath();
+      g.lineStyle(3, stroke, strokeAlpha);
+      g.strokePath();
+    };
+
+    const hudFrame = [
+      [31, 21],
+      [width - 31, 21],
+      [width - 21, 31],
+      [width - 21, 88],
+      [width - 31, 98],
+      [31, 98],
+      [21, 88],
+      [21, 31]
+    ] as const;
+    drawPixelPolygon(hudFrame, 0x102f3d, 0.94, 0xf0c67d, 0.96);
 
     // Internal dividers and tiny decorative notches repeat the facade / signage
     // pixel language used in Sunset Town.
@@ -267,24 +267,15 @@ export class NoBrakesScene extends Phaser.Scene {
 
     // Compact title plaque sits on the same art system without covering the
     // horizon, which is the important gameplay/readability zone.
-    g.fillStyle(0x9d493d, 0.96);
-    g.fillPoints([
-      new Phaser.Geom.Point(width / 2 - 118, 106),
-      new Phaser.Geom.Point(width / 2 + 118, 106),
-      new Phaser.Geom.Point(width / 2 + 128, 116),
-      new Phaser.Geom.Point(width / 2 + 118, 145),
-      new Phaser.Geom.Point(width / 2 - 118, 145),
-      new Phaser.Geom.Point(width / 2 - 128, 116)
-    ], true);
-    g.lineStyle(2, 0xf6dfb3, 0.9);
-    g.strokePoints([
-      new Phaser.Geom.Point(width / 2 - 118, 106),
-      new Phaser.Geom.Point(width / 2 + 118, 106),
-      new Phaser.Geom.Point(width / 2 + 128, 116),
-      new Phaser.Geom.Point(width / 2 + 118, 145),
-      new Phaser.Geom.Point(width / 2 - 118, 145),
-      new Phaser.Geom.Point(width / 2 - 128, 116)
-    ], true);
+    const titlePlaque = [
+      [width / 2 - 118, 106],
+      [width / 2 + 118, 106],
+      [width / 2 + 128, 116],
+      [width / 2 + 118, 145],
+      [width / 2 - 118, 145],
+      [width / 2 - 128, 116]
+    ] as const;
+    drawPixelPolygon(titlePlaque, 0x9d493d, 0.96, 0xf6dfb3, 0.9);
 
     this.add
       .text(width / 2, 116, 'SUNSET TOWN · PHU QUOC', {
