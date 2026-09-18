@@ -4,70 +4,81 @@ const WIDTH = 540;
 const HEIGHT = 960;
 const HORIZON = 438;
 const LOWER_HEIGHT = 522;
-const HALF_TEXTURE = 270;
 
 /**
- * Near-camera edge art from the locked master.
+ * Master-art foreground edge for the rear-chase camera.
  *
- * The master texture is split into left/right halves and widened slightly
- * toward the playable road. This closes the visual gap without inventing new
- * buildings or stretching the whole scene.
+ * Real Sunset Town pixel art owns the scenic edges. The generated foundation is
+ * intentionally limited to promenade paving underneath transparent gaps, so it
+ * never competes with the master artwork or reads like a placeholder cliff.
  */
 export class SunsetForegroundLayer {
   private readonly foundation: Phaser.GameObjects.Graphics;
-  private readonly leftMaster: Phaser.GameObjects.Image;
-  private readonly rightMaster: Phaser.GameObjects.Image;
+  private readonly masterSides: Phaser.GameObjects.Image;
 
   constructor(scene: Phaser.Scene) {
     this.foundation = scene.add.graphics().setDepth(-25);
     this.drawFoundation();
 
-    this.leftMaster = scene.add
-      .image(0, HORIZON - 2, 'no-brakes-master-sides')
+    this.masterSides = scene.add
+      .image(-5, HORIZON - 2, 'no-brakes-master-sides')
       .setOrigin(0, 0)
-      .setCrop(0, 0, HALF_TEXTURE, LOWER_HEIGHT)
-      .setDisplaySize(300, LOWER_HEIGHT + 4)
+      .setDisplaySize(WIDTH + 10, LOWER_HEIGHT + 4)
       .setDepth(-15);
 
-    this.rightMaster = scene.add
-      .image(WIDTH, HORIZON - 2, 'no-brakes-master-sides')
-      .setOrigin(1, 0)
-      .setCrop(HALF_TEXTURE, 0, HALF_TEXTURE, LOWER_HEIGHT)
-      .setDisplaySize(300, LOWER_HEIGHT + 4)
-      .setDepth(-15);
-
-    this.leftMaster.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.rightMaster.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
+    this.masterSides.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
   }
 
   private drawFoundation(): void {
     const g = this.foundation;
     g.clear();
 
-    // Only the narrow promenade gap behind transparent master pixels is drawn.
-    // A mid-tone stone reads closer to the real scene than the former cream
-    // triangles and lets flowers / lamps remain dominant.
-    g.fillStyle(0x9e9181, 1);
-    this.fillQuad(g, 0, HORIZON, 238, HORIZON, 128, HEIGHT, 0, HEIGHT);
-    this.fillQuad(g, 302, HORIZON, WIDTH, HORIZON, WIDTH, HEIGHT, 412, HEIGHT);
+    // Warm limestone paving sampled from the approved master palette.
+    g.fillStyle(0xb5a18a, 1);
+    this.fillQuad(g, 0, HORIZON, 226, HORIZON, 148, HEIGHT, 0, HEIGHT);
+    this.fillQuad(g, 314, HORIZON, WIDTH, HORIZON, WIDTH, HEIGHT, 392, HEIGHT);
 
-    g.fillStyle(0x635f5c, 0.16);
-    this.fillQuad(g, 0, HORIZON, 86, HORIZON + 4, 95, HEIGHT, 0, HEIGHT);
-    this.fillQuad(g, WIDTH - 86, HORIZON + 4, WIDTH, HORIZON, WIDTH, HEIGHT, WIDTH - 95, HEIGHT);
+    // Camera-side shade from buildings / railings gives the paving volume.
+    g.fillStyle(0x786d63, 0.22);
+    this.fillQuad(g, 0, HORIZON, 78, HORIZON + 5, 92, HEIGHT, 0, HEIGHT);
+    this.fillQuad(g, WIDTH - 74, HORIZON + 6, WIDTH, HORIZON, WIDTH, HEIGHT, WIDTH - 90, HEIGHT);
 
-    // Perspective paving joints are restrained and disappear under master art.
-    for (const y of [502, 574, 660, 760, 878]) {
+    // Inner curb shadow and thin sun-facing highlight.
+    g.lineStyle(5, 0x71685f, 0.42);
+    g.lineBetween(226, HORIZON, 148, HEIGHT);
+    g.lineBetween(314, HORIZON, 392, HEIGHT);
+    g.lineStyle(2, 0xe0cdb0, 0.72);
+    g.lineBetween(221, HORIZON + 1, 143, HEIGHT);
+    g.lineBetween(319, HORIZON + 1, 397, HEIGHT);
+
+    // Perspective paving joints. They converge with the gameplay road instead
+    // of forming horizontal debug slabs.
+    g.lineStyle(1, 0xe6d7c0, 0.24);
+    for (const x of [18, 48, 82, 116, 424, 458, 492, 526]) {
+      const target = x < WIDTH / 2 ? 229 : 311;
+      g.lineBetween(target, HORIZON, x, HEIGHT);
+    }
+
+    for (const y of [490, 550, 620, 702, 798, 908]) {
       const t = (y - HORIZON) / (HEIGHT - HORIZON);
-      const leftInner = Phaser.Math.Linear(231, 127, t);
-      const rightInner = Phaser.Math.Linear(309, 413, t);
-      g.lineStyle(1 + Math.floor(t * 2), 0xd9c9b4, 0.18);
+      const leftInner = Phaser.Math.Linear(218, 145, t);
+      const rightInner = Phaser.Math.Linear(322, 395, t);
+      g.lineStyle(1 + Math.floor(t * 2), 0x8f7e6c, 0.24);
       g.lineBetween(0, y, leftInner, y - 3);
       g.lineBetween(rightInner, y - 3, WIDTH, y);
     }
 
-    g.lineStyle(2, 0x574f4b, 0.28);
-    g.lineBetween(235, HORIZON, 129, HEIGHT);
-    g.lineBetween(305, HORIZON, 411, HEIGHT);
+    // A few restrained stone variations break large flat areas without
+    // introducing new fake objects.
+    const patches = [
+      [31, 666, 34, 9], [67, 744, 46, 10], [18, 842, 52, 11],
+      [472, 690, 39, 10], [438, 778, 48, 10], [489, 886, 34, 10]
+    ] as const;
+    for (let i = 0; i < patches.length; i += 1) {
+      const [x, y, w, h] = patches[i];
+      g.fillStyle(i % 2 === 0 ? 0x8f806f : 0xd2bea1, 0.16);
+      g.fillRect(x, y, w, h);
+    }
   }
 
   private fillQuad(
