@@ -15,7 +15,7 @@ export class IslandMapScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#087cc0');
 
     const master = this.add.image(width / 2, height / 2, 'master-island-map').setDisplaySize(width, height).setDepth(0);
-    master.texture.setFilter(Phaser.Textures.FilterMode.LINEAR);
+    master.texture.setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.makeSunsetHit(193, 706, 130, 74);
     this.makeSunsetHit(339, 600, 110, 110);
