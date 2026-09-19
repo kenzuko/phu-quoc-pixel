@@ -68,7 +68,7 @@ html[data-pixel-viewport='cover'] #game-shell canvas {
     z-index: -2;
     background:
       linear-gradient(90deg, rgba(3, 22, 34, 0.44), rgba(3, 22, 34, 0.14) 38%, rgba(3, 22, 34, 0.14) 62%, rgba(3, 22, 34, 0.44)),
-      url('/assets/master/landing-master.webp') center 48% / cover no-repeat;
+      url('/assets/master/landing-master-v4.avif') center 48% / cover no-repeat;
     filter: blur(14px) saturate(0.88) brightness(0.58);
     transform: scale(1.06);
   }
