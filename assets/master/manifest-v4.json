@@ -1,0 +1,21 @@
+{
+  "version": "v4",
+  "generatedBy": "scripts/materialize-master-assets.mjs",
+  "assets": {
+    "landing": {
+      "file": "/assets/master/landing-master-v4.avif",
+      "bytes": 27451,
+      "sha256": "cb7a0196d05b6825e333d19f2a561c236e05d5924db56c28eede9ad6a5149acb"
+    },
+    "airport": {
+      "file": "/assets/master/airport-master-v4.avif",
+      "bytes": 29379,
+      "sha256": "1761be4082d61323aa37bb1762684472d899525304ab3c03b8aa18851a71c0b9"
+    },
+    "map": {
+      "file": "/assets/master/island-map-approved-v4.avif",
+      "bytes": 39458,
+      "sha256": "9b10e47094fe8c9e36ad05ea323d6d6a88c793621fbf87de880765fba79bd276"
+    }
+  }
+}
