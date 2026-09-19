@@ -13,7 +13,8 @@ const mapTailSegments = [
   ...Array.from({ length: 8 }, (_, i) =>
     `scripts/master-assets-v4/map/part-08seg-${String(i + 11).padStart(2, '0')}.b64`
   ),
-  'scripts/master-assets-v4/map/part-08ab.b64'
+  'scripts/master-assets-v4/map/part-08ab.b64',
+  'scripts/master-assets-v4/map/part-08b.b64'
 ];
 
 const assets = [
