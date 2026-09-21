@@ -155,21 +155,21 @@ export const SUNSET_TOWN_GRAPH_EDGES: readonly PlaceGraphEdge[] = [
 export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
   {
     id: 'STP-01',
-    label: 'HILLSIDE · WEST-FACING TOWN',
+    label: 'WORLD MASSING · APPROVED PLAN',
     kind: 'overview',
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-town', 'central-village'],
     referenceIds: ['ST-REF-09', 'ST-REF-12', 'ST-REF-14'],
-    note: 'The town faces west toward the sea. Do not infer a single terrace chain from this overview.'
+    note: 'World massing is composed around the operator-approved layout. Node positions are locked; building density and visual mass remain QA-level composition.'
   },
   {
     id: 'STP-02',
-    label: 'CENTRAL VILLAGE · LA FESTA',
+    label: 'CENTRAL CLUSTER · DENSITY / MATERIAL',
     kind: 'central',
     spatialStatus: 'verified',
     focusNodeIds: ['central-village', 'la-festa-square', 'clock-tower', 'dragon-stairs', 'king-of-sun', 'sun-signature-gallery'],
     referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11', 'ST-REF-17'],
-    note: 'Clock Tower anchors the northern/central cluster. This plate does not assign a waterfront terrace number.'
+    note: 'Central Village, Clock Tower and Apollo visual mass are composed without moving approved nodes. This plate validates density/material only, not route order.'
   },
   {
     id: 'STP-03',
@@ -200,11 +200,11 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
   },
   {
     id: 'STP-06',
-    label: 'PLAN + ELEVATION GRAPH · ROUTE NOT LOCKED',
+    label: 'PLAN GRAPH · ROUTE CANDIDATE QA',
     kind: 'graph',
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local plan is the operator drag layout (east-up). Geographic anchors and local elevation remain separate layers; no linear terrace chain is approved.'
+    note: 'Approved local plan is the operator drag layout (east-up). A dashed route candidate may be inspected as hypothesis only; it does not authorize gameplay or change node positions.'
   }
 ] as const;
