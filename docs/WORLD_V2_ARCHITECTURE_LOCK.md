@@ -244,3 +244,21 @@ Approved rule:
 - compass/map orientation must not be inferred from the composition canvas unless separately approved
 
 The prior north-up reinterpretation was incorrect because it changed node positions while attempting to fix only the sea direction.
+
+
+## Kiss Show geometry lock
+
+Operator correction dated 2026-09-21:
+
+- the previously approved Kiss point is the audience / seating area
+- the performance stage is a separate element farther west / seaward
+- the performance stage remains inside the large Kiss Bridge arc
+- Kiss Bridge is the large outer seaward arc wrapping around the performance stage
+- Cable Car local level relation points to the seating area, not directly to the performance stage
+- correcting Kiss Show geometry must not move any previously approved non-Kiss node
+
+For World Tour rendering:
+- seating retains the approved operator point
+- performance stage is rendered as a relative west/seaward element
+- bridge is rendered as an outer arc around the performance stage
+- exact performance-stage metric coordinates remain unlocked until separately verified
