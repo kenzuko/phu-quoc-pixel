@@ -88,7 +88,10 @@ export const SUNSET_TOWN_COMPOSITION: readonly SunsetCompositionElement[] = [
     anchorId: 'kiss-seating',
     offset: { x: 0, y: 0 },
     absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.seating,
-    size: KISS_SHOW_SPATIAL_V2.kiss.seatingSize,
+    size: {
+      x: KISS_SHOW_SPATIAL_V2.kiss.seatingSize.width,
+      y: KISS_SHOW_SPATIAL_V2.kiss.seatingSize.height
+    },
     confidence: 'verified',
     note: 'Operator-edited spatial-v2 seating point. This is the audience area, not the performance stage.'
   },
@@ -98,7 +101,10 @@ export const SUNSET_TOWN_COMPOSITION: readonly SunsetCompositionElement[] = [
     anchorId: 'kiss-seating',
     offset: { x: 0, y: 0 },
     absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.performanceStage,
-    size: KISS_SHOW_SPATIAL_V2.kiss.performanceStageSize,
+    size: {
+      x: KISS_SHOW_SPATIAL_V2.kiss.performanceStageSize.width,
+      y: KISS_SHOW_SPATIAL_V2.kiss.performanceStageSize.height
+    },
     confidence: 'verified',
     note: 'Exact operator-edited spatial-v2 performance-stage point. Do not derive it from a seating offset.'
   },
