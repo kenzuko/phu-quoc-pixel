@@ -183,11 +183,11 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
   },
   {
     id: 'STP-03',
-    label: 'SOUTH CLUSTER · CABLE CAR / STAGE',
+    label: 'SOUTH CLUSTER · CABLE CAR / KISS SHOW',
     kind: 'transport',
     spatialStatus: 'verified',
     focusNodeIds: ['cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
     note: 'Cable Car Station sits one level above the Kiss Show seating area. The performance stage is a separate seaward node west of the seating and remains inside the large outer Kiss Bridge arc.'
   },
   {
@@ -205,7 +205,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'waterfront',
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
     note: 'Local node composition follows the operator-approved drag layout exactly. Sea edge stays left. The approved Kiss point is seating; the show stage shifts west/seaward from it and sits inside the outer Kiss Bridge arc.'
   },
   {
@@ -215,6 +215,6 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local plan is the operator drag layout (operator-approved). A dashed route candidate may be inspected as hypothesis only; it does not authorize gameplay or change node positions.'
+    note: 'Approved local layout is frozen. Kiss Show now separates seating from the performance stage: seating stays at the approved point, the performance stage shifts west/seaward, and the outer Kiss Bridge arc wraps around it. Route remains hypothesis-only.'
   }
 ] as const;
