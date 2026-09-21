@@ -6,7 +6,7 @@ import { projectGeo } from '../world-v2/geo';
 import {
   ISLAND_PLACE_ANCHORS_V2,
   PHU_QUOC_BOUNDS,
-  PHU_QUOC_COASTLINE_PROVISIONAL
+  PHU_QUOC_LANDMASSES_V2
 } from '../world-v2/phu-quoc';
 
 export class IslandMapV2Scene extends Phaser.Scene {
@@ -20,22 +20,25 @@ export class IslandMapV2Scene extends Phaser.Scene {
     g.fillStyle(0x063d5b, 1);
     g.fillRect(0, 0, width, height);
 
-    const rect = { x: 75, y: 130, width: 390, height: 680 };
-    const coast = PHU_QUOC_COASTLINE_PROVISIONAL.map((point) => projectGeo(point, PHU_QUOC_BOUNDS, rect));
+    const rect = { x: 65, y: 124, width: 410, height: 690 };
 
-    g.fillStyle(0x143c43, 1);
-    g.lineStyle(4, 0xe3c56c, 0.78);
-    g.beginPath();
-    g.moveTo(coast[0].x, coast[0].y);
-    for (let i = 1; i < coast.length; i += 1) g.lineTo(coast[i].x, coast[i].y);
-    g.closePath();
-    g.fillPath();
-    g.strokePath();
+    for (const landmass of PHU_QUOC_LANDMASSES_V2) {
+      const polygon = landmass.points.map((point) => projectGeo(point, PHU_QUOC_BOUNDS, rect));
+      g.fillStyle(landmass.id === 'phu-quoc-main' ? 0x143c43 : 0x17464a, 1);
+      g.lineStyle(landmass.id === 'phu-quoc-main' ? 4 : 3, 0xe3c56c, 0.82);
+      g.beginPath();
+      g.moveTo(polygon[0].x, polygon[0].y);
+      for (let i = 1; i < polygon.length; i += 1) g.lineTo(polygon[i].x, polygon[i].y);
+      g.closePath();
+      g.fillPath();
+      g.strokePath();
+    }
 
-    g.fillStyle(0x2a6253, 0.46);
-    for (let i = 0; i < 54; i += 1) {
-      const x = 105 + ((i * 67) % 300);
-      const y = 170 + ((i * 113) % 570);
+    // Subtle vegetation marks are decorative only and do not encode geography.
+    g.fillStyle(0x2a6253, 0.42);
+    for (let i = 0; i < 46; i += 1) {
+      const x = 112 + ((i * 61) % 290);
+      const y = 180 + ((i * 107) % 470);
       g.fillRect(x, y, 4, 7);
     }
 
@@ -43,7 +46,7 @@ export class IslandMapV2Scene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '19px', fontStyle: 'bold', color: '#ffffff'
     }).setOrigin(0.5);
 
-    this.add.text(width / 2, 74, 'POI POSITIONS FROM GEO ANCHORS', {
+    this.add.text(width / 2, 74, 'GEO ANCHORS · SEPARATE LANDMASSES', {
       fontFamily: 'monospace', fontSize: '9px', color: '#8de4df'
     }).setOrigin(0.5);
 
@@ -54,7 +57,10 @@ export class IslandMapV2Scene extends Phaser.Scene {
         .setStrokeStyle(3, 0x092633, 0.9)
         .setDepth(4);
 
-      const alignRight = p.x < width * 0.58;
+      let alignRight = p.x < width * 0.58;
+      if (place.id === 'ganh-dau' || place.id === 'grand-world') alignRight = true;
+      if (place.id === 'bai-sao') alignRight = false;
+
       const label = this.add.text(p.x + (alignRight ? 13 : -13), p.y - 4, place.label, {
         fontFamily: 'monospace',
         fontSize: pilot ? '11px' : '8px',
@@ -73,10 +79,13 @@ export class IslandMapV2Scene extends Phaser.Scene {
       }
     }
 
-    this.add.text(width / 2, 842, 'COASTLINE: V2 PROVISIONAL SCAFFOLD\nPINS: GEO DATA · SUNSET TOWN = PILOT', {
-      fontFamily: 'monospace', fontSize: '9px', align: 'center',
-      lineSpacing: 4, color: '#87aeb7'
-    }).setOrigin(0.5);
+    this.add.text(width / 2, 842,
+      'SIMPLIFIED GEO TRACE · MAIN ISLAND + HON THOM\nPINS FROM VERIFIED / CROSS-CHECKED COORDINATES',
+      {
+        fontFamily: 'monospace', fontSize: '9px', align: 'center',
+        lineSpacing: 4, color: '#87aeb7'
+      }
+    ).setOrigin(0.5);
 
     createButton(this, 115, 906, 'BACK', () => {
       flowController.go(this, SceneKeys.V2Hub);
