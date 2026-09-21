@@ -179,3 +179,5 @@ A field-note:
 - can override a prior V2 schematic assumption when the assumption is demonstrably wrong
 
 The first Sunset Town terrace correction dated 2026-09-21 was itself too broad. The spatial rescan later the same day supersedes it: operator field evidence may confirm a local level relationship without assigning every nearby landmark to the same vertical chain.
+
+Map orientation note: a supplied promotional Sunset Town diagram is east-up (E at top, N left, S right, W bottom). Its screen direction must never be interpreted as north-up without rotation.
