@@ -1,4 +1,5 @@
 import type { RelativePlanPoint } from '../types';
+import { KISS_SHOW_SPATIAL_V2 } from './sunset-town-operator-layout';
 
 export type SunsetCompositionKind =
   | 'building-mass'
@@ -15,7 +16,13 @@ export interface SunsetCompositionElement {
   kind: SunsetCompositionKind;
   anchorId: string;
   offset: RelativePlanPoint;
+  absoluteCenter?: RelativePlanPoint;
   size: RelativePlanPoint;
+  arc?: {
+    startDeg: number;
+    endDeg: number;
+    stroke: number;
+  };
   confidence: 'verified' | 'corroborated' | 'visual-only';
   note: string;
 }
@@ -80,27 +87,38 @@ export const SUNSET_TOWN_COMPOSITION: readonly SunsetCompositionElement[] = [
     kind: 'audience-bowl',
     anchorId: 'kiss-seating',
     offset: { x: 0, y: 0 },
-    size: { x: 0.17, y: 0.10 },
+    absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.seating,
+    size: KISS_SHOW_SPATIAL_V2.kiss.seatingSize,
     confidence: 'verified',
-    note: 'Operator-confirmed audience/seating area. This is not the performance stage.'
+    note: 'Operator-edited spatial-v2 seating point. This is the audience area, not the performance stage.'
   },
   {
     id: 'kiss-performance-stage',
     kind: 'performance-stage',
     anchorId: 'kiss-seating',
-    offset: { x: -0.12, y: 0.00 },
-    size: { x: 0.10, y: 0.07 },
+    offset: { x: 0, y: 0 },
+    absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.performanceStage,
+    size: KISS_SHOW_SPATIAL_V2.kiss.performanceStageSize,
     confidence: 'verified',
-    note: 'Performance stage is shifted west/seaward from the audience area.'
+    note: 'Exact operator-edited spatial-v2 performance-stage point. Do not derive it from a seating offset.'
   },
   {
     id: 'kiss-bridge-arc',
     kind: 'bridge-arc',
     anchorId: 'kiss-seating',
-    offset: { x: -0.12, y: 0.00 },
-    size: { x: 0.26, y: 0.22 },
+    offset: { x: 0, y: 0 },
+    absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.bridgeCenter,
+    size: {
+      x: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.width,
+      y: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.height
+    },
+    arc: {
+      startDeg: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.startDeg,
+      endDeg: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.endDeg,
+      stroke: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.stroke
+    },
     confidence: 'verified',
-    note: 'Kiss Bridge is a large outer seaward arc wrapping around the performance stage.'
+    note: 'Exact operator-edited bridge arc control. Composition meaning remains: Kiss Bridge encloses the performance stage.'
   },
   {
     id: 'bridge-sea-opening',
