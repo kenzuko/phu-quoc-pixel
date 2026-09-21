@@ -189,14 +189,18 @@ When the operator corrects a local place layout in the spatial editor and suppli
 
 Rules:
 - preserve the exported node coordinates exactly
-- preserve the exported orientation exactly
+- treat editor viewport orientation as metadata, not world orientation
+- render canonical local plan north-up unless the operator explicitly approves another world orientation
 - do not re-normalize the approved layout from geographic coordinates
 - keep geographic anchors as a separate cross-check layer
 - keep elevation as a separate layer
 - a later operator edit may supersede the prior relative layout
 
 Sunset Town operator layout approved 2026-09-21:
-- orientation: east-up
+- editor capture orientation: east-up
+- world orientation: north-up
+- west / sea edge: left
+- Central Village facing: west toward sea
 - nodes: Central Village, Clock Tower, Sunset Bazaar, Apollo Square, Cable Car Station, Kiss of the Sea Stage, Kiss Bridge
 - source of truth: `sunset-town-operator-layout.ts`
 
@@ -225,3 +229,18 @@ A route candidate:
 - may be rejected or redrawn without changing the underlying place model
 
 Sunset Town first route candidate is QA-only and must not be treated as the NO BRAKES route.
+
+
+## Sunset Town west-facing correction
+
+Operator correction dated 2026-09-21 supersedes the previous use of East-up as a world-render orientation.
+
+Approved world reading:
+- north = up
+- south = down
+- west = left
+- east = right
+- sea edge = left
+- Central Village looks west toward the sea
+
+The exported drag-editor coordinates remain valid. Only the interpretation of the editor viewport orientation was wrong.
