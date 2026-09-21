@@ -19,12 +19,18 @@ export interface WorldReference {
   usage: 'reference-only' | 'approved-source';
 }
 
-export interface IslandPlaceAnchor {
+export type IslandMapFeatureKind = 'point' | 'area' | 'coast';
+
+export interface IslandMapFeature {
   id: string;
   label: string;
+  kind: IslandMapFeatureKind;
   point: GeoPoint;
+  path?: readonly GeoPoint[];
+  approxRadiusKm?: number;
   status: 'pilot' | 'mapped' | 'planned';
   confidence: Confidence;
+  sourceRefs: readonly string[];
 }
 
 export interface PlaceZone {
