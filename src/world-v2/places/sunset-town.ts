@@ -175,8 +175,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       id: 'ST-REF-15',
       kind: 'field-note',
       title: 'Operator-confirmed Sunset Town terrace hierarchy',
-      sourceNote: 'User-provided spatial reference confirms: Cable Car Station is on an upper terrace; Sunset Bazaar sits higher/inland of Kiss of the Sea; Kiss of the Sea Stage is one level lower; Kiss Bridge is the seafront edge.',
-      proves: ['upper/middle/lower/seafront terrace hierarchy', 'Cable Car above Kiss Stage', 'Sunset Bazaar inland/above Kiss Stage', 'Kiss Bridge seaward of Kiss Stage'],
+      sourceNote: 'User field correction confirms a local vertical relationship only: Cable Car Station is near the Kiss Bridge cluster and sits above Kiss of the Sea Stage; moving down one level reaches the stage. This note does not assign Sunset Bazaar to that elevation chain.',
+      proves: ['Cable Car Station above Kiss Stage', 'one-level descent from Cable Car area to Kiss Stage', 'prior flat graph misplaced the local cluster'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'approved-source'
@@ -185,8 +185,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       id: 'ST-REF-16',
       kind: 'field-note',
       title: 'Operator-confirmed relative layout from supplied Sunset Town map reference',
-      sourceNote: 'User-provided map reference confirms relative ordering between cable car area, Sunset Bazaar, Kiss Square/Kiss of the Sea, and Kiss Bridge. It also corrects the prior V2 inversion of Sunset Bazaar and Kiss Stage.',
-      proves: ['Sunset Bazaar is not below Kiss Stage', 'Kiss Stage sits lower toward the waterfront', 'Kiss Bridge lies beyond the stage toward the sea'],
+      sourceNote: 'User-provided promotional map must be read with its printed compass: E is up, N is left, S is right, W is down. It confirms that plan orientation and elevation must be treated as different axes; Sunset Bazaar must not be inserted into the Cable Car-to-Stage vertical sequence.',
+      proves: ['map orientation is east-up / west-down', 'Sunset Bazaar is a separate plan-position node', 'plan position must not be converted into terrace order'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'approved-source'
