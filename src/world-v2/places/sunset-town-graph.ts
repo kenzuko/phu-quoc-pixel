@@ -15,7 +15,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'district',
     spatialStatus: 'verified',
     confidence: 'verified',
-    referenceIds: ['ST-REF-03']
+    terrace: 'upper',
+    referenceIds: ['ST-REF-03', 'ST-REF-15']
   },
   {
     id: 'la-festa-square',
@@ -23,6 +24,7 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'square',
     spatialStatus: 'verified',
     confidence: 'high',
+    terrace: 'upper',
     referenceIds: ['ST-REF-11']
   },
   {
@@ -31,7 +33,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'landmark',
     spatialStatus: 'verified',
     confidence: 'verified',
-    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11']
+    terrace: 'upper',
+    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11', 'ST-REF-15']
   },
   {
     id: 'dragon-stairs',
@@ -39,6 +42,7 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'landmark',
     spatialStatus: 'verified',
     confidence: 'high',
+    terrace: 'upper',
     referenceIds: ['ST-REF-11']
   },
   {
@@ -47,6 +51,7 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'landmark',
     spatialStatus: 'verified',
     confidence: 'high',
+    terrace: 'upper',
     referenceIds: ['ST-REF-11']
   },
   {
@@ -55,6 +60,7 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'venue',
     spatialStatus: 'verified',
     confidence: 'high',
+    terrace: 'upper',
     referenceIds: ['ST-REF-11']
   },
   {
@@ -63,7 +69,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'square',
     spatialStatus: 'verified',
     confidence: 'high',
-    referenceIds: ['ST-REF-11']
+    terrace: 'upper',
+    referenceIds: ['ST-REF-11', 'ST-REF-15']
   },
   {
     id: 'cable-car-station',
@@ -71,7 +78,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'transport',
     spatialStatus: 'verified',
     confidence: 'verified',
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12']
+    terrace: 'upper',
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12', 'ST-REF-15', 'ST-REF-16']
   },
   {
     id: 'apollo-square',
@@ -90,28 +98,31 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     referenceIds: ['ST-REF-01', 'ST-REF-07']
   },
   {
-    id: 'kiss-bridge',
-    label: 'KISS BRIDGE',
-    kind: 'waterfront',
+    id: 'sunset-bazaar',
+    label: 'SUNSET BAZAAR',
+    kind: 'venue',
     spatialStatus: 'verified',
     confidence: 'verified',
-    referenceIds: ['ST-REF-03', 'ST-REF-04', 'ST-REF-11']
+    terrace: 'middle',
+    referenceIds: ['ST-REF-13', 'ST-REF-15', 'ST-REF-16']
   },
   {
     id: 'kiss-stage',
     label: 'KISS OF THE SEA STAGE',
     kind: 'waterfront',
     spatialStatus: 'verified',
-    confidence: 'high',
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13']
+    confidence: 'verified',
+    terrace: 'lower',
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16']
   },
   {
-    id: 'sunset-bazaar',
-    label: 'SUNSET BAZAAR',
-    kind: 'venue',
+    id: 'kiss-bridge',
+    label: 'KISS BRIDGE',
+    kind: 'waterfront',
     spatialStatus: 'verified',
-    confidence: 'high',
-    referenceIds: ['ST-REF-13']
+    confidence: 'verified',
+    terrace: 'seafront',
+    referenceIds: ['ST-REF-03', 'ST-REF-04', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16']
   }
 ] as const;
 
@@ -123,12 +134,19 @@ export const SUNSET_TOWN_GRAPH_EDGES: readonly PlaceGraphEdge[] = [
   { from: 'la-festa-square', to: 'king-of-sun', relation: 'contains', confidence: 'high', referenceIds: ['ST-REF-11'] },
   { from: 'la-festa-square', to: 'sun-signature-gallery', relation: 'contains', confidence: 'high', referenceIds: ['ST-REF-11'] },
   { from: 'anh-duong-square', to: 'cable-car-station', relation: 'contains', confidence: 'high', referenceIds: ['ST-REF-11'] },
-  { from: 'clock-tower', to: 'kiss-bridge', relation: 'near', confidence: 'high', referenceIds: ['ST-REF-03'] },
-  { from: 'clock-tower', to: 'kiss-stage', relation: 'near', confidence: 'high', referenceIds: ['ST-REF-03'] },
-  { from: 'clock-tower', to: 'cable-car-station', relation: 'near', confidence: 'high', referenceIds: ['ST-REF-03'] },
-  { from: 'apollo-square', to: 'apollo-cafe', relation: 'contains', confidence: 'high', referenceIds: ['ST-REF-07'] },
+  { from: 'clock-tower', to: 'cable-car-station', relation: 'near', confidence: 'high', referenceIds: ['ST-REF-03', 'ST-REF-15'] },
+  { from: 'cable-car-station', to: 'kiss-stage', relation: 'above', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'cable-car-station', to: 'kiss-stage', relation: 'inland-of', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'cable-car-station', to: 'kiss-stage', relation: 'terraced-to', confidence: 'verified', referenceIds: ['ST-REF-15'] },
+  { from: 'cable-car-station', to: 'kiss-bridge', relation: 'near', confidence: 'high', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'above', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'inland-of', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'terraced-to', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] },
+  { from: 'kiss-stage', to: 'kiss-bridge', relation: 'inland-of', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
+  { from: 'kiss-bridge', to: 'kiss-stage', relation: 'seaward-of', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
   { from: 'sunset-bazaar', to: 'kiss-bridge', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] },
-  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] }
+  { from: 'apollo-square', to: 'apollo-cafe', relation: 'contains', confidence: 'high', referenceIds: ['ST-REF-07'] }
 ] as const;
 
 export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
@@ -138,8 +156,8 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'overview',
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-town', 'central-village'],
-    referenceIds: ['ST-REF-09', 'ST-REF-12', 'ST-REF-14'],
-    note: 'Use only the verified hillside-to-sea relationship. No invented street route.'
+    referenceIds: ['ST-REF-09', 'ST-REF-12', 'ST-REF-14', 'ST-REF-15'],
+    note: 'Sunset Town descends in terraces toward the sea. Do not flatten the place into one plane.'
   },
   {
     id: 'STP-02',
@@ -147,17 +165,17 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'central',
     spatialStatus: 'verified',
     focusNodeIds: ['central-village', 'la-festa-square', 'clock-tower', 'dragon-stairs', 'king-of-sun', 'sun-signature-gallery'],
-    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11'],
-    note: 'Clock Tower is central; La Festa Square groups the named public landmarks.'
+    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11', 'ST-REF-15'],
+    note: 'Central Village and Clock Tower sit above the waterfront system. Their visual relationship must preserve the downhill view toward the sea.'
   },
   {
     id: 'STP-03',
-    label: 'ANH DUONG · CABLE CAR',
+    label: 'UPPER TERRACE · CABLE CAR',
     kind: 'transport',
     spatialStatus: 'verified',
-    focusNodeIds: ['anh-duong-square', 'cable-car-station'],
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12'],
-    note: 'Transport anchor only. Do not infer a gameplay route from this plate.'
+    focusNodeIds: ['anh-duong-square', 'cable-car-station', 'sunset-bazaar', 'kiss-stage'],
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12', 'ST-REF-15', 'ST-REF-16'],
+    note: 'Cable Car Station is an upper-terrace anchor. Sunset Bazaar is below/in front of the upper zone; Kiss Stage is one terrace lower toward the waterfront.'
   },
   {
     id: 'STP-04',
@@ -170,20 +188,20 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
   },
   {
     id: 'STP-05',
-    label: 'WATERFRONT · KISS BRIDGE',
+    label: 'TERRACED WATERFRONT · KISS BRIDGE',
     kind: 'waterfront',
     spatialStatus: 'verified',
-    focusNodeIds: ['kiss-bridge', 'kiss-stage', 'sunset-bazaar'],
-    referenceIds: ['ST-REF-04', 'ST-REF-11', 'ST-REF-13'],
-    note: 'Waterfront relationship is verified; local distances are still compressed for display.'
+    focusNodeIds: ['cable-car-station', 'sunset-bazaar', 'kiss-stage', 'kiss-bridge'],
+    referenceIds: ['ST-REF-04', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16'],
+    note: 'Correct hierarchy: upper Cable Car zone -> middle Sunset Bazaar -> lower Kiss of the Sea Stage -> seafront Kiss Bridge.'
   },
   {
     id: 'STP-06',
-    label: 'PLACE GRAPH · ROUTE NOT LOCKED',
+    label: '3D PLACE GRAPH · ROUTE NOT LOCKED',
     kind: 'graph',
     spatialStatus: 'verified',
-    focusNodeIds: ['central-village', 'clock-tower', 'cable-car-station', 'kiss-bridge', 'kiss-stage', 'sunset-bazaar'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13'],
-    note: 'This graph is the approved spatial contract. A driveable route is intentionally not inferred yet.'
+    focusNodeIds: ['central-village', 'clock-tower', 'cable-car-station', 'sunset-bazaar', 'kiss-stage', 'kiss-bridge'],
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16'],
+    note: 'The approved contract now includes terrace/elevation and inland/seaward relations. A driveable route is still intentionally not inferred.'
   }
 ] as const;
