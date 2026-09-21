@@ -81,6 +81,13 @@ export type PlaceGraphNodeKind =
   | 'waterfront'
   | 'venue';
 
+export interface RelativePlanPoint {
+  x: number;
+  y: number;
+}
+
+export type PlanOrientation = 'north-up' | 'east-up';
+
 export interface PlaceGraphNode {
   id: string;
   label: string;
@@ -88,6 +95,7 @@ export interface PlaceGraphNode {
   spatialStatus: SpatialStatus;
   confidence: Confidence;
   planPoint?: GeoPoint;
+  operatorPlanPoint?: RelativePlanPoint;
   referenceIds: readonly string[];
 }
 
