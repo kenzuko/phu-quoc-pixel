@@ -181,3 +181,23 @@ A field-note:
 The first Sunset Town terrace correction dated 2026-09-21 was itself too broad. The spatial rescan later the same day supersedes it: operator field evidence may confirm a local level relationship without assigning every nearby landmark to the same vertical chain.
 
 Map orientation note: a supplied promotional Sunset Town diagram is east-up (E at top, N left, S right, W bottom). Its screen direction must never be interpreted as north-up without rotation.
+
+
+## Operator-approved relative layout
+
+When the operator corrects a local place layout in the spatial editor and supplies the exported JSON, that layout becomes the approved relative-composition layer for the affected nodes.
+
+Rules:
+- preserve the exported node coordinates exactly
+- preserve the exported orientation exactly
+- do not re-normalize the approved layout from geographic coordinates
+- keep geographic anchors as a separate cross-check layer
+- keep elevation as a separate layer
+- a later operator edit may supersede the prior relative layout
+
+Sunset Town operator layout approved 2026-09-21:
+- orientation: east-up
+- nodes: Central Village, Clock Tower, Sunset Bazaar, Apollo Square, Cable Car Station, Kiss of the Sea Stage, Kiss Bridge
+- source of truth: `sunset-town-operator-layout.ts`
+
+This operator layout supersedes the previous generated local composition for STP-03, STP-05 and STP-06.

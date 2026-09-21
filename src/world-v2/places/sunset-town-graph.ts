@@ -1,4 +1,5 @@
 import type { PlaceGraphEdge, PlaceGraphNode, WorldPlate } from '../types';
+import { SUNSET_TOWN_OPERATOR_PLAN } from './sunset-town-operator-layout';
 
 export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
   {
@@ -15,6 +16,7 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'district',
     spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['central-village'],
     referenceIds: ['ST-REF-03']
   },
   {
@@ -31,8 +33,9 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'landmark',
     spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['clock-tower'],
     planPoint: { lat: 10.030171875, lon: 104.0071125 },
-    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11', 'ST-REF-17']
+    referenceIds: ['ST-REF-03', 'ST-REF-08', 'ST-REF-11', 'ST-REF-17', 'ST-REF-20']
   },
   {
     id: 'dragon-stairs',
@@ -72,8 +75,9 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'transport',
     spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['cable-car-station'],
     planPoint: { lat: 10.0270625, lon: 104.0071875 },
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12', 'ST-REF-18']
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-12', 'ST-REF-18', 'ST-REF-20']
   },
   {
     id: 'apollo-square',
@@ -81,7 +85,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'square',
     spatialStatus: 'visual-only',
     confidence: 'high',
-    referenceIds: ['ST-REF-02', 'ST-REF-07']
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['apollo-square'],
+    referenceIds: ['ST-REF-02', 'ST-REF-07', 'ST-REF-20']
   },
   {
     id: 'apollo-cafe',
@@ -97,8 +102,9 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'venue',
     spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['sunset-bazaar'],
     planPoint: { lat: 10.029453125, lon: 104.0071875 },
-    referenceIds: ['ST-REF-13', 'ST-REF-17']
+    referenceIds: ['ST-REF-13', 'ST-REF-17', 'ST-REF-20']
   },
   {
     id: 'kiss-stage',
@@ -106,7 +112,8 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'waterfront',
     spatialStatus: 'verified',
     confidence: 'verified',
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16']
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['kiss-stage'],
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-20']
   },
   {
     id: 'kiss-bridge',
@@ -114,8 +121,9 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     kind: 'waterfront',
     spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['kiss-bridge'],
     planPoint: { lat: 10.028140625, lon: 104.0038125 },
-    referenceIds: ['ST-REF-03', 'ST-REF-04', 'ST-REF-11', 'ST-REF-19']
+    referenceIds: ['ST-REF-03', 'ST-REF-04', 'ST-REF-11', 'ST-REF-19', 'ST-REF-20']
   }
 ] as const;
 
@@ -132,8 +140,8 @@ export const SUNSET_TOWN_GRAPH_EDGES: readonly PlaceGraphEdge[] = [
   // Verified plan relationships. These are independent from elevation.
   { from: 'clock-tower', to: 'sunset-bazaar', relation: 'north-of', confidence: 'verified', referenceIds: ['ST-REF-17'] },
   { from: 'sunset-bazaar', to: 'cable-car-station', relation: 'north-of', confidence: 'verified', referenceIds: ['ST-REF-17', 'ST-REF-18'] },
-  { from: 'kiss-bridge', to: 'sunset-bazaar', relation: 'west-of', confidence: 'verified', referenceIds: ['ST-REF-17', 'ST-REF-19'] },
-  { from: 'kiss-bridge', to: 'cable-car-station', relation: 'west-of', confidence: 'verified', referenceIds: ['ST-REF-18', 'ST-REF-19'] },
+  { from: 'kiss-bridge', to: 'sunset-bazaar', relation: 'west-of', confidence: 'verified', referenceIds: ['ST-REF-17', 'ST-REF-19', 'ST-REF-20'] },
+  { from: 'kiss-bridge', to: 'cable-car-station', relation: 'west-of', confidence: 'verified', referenceIds: ['ST-REF-18', 'ST-REF-19', 'ST-REF-20'] },
   { from: 'sunset-bazaar', to: 'kiss-bridge', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] },
 
   // Verified local vertical relationship. Do not apply this to Sunset Bazaar.
@@ -169,7 +177,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'transport',
     spatialStatus: 'verified',
     focusNodeIds: ['cable-car-station', 'kiss-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19'],
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
     note: 'Cable Car Station is south/inland in plan, near the bridge cluster, and sits one level above Kiss of the Sea Stage. Sunset Bazaar is not part of this vertical sequence.'
   },
   {
@@ -187,8 +195,8 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'waterfront',
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19'],
-    note: 'Plan and elevation are separate facts: Bazaar is north of Cable Car; Bridge is west/seaward; Cable Car is one level above the adjacent Kiss Stage.'
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
+    note: 'Local composition now follows the operator-approved east-up drag layout exactly. Geo anchors remain cross-check evidence only; Cable Car -> Kiss Stage elevation stays a separate local relation.'
   },
   {
     id: 'STP-06',
@@ -196,7 +204,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     kind: 'graph',
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19'],
-    note: 'Approved model separates north/south/east/west plan coordinates from local elevation relations. No linear terrace chain is approved.'
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
+    note: 'Approved local plan is the operator drag layout (east-up). Geographic anchors and local elevation remain separate layers; no linear terrace chain is approved.'
   }
 ] as const;
