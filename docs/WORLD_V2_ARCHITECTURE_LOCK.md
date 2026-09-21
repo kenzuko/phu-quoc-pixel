@@ -53,19 +53,27 @@ A place is represented as connected zones, named nodes and evidence-backed relat
 
 The place graph may contain districts, squares, landmarks, transport anchors, waterfront anchors and venues.
 
-The graph is not planar. Where the place is terraced or sloped, nodes must carry an elevation/terrace band and edges may express vertical and seaward relationships such as:
-- above / below
-- inland-of / seaward-of
-- terraced-to
-- contains / near / connects / faces / part-of
+The graph is not a single 2D or 1D ordering. It separates at least three kinds of spatial evidence:
+
+- plan position - north/south/east/west from coordinates or mapped geometry
+- elevation - above/below or a verified local level change
+- adjacency/connectivity - near, contains, connects, faces, inland/seaward
+
+These axes must not be collapsed into one terrace rank.
 
 A route is a separate product of evidence. The system must not convert a place graph into a driveable route simply because the graph is connected.
 
-For Sunset Town specifically, the currently approved hierarchy is:
+For Sunset Town, the previous linear hierarchy `Cable Car -> Sunset Bazaar -> Kiss Stage -> Kiss Bridge` is explicitly REVOKED.
 
-`upper: Central Village / Cable Car -> middle: Sunset Bazaar -> lower: Kiss of the Sea Stage -> seafront: Kiss Bridge`
+Current approved facts are narrower:
+- Clock Tower / Sunset Bazaar / Cable Car / Kiss Bridge have independent plan anchors.
+- Sunset Bazaar is north of Cable Car in plan.
+- Kiss Bridge is west/seaward of the inland Bazaar/Cable line.
+- Cable Car is locally above Kiss of the Sea Stage by one level.
+- Kiss Stage is adjacent to the Kiss Bridge waterfront cluster.
+- Sunset Bazaar has no approved terrace rank relative to Cable Car or Kiss Stage.
 
-This hierarchy is spatial truth for V2 and must not be flattened or inverted by a world plate, map or gameplay route.
+A world plate, map or gameplay route must preserve these separate facts rather than inventing a linear terrace chain.
 
 A segment may define geographic anchor, direction/openness, slope, left and right spatial mass, landmarks visible from the segment, ordinary ambient actors, light/time state, allowed gameplay slots, and reference evidence.
 
@@ -170,4 +178,6 @@ A field-note:
 - must not be silently generalized into unrelated geometry
 - can override a prior V2 schematic assumption when the assumption is demonstrably wrong
 
-The Sunset Town terrace correction dated 2026-09-21 supersedes the earlier flat graph that inverted Sunset Bazaar and Kiss of the Sea Stage.
+The first Sunset Town terrace correction dated 2026-09-21 was itself too broad. The spatial rescan later the same day supersedes it: operator field evidence may confirm a local level relationship without assigning every nearby landmark to the same vertical chain.
+
+Map orientation note: a supplied promotional Sunset Town diagram is east-up (E at top, N left, S right, W bottom). Its screen direction must never be interpreted as north-up without rotation.

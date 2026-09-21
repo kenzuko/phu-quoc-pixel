@@ -175,8 +175,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       id: 'ST-REF-15',
       kind: 'field-note',
       title: 'Operator-confirmed Sunset Town terrace hierarchy',
-      sourceNote: 'User-provided spatial reference confirms: Cable Car Station is on an upper terrace; Sunset Bazaar sits higher/inland of Kiss of the Sea; Kiss of the Sea Stage is one level lower; Kiss Bridge is the seafront edge.',
-      proves: ['upper/middle/lower/seafront terrace hierarchy', 'Cable Car above Kiss Stage', 'Sunset Bazaar inland/above Kiss Stage', 'Kiss Bridge seaward of Kiss Stage'],
+      sourceNote: 'User field correction confirms a local vertical relationship only: Cable Car Station is near the Kiss Bridge cluster and sits above Kiss of the Sea Stage; moving down one level reaches the stage. This note does not assign Sunset Bazaar to that elevation chain.',
+      proves: ['Cable Car Station above Kiss Stage', 'one-level descent from Cable Car area to Kiss Stage', 'prior flat graph misplaced the local cluster'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'approved-source'
@@ -185,8 +185,40 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       id: 'ST-REF-16',
       kind: 'field-note',
       title: 'Operator-confirmed relative layout from supplied Sunset Town map reference',
-      sourceNote: 'User-provided map reference confirms relative ordering between cable car area, Sunset Bazaar, Kiss Square/Kiss of the Sea, and Kiss Bridge. It also corrects the prior V2 inversion of Sunset Bazaar and Kiss Stage.',
-      proves: ['Sunset Bazaar is not below Kiss Stage', 'Kiss Stage sits lower toward the waterfront', 'Kiss Bridge lies beyond the stage toward the sea'],
+      sourceNote: 'User-provided promotional map must be read with its printed compass: E is up, N is left, S is right, W is down. It confirms that plan orientation and elevation must be treated as different axes; Sunset Bazaar must not be inserted into the Cable Car-to-Stage vertical sequence.',
+      proves: ['map orientation is east-up / west-down', 'Sunset Bazaar is a separate plan-position node', 'plan position must not be converted into terrace order'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-17',
+      kind: 'map',
+      title: 'Sunset Town plan cross-check - Clock Tower and Sunset Bazaar',
+      sourceNote: 'Cross-checked 2026-09-21 from current map/business listings. Clock Tower: 22J4+3RF (~10.03017, 104.00711). Sunset Bazaar: 22H4+QVJ / OSM-backed listing (~10.02945, 104.00719).',
+      proves: ['Clock Tower is north of Sunset Bazaar', 'Sunset Bazaar plan position is north of Cable Car Station'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-18',
+      kind: 'map',
+      title: 'An Thoi Cable Car Station plan anchor',
+      sourceUrl: 'https://mapcarta.com/W1185867234',
+      coordinates: { lat: 10.02704, lon: 104.00724 },
+      proves: ['Cable Car Station plan position', 'Cable Car Station lies south of Sunset Bazaar'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-19',
+      kind: 'map',
+      title: 'Kiss Bridge plan anchor',
+      sourceNote: 'Google Maps local code 22H3+7G4 cross-checked 2026-09-21, approximately 10.02814, 104.00381.',
+      coordinates: { lat: 10.028140625, lon: 104.0038125 },
+      proves: ['Kiss Bridge is west/seaward of the inland Clock Tower/Bazaar/Cable Car line', 'Kiss Bridge latitude lies between Sunset Bazaar and Cable Car Station'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'approved-source'
