@@ -120,6 +120,16 @@ export const ISLAND_MAP_FEATURES_V2: readonly IslandMapFeature[] = [
     sourceRefs: ['osm-grand-world-square-939817115', 'vinwonders-grand-world-2026']
   },
   {
+    id: 'vinwonders',
+    label: 'VINWONDERS',
+    kind: 'area',
+    point: { lat: 10.33800, lon: 103.85449 },
+    approxRadiusKm: 1.25,
+    status: 'planned',
+    confidence: 'verified',
+    sourceRefs: ['osm-vinwonders-660104575', 'vinwonders-official-map-2026']
+  },
+  {
     id: 'vinpearl-safari',
     label: 'SAFARI',
     kind: 'area',

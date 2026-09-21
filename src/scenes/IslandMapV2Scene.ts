@@ -48,7 +48,7 @@ export class IslandMapV2Scene extends Phaser.Scene {
     const buildId = String(import.meta.env.VITE_BUILD_SHA ?? 'dev').slice(0, 7);
 
     this.add.text(width / 2, 842,
-      `COASTLINE: ADMIN GEOJSON · MAP SEMANTICS V2\nBAI SAO / RACH VEM = COAST · GRAND WORLD / SAFARI = AREA\nBUILD ${buildId}`,
+      `COASTLINE: ADMIN GEOJSON · MAP SEMANTICS V2\nBAI SAO / RACH VEM = COAST · GRAND WORLD / VINWONDERS / SAFARI = AREA\nBUILD ${buildId}`,
       {
         fontFamily: 'monospace',
         fontSize: '8px',
@@ -158,8 +158,9 @@ export class IslandMapV2Scene extends Phaser.Scene {
     const fixed: Readonly<Record<string, { x: number; y: number; originX: number }>> = {
       'ganh-dau': { x: 12, y: -10, originX: 0 },
       'rach-vem': { x: -12, y: -7, originX: 1 },
-      'vinpearl-safari': { x: 12, y: 10, originX: 0 },
-      'grand-world': { x: -12, y: 9, originX: 1 },
+      'vinwonders': { x: 12, y: -10, originX: 0 },
+      'vinpearl-safari': { x: 12, y: 12, originX: 0 },
+      'grand-world': { x: -12, y: 12, originX: 1 },
       'bai-sao': { x: -12, y: -3, originX: 1 },
       'sunset-town': { x: -12, y: -8, originX: 1 },
       'an-thoi': { x: -12, y: 10, originX: 1 },
