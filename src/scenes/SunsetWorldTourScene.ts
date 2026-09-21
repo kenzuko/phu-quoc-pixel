@@ -28,7 +28,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       fontFamily: 'monospace', fontSize: '15px', fontStyle: 'bold', color: '#ffffff'
     }).setOrigin(0.5).setDepth(40);
 
-    this.add.text(width / 2, 52, 'SCHEMATIC WORLD INSPECTOR · NO GAMEPLAY', {
+    this.add.text(width / 2, 52, 'EVIDENCE WORLD INSPECTOR · NO GAMEPLAY', {
       fontFamily: 'monospace', fontSize: '8px', color: '#f4cb64'
     }).setOrigin(0.5).setDepth(40);
 
@@ -92,13 +92,20 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.drawWorld(segment);
 
     const confidence = segment.confidence.toUpperCase();
+    const spatial = segment.spatialStatus.toUpperCase().replace('-', ' ');
     this.title.setText(`${segment.id} · ${segment.label}`);
     this.meta.setText(
       `SLOPE ${segment.slope.toUpperCase()}   SEA ${Math.round(segment.seaVisibility * 100)}%\n` +
       `OPENNESS ${Math.round(segment.openness * 100)}%   CONFIDENCE ${confidence}\n` +
-      `LANDMARKS ${segment.landmarkIds.length ? segment.landmarkIds.join(', ').toUpperCase() : 'NONE'}`
+      `SPATIAL ${spatial}   LANDMARKS ${segment.landmarkIds.length ? segment.landmarkIds.join(', ').toUpperCase() : 'NONE'}`
     );
-    this.evidence.setText(`EVIDENCE: ${segment.referenceIds.join(' · ')}`);
+
+    const evidencePrefix = segment.spatialStatus === 'hypothesis'
+      ? 'NOT ROUTE-APPROVED · EVIDENCE'
+      : segment.spatialStatus === 'visual-only'
+        ? 'VISUAL ONLY · EVIDENCE'
+        : 'EVIDENCE';
+    this.evidence.setText(`${evidencePrefix}: ${segment.referenceIds.join(' · ')}`);
 
     this.progress.clear();
     this.progress.fillStyle(0x183b48, 1);
