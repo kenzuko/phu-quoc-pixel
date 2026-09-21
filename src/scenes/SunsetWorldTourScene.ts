@@ -278,38 +278,97 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   }
 
   private drawTransport(g: Phaser.GameObjects.Graphics): void {
-    this.drawSky(g, 438);
+    // Section-like perspective: inland/high at top, sea/lower at bottom.
+    g.fillStyle(0xd78c6f, 1);
+    g.fillRect(0, 72, 540, 180);
+    g.fillStyle(0xe8ad7d, 1);
+    g.fillRect(0, 252, 540, 86);
 
-    g.fillStyle(0xcbb893, 1);
-    g.fillRect(52, 405, 436, 205);
+    // UPPER TERRACE - Cable Car Station / Anh Duong Square.
+    g.fillStyle(0xd1b98f, 1);
+    g.beginPath();
+    g.moveTo(46, 290);
+    g.lineTo(494, 290);
+    g.lineTo(458, 364);
+    g.lineTo(82, 364);
+    g.closePath();
+    g.fillPath();
 
-    // Anh Duong Square and station are verified as a grouped transport anchor.
-    g.fillStyle(0xb65d4c, 1);
-    g.fillRect(142, 282, 256, 134);
+    g.fillStyle(0xb9604f, 1);
+    g.fillRect(118, 190, 260, 104);
     g.fillStyle(0xe3c47d, 1);
-    g.fillRect(170, 252, 200, 38);
+    g.fillRect(148, 164, 200, 34);
     g.fillStyle(0x264955, 1);
-    g.fillRect(185, 315, 170, 74);
+    g.fillRect(158, 224, 180, 50);
 
     g.fillStyle(0x304c53, 1);
-    g.fillRect(118, 214, 12, 196);
-    g.fillRect(410, 214, 12, 196);
+    g.fillRect(94, 142, 10, 150);
+    g.fillRect(432, 142, 10, 150);
+    g.lineStyle(3, 0x273e44, 0.9);
+    g.lineBetween(99, 152, 12, 82);
+    g.lineBetween(437, 152, 528, 82);
 
-    g.lineStyle(3, 0x273e44, 0.92);
-    g.lineBetween(124, 224, 18, 118);
-    g.lineBetween(416, 224, 525, 116);
+    // MIDDLE TERRACE - Sunset Bazaar.
+    g.fillStyle(0xbea77f, 1);
+    g.beginPath();
+    g.moveTo(84, 366);
+    g.lineTo(456, 366);
+    g.lineTo(428, 433);
+    g.lineTo(112, 433);
+    g.closePath();
+    g.fillPath();
 
-    g.fillStyle(0xf2dca3, 1);
-    for (let i = 0; i < 5; i += 1) {
-      g.fillRect(104 + i * 82, 488 + (i % 2) * 18, 20, 6);
+    g.fillStyle(0x9a5148, 1);
+    g.fillRect(150, 382, 240, 34);
+    for (let i = 0; i < 10; i += 1) {
+      g.fillStyle(i % 2 === 0 ? 0xfcbd22 : 0xe98566, 1);
+      g.fillRect(160 + i * 21, 392, 8, 8);
     }
 
-    this.addPixelLabel('ANH DUONG SQUARE', 270, 458, '#ffe283', 0.5);
-    this.addPixelLabel('HON THOM CABLE CAR DEPARTURE', 270, 535, '#ffffff', 0.5);
-    this.addPixelLabel('TRANSPORT ANCHOR · NOT A DRIVING ROUTE', 270, 578, '#8fb4bc', 0.5);
+    // LOWER TERRACE - Kiss of the Sea stage.
+    g.fillStyle(0xaa9777, 1);
+    g.beginPath();
+    g.moveTo(114, 435);
+    g.lineTo(426, 435);
+    g.lineTo(398, 502);
+    g.lineTo(142, 502);
+    g.closePath();
+    g.fillPath();
+
+    g.lineStyle(7, 0xc66f5b, 0.95);
+    g.strokeCircle(270, 468, 30);
+    g.lineStyle(3, 0xf2c872, 0.82);
+    g.strokeCircle(270, 468, 19);
+
+    // SEAFRONT - Kiss Bridge beyond the stage.
+    g.fillStyle(0x287b8d, 1);
+    g.fillRect(0, 502, 540, 108);
+    g.lineStyle(6, 0xe7d6ad, 1);
+    g.beginPath();
+    g.moveTo(48, 550);
+    g.lineTo(164, 520);
+    g.lineTo(226, 514);
+    g.strokePath();
+    g.beginPath();
+    g.moveTo(492, 550);
+    g.lineTo(378, 520);
+    g.lineTo(316, 514);
+    g.strokePath();
+
+    // Vertical connectors make the terrace hierarchy explicit.
+    g.lineStyle(3, 0x6b655b, 0.8);
+    for (let x = 118; x <= 422; x += 38) {
+      g.lineBetween(x, 356, x + 8, 370);
+      g.lineBetween(x + 8, 425, x + 16, 439);
+    }
+
+    this.addPixelLabel('UPPER · CABLE CAR', 270, 310, '#ffe283', 0.5);
+    this.addPixelLabel('MIDDLE · SUNSET BAZAAR', 270, 404, '#ffffff', 0.5);
+    this.addPixelLabel('LOWER · KISS OF THE SEA', 270, 482, '#ffffff', 0.5);
+    this.addPixelLabel('SEAFRONT · KISS BRIDGE', 270, 570, '#d8f3ef', 0.5);
   }
 
-  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
+  private drawApolloSquare  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
     this.drawSky(g, 445);
 
     g.fillStyle(0xc8b38b, 1);
@@ -341,72 +400,132 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   }
 
   private drawWaterfront(g: Phaser.GameObjects.Graphics): void {
-    this.drawSky(g, 330);
+    // Perspective corrected from operator-confirmed field references:
+    // inland/high is toward the top, seaward/low is toward the bottom.
+    g.fillStyle(0xd4866d, 1);
+    g.fillRect(0, 72, 540, 150);
+    g.fillStyle(0xe9aa77, 1);
+    g.fillRect(0, 222, 540, 74);
 
-    g.fillStyle(0x2b7180, 1);
-    g.fillRect(0, 330, 540, 280);
-
-    // Shore platform
-    g.fillStyle(0xcab38d, 1);
+    // Upper town / cable car context.
+    g.fillStyle(0xcfb68c, 1);
     g.beginPath();
-    g.moveTo(0, 535);
-    g.lineTo(540, 490);
-    g.lineTo(540, 610);
-    g.lineTo(0, 610);
+    g.moveTo(32, 290);
+    g.lineTo(508, 290);
+    g.lineTo(466, 355);
+    g.lineTo(74, 355);
+    g.closePath();
+    g.fillPath();
+    g.fillStyle(0xb86150, 1);
+    g.fillRect(72, 230, 150, 60);
+    this.addPixelLabel('CABLE CAR · UPPER', 147, 244, '#ffe283', 0.5);
+
+    // Sunset Bazaar belongs on the middle terrace - not below the stage.
+    g.fillStyle(0xbda77f, 1);
+    g.beginPath();
+    g.moveTo(74, 357);
+    g.lineTo(466, 357);
+    g.lineTo(430, 421);
+    g.lineTo(110, 421);
     g.closePath();
     g.fillPath();
 
-    // Kiss Bridge, stylised but preserving the split-pair identity.
+    g.fillStyle(0x9a5148, 1);
+    g.fillRect(118, 374, 220, 32);
+    for (let i = 0; i < 9; i += 1) {
+      g.fillStyle(i % 2 === 0 ? 0xfcbd22 : 0xe98566, 1);
+      g.fillRect(130 + i * 21, 384, 8, 8);
+    }
+    this.addPixelLabel('SUNSET BAZAAR · MIDDLE', 228, 397, '#ffffff', 0.5);
+
+    // One terrace down sits Kiss of the Sea.
+    g.fillStyle(0xa99575, 1);
+    g.beginPath();
+    g.moveTo(110, 423);
+    g.lineTo(430, 423);
+    g.lineTo(397, 491);
+    g.lineTo(143, 491);
+    g.closePath();
+    g.fillPath();
+
+    g.lineStyle(8, 0xc66f5b, 0.95);
+    g.strokeCircle(324, 458, 31);
+    g.lineStyle(3, 0xf2c872, 0.85);
+    g.strokeCircle(324, 458, 19);
+    this.addPixelLabel('KISS OF THE SEA · LOWER', 324, 472, '#ffffff', 0.5);
+
+    // Sea and bridge are beyond the stage.
+    g.fillStyle(0x287b8d, 1);
+    g.fillRect(0, 491, 540, 119);
+    g.fillStyle(0x82cfc7, 0.28);
+    for (let x = 18; x < 530; x += 48) g.fillRect(x, 548 + (x % 3) * 5, 24, 3);
+
     g.lineStyle(7, 0xe7d6ad, 1);
     g.beginPath();
-    g.moveTo(34, 478);
-    g.lineTo(145, 414);
-    g.lineTo(223, 398);
+    g.moveTo(30, 555);
+    g.lineTo(145, 515);
+    g.lineTo(226, 510);
     g.strokePath();
     g.beginPath();
-    g.moveTo(506, 474);
-    g.lineTo(402, 414);
-    g.lineTo(319, 398);
+    g.moveTo(510, 555);
+    g.lineTo(397, 515);
+    g.lineTo(316, 510);
     g.strokePath();
 
-    // Kiss of the Sea stage as a non-metric waterfront anchor.
-    g.lineStyle(7, 0xc66f5b, 0.94);
-    g.strokeCircle(418, 505, 42);
-    g.lineStyle(3, 0xf2c872, 0.8);
-    g.strokeCircle(418, 505, 29);
+    this.addPixelLabel('KISS BRIDGE · SEAFRONT', 270, 524, '#ffe283', 0.5);
 
-    // Bazaar light band, relation-only.
-    g.fillStyle(0x9a5148, 1);
-    g.fillRect(64, 525, 170, 38);
-    for (let i = 0; i < 8; i += 1) {
-      g.fillStyle(i % 2 === 0 ? 0xfcbd22 : 0xe98566, 1);
-      g.fillRect(74 + i * 19, 534, 8, 8);
+    // Stair/level transitions, deliberately schematic rather than metric.
+    g.lineStyle(3, 0x6c6558, 0.8);
+    for (let x = 90; x <= 420; x += 42) {
+      g.lineBetween(x, 347, x + 10, 363);
+      g.lineBetween(x + 10, 413, x + 20, 429);
     }
-
-    this.addPixelLabel('KISS BRIDGE', 270, 374, '#ffe283', 0.5);
-    this.addPixelLabel('SUNSET BAZAAR', 149, 579, '#ffffff', 0.5);
-    this.addPixelLabel('KISS OF THE SEA', 418, 566, '#ffffff', 0.5);
   }
 
-  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
+  private drawPlaceGraph  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
     const positions: Readonly<Record<string, { x: number; y: number }>> = {
-      'central-village': { x: 270, y: 190 },
-      'clock-tower': { x: 270, y: 280 },
-      'cable-car-station': { x: 105, y: 400 },
-      'kiss-bridge': { x: 270, y: 450 },
-      'kiss-stage': { x: 430, y: 410 },
-      'sunset-bazaar': { x: 390, y: 520 }
+      'central-village': { x: 270, y: 145 },
+      'clock-tower': { x: 270, y: 220 },
+      'cable-car-station': { x: 138, y: 300 },
+      'sunset-bazaar': { x: 250, y: 380 },
+      'kiss-stage': { x: 330, y: 465 },
+      'kiss-bridge': { x: 330, y: 555 }
     };
+
+    // Terrace bands make the graph explicitly 3D-ish rather than planar.
+    const bands = [
+      { y: 116, h: 215, label: 'UPPER TERRACE' },
+      { y: 332, h: 82, label: 'MIDDLE TERRACE' },
+      { y: 415, h: 84, label: 'LOWER TERRACE' },
+      { y: 500, h: 96, label: 'SEAFRONT' }
+    ];
+    for (let i = 0; i < bands.length; i += 1) {
+      const band = bands[i];
+      g.fillStyle(i % 2 === 0 ? 0x123d4b : 0x164654, 0.72);
+      g.fillRect(26, band.y, 488, band.h);
+      this.addPixelLabel(band.label, 38, band.y + 8, '#7faeb5');
+    }
 
     for (const edge of SUNSET_TOWN_GRAPH_EDGES) {
       const from = positions[edge.from];
       const to = positions[edge.to];
       if (!from || !to) continue;
 
-      g.lineStyle(2, 0x8bd9d2, edge.confidence === 'verified' ? 0.8 : 0.46);
+      const vertical =
+        edge.relation === 'above' ||
+        edge.relation === 'below' ||
+        edge.relation === 'terraced-to' ||
+        edge.relation === 'inland-of' ||
+        edge.relation === 'seaward-of';
+
+      g.lineStyle(
+        vertical ? 3 : 2,
+        vertical ? 0xf0c86e : 0x8bd9d2,
+        edge.confidence === 'verified' ? 0.84 : 0.48
+      );
       g.lineBetween(from.x, from.y, to.x, to.y);
     }
 
@@ -423,16 +542,18 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       this.addPixelLabel(
         node.label,
         position.x,
-        position.y - 19,
+        position.y - 20,
         strong ? '#ffe283' : '#d5ecea',
         0.5
       );
     }
 
-    this.addPixelLabel('SCHEMATIC RELATION GRAPH · NOT A MAP', 270, 566, '#8fb4bc', 0.5);
+    this.addPixelLabel('INLAND / HIGH', 492, 124, '#a8d2d5', 1);
+    this.addPixelLabel('SEA / LOW', 492, 572, '#a8d2d5', 1);
+    this.addPixelLabel('3D RELATION GRAPH · NOT A METRIC MAP', 270, 603, '#8fb4bc', 0.5);
   }
 
-  private drawFacade(
+  private drawFacade  private drawFacade(
     g: Phaser.GameObjects.Graphics,
     x: number,
     y: number,
