@@ -7,7 +7,7 @@ import {
   SUNSET_TOWN_GRAPH_NODES,
   SUNSET_TOWN_WORLD_PLATES
 } from '../world-v2/places/sunset-town-graph';
-import { SUNSET_TOWN_OPERATOR_PLAN_ORIENTATION } from '../world-v2/places/sunset-town-operator-layout';
+import { SUNSET_TOWN_WORLD_PLAN_ORIENTATION } from '../world-v2/places/sunset-town-operator-layout';
 import {
   SUNSET_TOWN_COMPOSITION,
   SUNSET_TOWN_ROUTE_CANDIDATE,
@@ -210,12 +210,11 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    // West is down in the approved East-up layout, so open water belongs
-    // along the lower edge of this QA composition.
+    // Canonical plan: west is left. Keep open water on the left edge.
     g.fillStyle(0x226f83, 0.52);
-    g.fillRect(0, 500, 540, 110);
+    g.fillRect(0, 72, 112, 538);
     g.fillStyle(0x83d0c8, 0.22);
-    for (let x = 18; x < 530; x += 44) g.fillRect(x, 544 + (x % 3) * 5, 24, 3);
+    for (let y = 118; y < 596; y += 44) g.fillRect(30 + (y % 3) * 5, y, 24, 3);
 
     this.drawCompositionLayer(g);
 
@@ -241,10 +240,10 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     }
 
     this.addPixelLabel('WORLD MASSING · OPERATOR PLAN', 26, 116, '#8bd9d2');
-    this.addPixelLabel('E ↑', 270, 104, '#ffffff', 0.5);
-    this.addPixelLabel('N ←', 24, 326, '#ffffff');
-    this.addPixelLabel('S →', 516, 326, '#ffffff', 1);
-    this.addPixelLabel('W / SEA ↓', 270, 590, '#ffe283', 0.5);
+    this.addPixelLabel('N ↑', 270, 104, '#ffffff', 0.5);
+    this.addPixelLabel('W / SEA ←', 24, 326, '#ffe283');
+    this.addPixelLabel('E →', 516, 326, '#ffffff', 1);
+    this.addPixelLabel('S ↓', 270, 590, '#ffffff', 0.5);
     this.addPixelLabel('NODE POSITIONS LOCKED · MASSING MAY STILL CHANGE', 270, 611, '#8fb4bc', 0.5);
   }
 
@@ -267,6 +266,17 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.drawPlanNode(g, 'clock-tower', clock.x, clock.y, '#ffe283');
     this.drawPlanNode(g, 'apollo-square', apollo.x, apollo.y, '#d5ecea');
 
+    // Central Village faces west toward the sea - left in the canonical plan.
+    g.lineStyle(4, 0xfcbd22, 0.82);
+    g.lineBetween(central.x - 12, central.y + 12, Math.max(34, central.x - 98), central.y + 12);
+    g.fillStyle(0xfcbd22, 0.92);
+    g.fillTriangle(
+      Math.max(28, central.x - 102), central.y + 12,
+      Math.max(42, central.x - 88), central.y + 4,
+      Math.max(42, central.x - 88), central.y + 20
+    );
+    this.addPixelLabel('VIEW WEST → SEA', Math.max(34, central.x - 112), central.y + 26, '#ffe283');
+
     // Clock Tower visual mass sits at its node, but does not replace the node.
     this.drawClockTower(g, clock.x, clock.y - 76, 0.48);
 
@@ -279,11 +289,11 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    this.addPixelLabel('OPERATOR PLAN · EAST-UP', 26, 120, '#8bd9d2');
-    this.addPixelLabel('E ↑', 270, 108, '#ffffff', 0.5);
-    this.addPixelLabel('N ←', 28, 330, '#ffffff');
-    this.addPixelLabel('S →', 512, 330, '#ffffff', 1);
-    this.addPixelLabel('W / SEA ↓', 270, 586, '#ffe283', 0.5);
+    this.addPixelLabel('OPERATOR PLAN · NORTH-UP', 26, 120, '#8bd9d2');
+    this.addPixelLabel('N ↑', 270, 108, '#ffffff', 0.5);
+    this.addPixelLabel('W / SEA ←', 28, 330, '#ffe283');
+    this.addPixelLabel('E →', 512, 330, '#ffffff', 1);
+    this.addPixelLabel('S ↓', 270, 586, '#ffffff', 0.5);
 
     const cable = this.operatorPosition('cable-car-station');
     const stage = this.operatorPosition('kiss-stage');
@@ -348,10 +358,13 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.drawCompositionLayer(g);
 
     this.addPixelLabel('OPERATOR-APPROVED RELATIVE PLAN', 26, 114, '#8bd9d2');
-    this.addPixelLabel('E ↑', 270, 104, '#ffffff', 0.5);
-    this.addPixelLabel('N ←', 24, 326, '#ffffff');
-    this.addPixelLabel('S →', 516, 326, '#ffffff', 1);
-    this.addPixelLabel('W / SEA ↓', 270, 592, '#ffe283', 0.5);
+    g.fillStyle(0x226f83, 0.34);
+    g.fillRect(0, 72, 102, 538);
+
+    this.addPixelLabel('N ↑', 270, 104, '#ffffff', 0.5);
+    this.addPixelLabel('W / SEA ←', 24, 326, '#ffe283');
+    this.addPixelLabel('E →', 516, 326, '#ffffff', 1);
+    this.addPixelLabel('S ↓', 270, 592, '#ffffff', 0.5);
 
     const ids = [
       'central-village',
@@ -396,7 +409,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    this.addPixelLabel('APPROVED PLAN GRAPH · EAST-UP', 26, 112, '#8bd9d2');
+    this.addPixelLabel('APPROVED PLAN GRAPH · NORTH-UP', 26, 112, '#8bd9d2');
     this.addPixelLabel('SOLID = PLAN RELATION · GOLD = LOCAL LEVEL RELATION', 26, 133, '#8fb4bc');
 
     const ids = [
@@ -532,9 +545,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     if (!node?.operatorPlanPoint) return { x: 270, y: 340 };
 
     const point = node.operatorPlanPoint;
-    const oriented = SUNSET_TOWN_OPERATOR_PLAN_ORIENTATION === 'east-up'
-      ? { x: 1 - point.y, y: point.x }
-      : point;
+    const oriented = SUNSET_TOWN_WORLD_PLAN_ORIENTATION === 'north-up'
+      ? point
+      : { x: 1 - point.y, y: point.x };
 
     return {
       x: 62 + oriented.x * 416,
