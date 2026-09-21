@@ -201,3 +201,27 @@ Sunset Town operator layout approved 2026-09-21:
 - source of truth: `sunset-town-operator-layout.ts`
 
 This operator layout supersedes the previous generated local composition for STP-03, STP-05 and STP-06.
+
+
+## Composition layer rule
+
+After an operator-approved relative layout exists, world composition may add building mass, plazas, stairs, sea openings, light bands and other visual density around those nodes.
+
+Composition rules:
+- composition may attach to an approved node but may not move that node
+- massing may be compressed or stylised, but must preserve the approved opening toward sea and the local spatial hierarchy
+- visual-only mass must remain distinguishable from verified geometry
+- all composition data lives outside the operator layout so future art iteration cannot silently rewrite approved spatial truth
+
+## Route candidate rule
+
+A route candidate may be drawn during World Tour QA before gameplay exists.
+
+A route candidate:
+- is explicitly hypothesis-only
+- may connect approved nodes for visual inspection
+- must never overwrite operator layout, geo anchors or elevation data
+- does not authorize gameplay, hazards, scoring or route-lock
+- may be rejected or redrawn without changing the underlying place model
+
+Sunset Town first route candidate is QA-only and must not be treated as the NO BRAKES route.

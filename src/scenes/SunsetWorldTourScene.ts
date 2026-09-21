@@ -8,6 +8,11 @@ import {
   SUNSET_TOWN_WORLD_PLATES
 } from '../world-v2/places/sunset-town-graph';
 import { SUNSET_TOWN_OPERATOR_PLAN_ORIENTATION } from '../world-v2/places/sunset-town-operator-layout';
+import {
+  SUNSET_TOWN_COMPOSITION,
+  SUNSET_TOWN_ROUTE_CANDIDATE,
+  SUNSET_TOWN_ROUTE_CANDIDATE_STATUS
+} from '../world-v2/places/sunset-town-composition';
 import type { WorldPlate } from '../world-v2/types';
 
 export class SunsetWorldTourScene extends Phaser.Scene {
@@ -202,80 +207,72 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   }
 
   private drawOverview(g: Phaser.GameObjects.Graphics): void {
-    this.drawSky(g, 440);
+    g.fillStyle(0x0b3447, 1);
+    g.fillRect(0, 72, 540, 538);
 
-    // West-facing hillside relationship. This is a spatial plate, not a route.
-    g.fillStyle(0x35554d, 1);
-    g.beginPath();
-    g.moveTo(210, 430);
-    g.lineTo(540, 250);
-    g.lineTo(540, 610);
-    g.lineTo(180, 610);
-    g.closePath();
-    g.fillPath();
+    // West is down in the approved East-up layout, so open water belongs
+    // along the lower edge of this QA composition.
+    g.fillStyle(0x226f83, 0.52);
+    g.fillRect(0, 500, 540, 110);
+    g.fillStyle(0x83d0c8, 0.22);
+    for (let x = 18; x < 530; x += 44) g.fillRect(x, 544 + (x % 3) * 5, 24, 3);
 
-    const palette = [0xd27858, 0xe0a268, 0xc46255, 0xe2bd83, 0x9f7467];
-    for (let row = 0; row < 5; row += 1) {
-      const y = 475 - row * 55;
-      const startX = 230 + row * 40;
-      const count = 5 - Math.floor(row / 2);
-      for (let i = 0; i < count; i += 1) {
-        const x = startX + i * 58;
-        const h = 54 + ((i + row) % 3) * 15;
-        g.fillStyle(palette[(i + row) % palette.length], 1);
-        g.fillRect(x, y - h, 46, h);
-        g.fillStyle(0xf0ddb4, 0.58);
-        g.fillRect(x + 9, y - h + 14, 8, 11);
-        g.fillRect(x + 28, y - h + 14, 8, 11);
-      }
+    this.drawCompositionLayer(g);
+
+    const ids = [
+      'central-village',
+      'clock-tower',
+      'apollo-square',
+      'sunset-bazaar',
+      'cable-car-station',
+      'kiss-stage',
+      'kiss-bridge'
+    ] as const;
+
+    for (const id of ids) {
+      const p = this.operatorPosition(id);
+      const color =
+        id === 'clock-tower' || id === 'kiss-bridge'
+          ? '#ffe283'
+          : id === 'kiss-stage'
+            ? '#f0a17e'
+            : '#d5ecea';
+      this.drawPlanNode(g, id, p.x, p.y, color);
     }
 
-    this.drawClockTower(g, 305, 318, 0.72);
-
-    g.fillStyle(0xfcbd22, 0.9);
-    g.fillRect(42, 488, 126, 5);
-    this.addPixelLabel('SEA · WEST', 46, 500, '#ffe283');
-
-    this.addPixelLabel('HILLSIDE TOWN MASS', 324, 180, '#e6f1e8');
-    this.addPixelLabel('NO STREET ROUTE INFERRED', 275, 585, '#8fb4bc');
+    this.addPixelLabel('WORLD MASSING · OPERATOR PLAN', 26, 116, '#8bd9d2');
+    this.addPixelLabel('E ↑', 270, 104, '#ffffff', 0.5);
+    this.addPixelLabel('N ←', 24, 326, '#ffffff');
+    this.addPixelLabel('S →', 516, 326, '#ffffff', 1);
+    this.addPixelLabel('W / SEA ↓', 270, 590, '#ffe283', 0.5);
+    this.addPixelLabel('NODE POSITIONS LOCKED · MASSING MAY STILL CHANGE', 270, 611, '#8fb4bc', 0.5);
   }
 
   private drawCentralVillage(g: Phaser.GameObjects.Graphics): void {
-    this.drawSky(g, 430);
+    g.fillStyle(0x0b3447, 1);
+    g.fillRect(0, 72, 540, 538);
 
-    // Plaza is intentionally broad. Relative positions inside the group are
-    // presentation-only unless explicitly named by the source.
-    g.fillStyle(0xcbb68d, 1);
-    g.beginPath();
-    g.moveTo(74, 610);
-    g.lineTo(466, 610);
-    g.lineTo(390, 386);
-    g.lineTo(150, 386);
-    g.closePath();
-    g.fillPath();
+    this.drawCompositionLayer(g);
 
-    this.drawFacade(g, 24, 286, 126, 232, 0xc76655);
-    this.drawFacade(g, 390, 276, 126, 242, 0xd59c66);
-    this.drawClockTower(g, 270, 215, 1);
+    const central = this.operatorPosition('central-village');
+    const clock = this.operatorPosition('clock-tower');
+    const apollo = this.operatorPosition('apollo-square');
 
-    // Grouped La Festa elements. These are not exact metric placements.
-    g.fillStyle(0xb86a4f, 1);
-    g.fillRect(176, 454, 58, 44);
-    g.fillStyle(0x4d766e, 1);
-    g.fillRect(307, 456, 72, 39);
+    // Readable central-town fabric without moving the approved anchors.
+    g.lineStyle(3, 0x8bd9d2, 0.42);
+    g.lineBetween(central.x, central.y, clock.x, clock.y);
+    g.lineBetween(clock.x, clock.y, apollo.x, apollo.y);
 
-    g.lineStyle(4, 0xe1c27a, 0.85);
-    g.beginPath();
-    g.moveTo(224, 515);
-    g.lineTo(250, 487);
-    g.lineTo(270, 515);
-    g.lineTo(290, 487);
-    g.lineTo(318, 515);
-    g.strokePath();
+    this.drawPlanNode(g, 'central-village', central.x, central.y, '#d5ecea');
+    this.drawPlanNode(g, 'clock-tower', clock.x, clock.y, '#ffe283');
+    this.drawPlanNode(g, 'apollo-square', apollo.x, apollo.y, '#d5ecea');
 
-    this.addPixelLabel('CLOCK TOWER', 270, 198, '#ffe283', 0.5);
-    this.addPixelLabel('LA FESTA GROUP', 270, 540, '#ffffff', 0.5);
-    this.addPixelLabel('DRAGON STAIRS · KING OF SUN · GALLERY', 270, 563, '#bcd9dc', 0.5);
+    // Clock Tower visual mass sits at its node, but does not replace the node.
+    this.drawClockTower(g, clock.x, clock.y - 76, 0.48);
+
+    this.addPixelLabel('CENTRAL CLUSTER · DENSITY / MATERIAL QA', 26, 118, '#8bd9d2');
+    this.addPixelLabel('WARM FACADES · STONE PLAZA · TIGHTER URBAN MASS', 270, 585, '#bcd9dc', 0.5);
+    this.addPixelLabel('NO ROUTE APPROVAL FROM THIS PLATE', 270, 606, '#8fb4bc', 0.5);
   }
 
   private drawTransport(g: Phaser.GameObjects.Graphics): void {
@@ -348,6 +345,8 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
+    this.drawCompositionLayer(g);
+
     this.addPixelLabel('OPERATOR-APPROVED RELATIVE PLAN', 26, 114, '#8bd9d2');
     this.addPixelLabel('E ↑', 270, 104, '#ffffff', 0.5);
     this.addPixelLabel('N ←', 24, 326, '#ffffff');
@@ -389,6 +388,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       g.lineBetween(pa.x, pa.y, pb.x, pb.y);
     }
 
+    this.drawRouteCandidate(g);
     this.addPixelLabel('LAYOUT FROM YOUR DRAG EDITOR · NO GEO RE-NORMALIZATION', 270, 610, '#8fb4bc', 0.5);
   }
 
@@ -442,8 +442,89 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       );
     }
 
+    this.drawRouteCandidate(g);
     this.addPixelLabel('PLAN SOURCE: OPERATOR DRAG LAYOUT', 270, 584, '#8fb4bc', 0.5);
     this.addPixelLabel('GEO + ELEVATION REMAIN SEPARATE DATA LAYERS', 270, 605, '#8fb4bc', 0.5);
+  }
+
+  private drawCompositionLayer(g: Phaser.GameObjects.Graphics): void {
+    for (const element of SUNSET_TOWN_COMPOSITION) {
+      const anchor = this.operatorPosition(element.anchorId);
+      const x = anchor.x + element.offset.x * 416;
+      const y = anchor.y + element.offset.y * 330;
+      const width = element.size.x * 416;
+      const height = element.size.y * 330;
+
+      switch (element.kind) {
+        case 'building-mass': {
+          const tones = [0xb96452, 0xd58b61, 0xd7b67e, 0x8b675f];
+          for (let i = 0; i < 4; i += 1) {
+            const w = width * (0.34 + (i % 2) * 0.08);
+            const h = height * (0.55 + ((i + 1) % 3) * 0.12);
+            const bx = x - width / 2 + (i % 2) * width * 0.48 + 4;
+            const by = y - height / 2 + Math.floor(i / 2) * height * 0.44;
+            g.fillStyle(tones[i % tones.length], element.confidence === 'visual-only' ? 0.52 : 0.82);
+            g.fillRect(bx, by, w, h);
+            g.fillStyle(0xf0d9ad, 0.42);
+            g.fillRect(bx + 7, by + 8, Math.max(5, w * 0.16), Math.max(5, h * 0.12));
+          }
+          break;
+        }
+        case 'plaza':
+          g.fillStyle(0xcab48d, element.confidence === 'visual-only' ? 0.35 : 0.56);
+          g.fillEllipse(x, y, width, height);
+          g.lineStyle(2, 0xe3cfaa, 0.3);
+          g.strokeEllipse(x, y, width, height);
+          break;
+        case 'stairs': {
+          g.lineStyle(3, 0xd7c49d, 0.74);
+          const steps = 7;
+          for (let i = 0; i < steps; i += 1) {
+            const sy = y - height / 2 + (i / steps) * height;
+            const inset = (i / steps) * width * 0.22;
+            g.lineBetween(x - width / 2 + inset, sy, x + width / 2 - inset, sy);
+          }
+          break;
+        }
+        case 'sea-opening':
+          g.fillStyle(0x2b8393, 0.34);
+          g.fillEllipse(x, y, width, height);
+          g.lineStyle(2, 0x9ddbd5, 0.22);
+          g.strokeEllipse(x, y, width, height);
+          break;
+        case 'light-band':
+          g.fillStyle(0x9d5048, 0.54);
+          g.fillRoundedRect(x - width / 2, y - height / 2, width, height, 5);
+          for (let i = 0; i < 8; i += 1) {
+            g.fillStyle(i % 2 === 0 ? 0xfcbd22 : 0xe98566, 0.86);
+            g.fillRect(x - width * 0.38 + i * width * 0.105, y - 3, 6, 6);
+          }
+          break;
+      }
+    }
+  }
+
+  private drawRouteCandidate(g: Phaser.GameObjects.Graphics): void {
+    if (SUNSET_TOWN_ROUTE_CANDIDATE_STATUS !== 'hypothesis') return;
+
+    g.lineStyle(3, 0xf0a17e, 0.55);
+    for (let i = 0; i < SUNSET_TOWN_ROUTE_CANDIDATE.length - 1; i += 1) {
+      const a = this.operatorPosition(SUNSET_TOWN_ROUTE_CANDIDATE[i]);
+      const b = this.operatorPosition(SUNSET_TOWN_ROUTE_CANDIDATE[i + 1]);
+      const parts = 10;
+      for (let p = 0; p < parts; p += 2) {
+        const t1 = p / parts;
+        const t2 = Math.min(1, (p + 1) / parts);
+        g.lineBetween(
+          Phaser.Math.Linear(a.x, b.x, t1),
+          Phaser.Math.Linear(a.y, b.y, t1),
+          Phaser.Math.Linear(a.x, b.x, t2),
+          Phaser.Math.Linear(a.y, b.y, t2)
+        );
+      }
+    }
+
+    this.addPixelLabel('ROUTE CANDIDATE · HYPOTHESIS ONLY', 270, 566, '#f0a17e', 0.5);
   }
 
   private operatorPosition(id: string): { x: number; y: number } {
