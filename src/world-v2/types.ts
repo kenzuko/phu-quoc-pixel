@@ -40,12 +40,15 @@ export interface PlaceZone {
   confidence: Confidence;
 }
 
+export type SpatialStatus = 'verified' | 'corroborated' | 'visual-only' | 'hypothesis';
+
 export interface WorldSegment {
   id: string;
   label: string;
   zoneId: string;
   order: number;
   routeProgress: number;
+  spatialStatus: SpatialStatus;
   slope: 'up' | 'flat' | 'down' | 'steep-down';
   openness: number;
   seaVisibility: number;
