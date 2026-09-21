@@ -71,7 +71,14 @@ LOW data may be omitted or represented generically. It must not be promoted to a
 
 ## Map rule
 
-The island map uses the same geographic anchors as world scenes. POI placement and coastline are geographic first. Presentation may be pixel-stylized; icon scale and spacing may be exaggerated for readability.
+The island map uses the same geographic anchors as world scenes. Coastline and place geometry are geographic first. Presentation may be pixel-stylized; icon scale and label spacing may be exaggerated for readability.
+
+Map entities are not all pins:
+- `point` - a feature that can honestly be represented as one location
+- `area` - a district, attraction complex, park or settlement; the label point is representative, not the feature boundary
+- `coast` - a named shoreline / beach; render the shoreline segment rather than pretending the beach is a single point
+
+A point may never silently stand in for an area or coast merely because it is easier to render.
 
 Rule: **Geometry faithful, presentation playful.**
 
