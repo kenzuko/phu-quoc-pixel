@@ -4,7 +4,7 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
   id: 'sunset-town',
   label: 'SUNSET TOWN',
   realityEpoch: '2026-09',
-  anchor: { lat: 10.0297, lon: 104.0077 },
+  anchor: { lat: 10.02943, lon: 104.00662 },
   zones: [
     { id: 'st-upper', label: 'UPPER STREETS', kind: 'street', confidence: 'medium' },
     { id: 'st-apollo', label: 'APOLLO SQUARE', kind: 'square', confidence: 'high' },
@@ -29,7 +29,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       capturedAt: '2026-04-11',
       coordinates: { lat: 10.0310, lon: 103.9820 },
       proves: ['street-level scale', 'Apollo Cafe appearance', 'street furniture', 'building colour and massing'],
-      confidence: 'verified',
+      confidence: 'high',
+      spatialUse: 'conflicting',
       license: 'CC BY-SA 4.0',
       usage: 'reference-only'
     },
@@ -41,7 +42,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       capturedAt: '2026-04-13',
       coordinates: { lat: 10.029701, lon: 104.007671 },
       proves: ['plaza openness', 'building massing', 'coastal relationship'],
-      confidence: 'verified',
+      confidence: 'high',
+      spatialUse: 'visual-only',
       license: 'CC BY-SA 4.0',
       usage: 'reference-only'
     },
@@ -61,9 +63,21 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       sourceUrl: 'https://commons.wikimedia.org/wiki/File:Kiss_Bridge_Phu_Quoc_aerial_sunset_view.jpg',
       capturedAt: '2026-03-04',
       coordinates: { lat: 10.0231, lon: 103.9812 },
-      proves: ['Kiss Bridge coastal position', 'waterfront openness', 'town-to-sea relationship'],
-      confidence: 'verified',
+      proves: ['Kiss Bridge appearance', 'waterfront openness', 'town-to-sea visual relationship'],
+      confidence: 'high',
+      spatialUse: 'conflicting',
       license: 'CC BY 4.0',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-06',
+      kind: 'map',
+      title: 'An Thoi Cable Car Station - mapped transport anchor',
+      sourceUrl: 'https://mapcarta.com/W1185867234',
+      coordinates: { lat: 10.02704, lon: 104.00724 },
+      proves: ['An Thoi cable-car station position', 'Sunset Town transport anchor'],
+      confidence: 'verified',
+      spatialUse: 'approved',
       usage: 'reference-only'
     },
     {
