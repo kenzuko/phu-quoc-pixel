@@ -18,6 +18,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   private meta!: Phaser.GameObjects.Text;
   private evidence!: Phaser.GameObjects.Text;
   private progress!: Phaser.GameObjects.Graphics;
+  private plateLabels: Phaser.GameObjects.Text[] = [];
 
   constructor() {
     super(SceneKeys.SunsetWorldTour);
@@ -157,6 +158,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   private drawPlate(plate: WorldPlate): void {
     const g = this.world;
     g.clear();
+    this.clearPlateLabels();
 
     switch (plate.kind) {
       case 'overview':
@@ -486,6 +488,11 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     );
   }
 
+  private clearPlateLabels(): void {
+    for (const label of this.plateLabels) label.destroy();
+    this.plateLabels = [];
+  }
+
   private addPixelLabel(
     text: string,
     x: number,
@@ -493,7 +500,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     color: string,
     originX = 0
   ): Phaser.GameObjects.Text {
-    return this.add.text(x, y, text, {
+    const label = this.add.text(x, y, text, {
       fontFamily: 'monospace',
       fontSize: '8px',
       fontStyle: 'bold',
@@ -501,5 +508,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       backgroundColor: '#082c3bcc',
       padding: { x: 4, y: 2 }
     }).setOrigin(originX, 0).setDepth(20);
+    this.plateLabels.push(label);
+    return label;
   }
 }
