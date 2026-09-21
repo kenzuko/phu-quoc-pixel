@@ -1,20 +1,22 @@
 import type { PlanOrientation, RelativePlanPoint } from '../types';
 
 export const SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION: PlanOrientation = 'east-up';
-export const SUNSET_TOWN_WORLD_PLAN_ORIENTATION: PlanOrientation = 'north-up';
+export const SUNSET_TOWN_SEA_EDGE = 'left' as const;
+export const SUNSET_TOWN_CENTRAL_FACING = 'west' as const;
 
 /**
  * Operator-approved relative layout supplied 2026-09-21.
  *
  * These are not geographic coordinates.
  *
- * Important: the editor exported canonical plan coordinates even when its
- * viewport was East-up. The exported orientation records only how the editor
- * was being viewed. World V2 renders these canonical coordinates North-up so:
- * west = left, east = right, north = up, south = down.
+ * The operator approved the node arrangement while the editor viewport was
+ * East-up. World V2 must reproduce that approved arrangement exactly.
  *
- * This preserves the manually corrected relative plan while making the sea
- * edge and Central Village's west-facing view explicit.
+ * Sea edge and facing direction are separate composition facts:
+ * - sea edge = left
+ * - Central Village faces west toward sea
+ *
+ * Correcting the sea axis must never rotate or move the approved node layout.
  */
 export const SUNSET_TOWN_OPERATOR_PLAN: Readonly<Record<string, RelativePlanPoint>> = {
   'clock-tower': { x: 0.5428571428571428, y: 0.5817610062893082 },
