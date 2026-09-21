@@ -49,7 +49,13 @@ Rule: **Compress distance, not spatial truth.**
 
 ## Place graph
 
-A place is represented as connected zones and segments, not a mood board. A segment may define geographic anchor, direction/openness, slope, left and right spatial mass, landmarks visible from the segment, ordinary ambient actors, light/time state, allowed gameplay slots, and reference evidence.
+A place is represented as connected zones, named nodes and evidence-backed relationships, not a mood board.
+
+The place graph may contain districts, squares, landmarks, transport anchors, waterfront anchors and venues. Edges describe only supported relationships such as contains, near, connects, faces or part-of.
+
+A route is a separate product of evidence. The system must not convert a place graph into a driveable route simply because the graph is connected.
+
+A segment may define geographic anchor, direction/openness, slope, left and right spatial mass, landmarks visible from the segment, ordinary ambient actors, light/time state, allowed gameplay slots, and reference evidence.
 
 ## Verified scene rule
 
@@ -127,3 +133,16 @@ World QA asks:
 - Did gameplay distort the place?
 
 The architecture is violated if implementation fixes a gameplay problem by falsifying the place when another gameplay solution exists.
+
+
+## World plate rule
+
+Before a driveable route is approved, V2 may render evidence-backed world plates.
+
+A world plate:
+- visualises a verified place relationship or visual identity
+- may compress distance for presentation
+- must state whether it is spatially verified, corroborated or visual-only
+- must not imply a route order unless route evidence exists
+
+World plates are an inspection stage between the Reality Pack and gameplay. They are not decorative concept art and are not permission to invent missing streets.
