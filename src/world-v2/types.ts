@@ -14,6 +14,7 @@ export interface WorldReference {
   coordinates?: GeoPoint;
   proves: readonly string[];
   confidence: Confidence;
+  spatialUse?: 'approved' | 'visual-only' | 'conflicting';
   license?: string;
   usage: 'reference-only' | 'approved-source';
 }
