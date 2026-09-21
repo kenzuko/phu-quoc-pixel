@@ -57,11 +57,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
 
     const autoButton = createButton(this, width / 2, 848, 'AUTO: ON', () => {
       this.auto = !this.auto;
-      autoButton.list.forEach((child) => {
-        if (child instanceof Phaser.GameObjects.Text) {
-          child.setText(this.auto ? 'AUTO: ON' : 'AUTO: OFF');
-        }
-      });
+      autoButton.setText(this.auto ? 'AUTO: ON' : 'AUTO: OFF');
       this.nextAt = this.time.now + 2600;
     }, { width: 205, fontSize: 11, backgroundColor: '#305c63', color: '#ffffff' });
 
