@@ -468,9 +468,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
 
   private drawCompositionLayer(g: Phaser.GameObjects.Graphics): void {
     for (const element of SUNSET_TOWN_COMPOSITION) {
-      const anchor = this.operatorPosition(element.anchorId);
-      const x = anchor.x + element.offset.x * 416;
-      const y = anchor.y + element.offset.y * 330;
+      const position = this.compositionPosition(element);
+      const x = position.x;
+      const y = position.y;
       const width = element.size.x * 416;
       const height = element.size.y * 330;
 
@@ -526,9 +526,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
           g.strokeEllipse(x, y, width, height);
           break;
         case 'bridge-arc': {
-          g.lineStyle(7, 0xe6d5aa, 0.96);
-          const start = Phaser.Math.DegToRad(55);
-          const end = Phaser.Math.DegToRad(305);
+          g.lineStyle(element.arc?.stroke ?? 8, 0xe6d5aa, 0.96);
+          const start = Phaser.Math.DegToRad(element.arc?.startDeg ?? 55);
+          const end = Phaser.Math.DegToRad(element.arc?.endDeg ?? 305);
           const steps = 34;
           let previousX = x + Math.cos(start) * width * 0.5;
           let previousY = y + Math.sin(start) * height * 0.5;
@@ -589,14 +589,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   }
 
   private kissShowStagePosition(): { x: number; y: number } {
-    const seating = this.operatorPosition('kiss-seating');
     const stage = SUNSET_TOWN_COMPOSITION.find((element) => element.id === 'kiss-performance-stage');
-    if (!stage) return { x: seating.x - 50, y: seating.y };
-
-    return {
-      x: seating.x + stage.offset.x * 416,
-      y: seating.y + stage.offset.y * 330
-    };
+    if (!stage) return this.operatorPosition('kiss-seating');
+    return this.compositionPosition(stage);
   }
 
   private drawKissShowGeometry(g: Phaser.GameObjects.Graphics): void {
@@ -604,9 +599,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     for (const element of SUNSET_TOWN_COMPOSITION) {
       if (!ids.has(element.id)) continue;
 
-      const anchor = this.operatorPosition(element.anchorId);
-      const x = anchor.x + element.offset.x * 416;
-      const y = anchor.y + element.offset.y * 330;
+      const position = this.compositionPosition(element);
+      const x = position.x;
+      const y = position.y;
       const width = element.size.x * 416;
       const height = element.size.y * 330;
 
@@ -626,9 +621,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       }
 
       if (element.kind === 'bridge-arc') {
-        g.lineStyle(7, 0xe6d5aa, 0.96);
-        const start = Phaser.Math.DegToRad(55);
-        const end = Phaser.Math.DegToRad(305);
+        g.lineStyle(element.arc?.stroke ?? 8, 0xe6d5aa, 0.96);
+        const start = Phaser.Math.DegToRad(element.arc?.startDeg ?? 55);
+        const end = Phaser.Math.DegToRad(element.arc?.endDeg ?? 305);
         const steps = 34;
         let previousX = x + Math.cos(start) * width * 0.5;
         let previousY = y + Math.sin(start) * height * 0.5;
@@ -644,11 +639,19 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     }
   }
 
-  private operatorPosition(id: string): { x: number; y: number } {
-    const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
-    if (!node?.operatorPlanPoint) return { x: 270, y: 340 };
+  private compositionPosition(
+    element: (typeof SUNSET_TOWN_COMPOSITION)[number]
+  ): { x: number; y: number } {
+    if (element.absoluteCenter) return this.editorPointPosition(element.absoluteCenter);
 
-    const point = node.operatorPlanPoint;
+    const anchor = this.operatorPosition(element.anchorId);
+    return {
+      x: anchor.x + element.offset.x * 416,
+      y: anchor.y + element.offset.y * 330
+    };
+  }
+
+  private editorPointPosition(point: { x: number; y: number }): { x: number; y: number } {
     const oriented = SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION === 'east-up'
       ? { x: 1 - point.y, y: point.x }
       : point;
@@ -657,6 +660,12 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       x: 62 + oriented.x * 416,
       y: 160 + oriented.y * 330
     };
+  }
+
+  private operatorPosition(id: string): { x: number; y: number } {
+    const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
+    if (!node?.operatorPlanPoint) return { x: 270, y: 340 };
+    return this.editorPointPosition(node.operatorPlanPoint);
   }
 
   private planPosition(id: string): { x: number; y: number } {

@@ -258,7 +258,14 @@ Operator correction dated 2026-09-21:
 - correcting Kiss Show geometry must not move any previously approved non-Kiss node
 
 For World Tour rendering:
-- seating retains the approved operator point
-- performance stage is rendered as a relative west/seaward element
-- bridge is rendered as an outer arc around the performance stage
-- exact performance-stage metric coordinates remain unlocked until separately verified
+- source of truth is the operator-edited `kiss-show-spatial-v2` JSON dated 2026-09-21
+- seating point = `{ x: 0.9224137931034483, y: 0.7813299232736572 }`
+- performance stage point = `{ x: 0.9281609195402298, y: 0.9680306905370843 }`
+- bridge center = `{ x: 0.5344827586206896, y: 0.98 }`
+- bridge arc = width `0.26`, height `0.22`, start `55°`, end `305°`, stroke `8`
+- seating size = `0.17 x 0.10`
+- performance stage size = `0.10 x 0.07`
+- these exact editor values replace all assistant-guessed Kiss offsets from PR #14
+- Kiss Bridge is an enclosing structure around the performance stage, not a separate POI arc beside it
+- the supplied Sunset Town reference image clarifies this composition relationship but does not replace the operator-edited JSON coordinates
+- all non-Kiss approved nodes remain frozen
