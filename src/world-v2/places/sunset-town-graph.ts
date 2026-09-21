@@ -196,7 +196,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Local composition now follows the operator-approved east-up drag layout exactly. Geo anchors remain cross-check evidence only; Cable Car -> Kiss Stage elevation stays a separate local relation.'
+    note: 'Local composition follows the operator-approved relative layout in canonical north-up world orientation: west/sea is left, east/inland is right. Geo anchors remain cross-check evidence only; Cable Car -> Kiss Stage elevation stays a separate local relation.'
   },
   {
     id: 'STP-06',
@@ -205,6 +205,6 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local plan is the operator drag layout (east-up). A dashed route candidate may be inspected as hypothesis only; it does not authorize gameplay or change node positions.'
+    note: 'Approved local plan is the operator drag layout (north-up). A dashed route candidate may be inspected as hypothesis only; it does not authorize gameplay or change node positions.'
   }
 ] as const;
