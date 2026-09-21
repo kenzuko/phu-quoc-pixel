@@ -115,6 +115,63 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       usage: 'reference-only'
     },
     {
+      id: 'ST-REF-10',
+      kind: 'map',
+      title: 'Official Sunset Town interactive map',
+      sourceUrl: 'https://sunsettown.com.vn/en/sunsettown-map',
+      proves: ['official Sunset Town spatial directory', 'named place relationships'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-11',
+      kind: 'official',
+      title: 'Official Sunset Town / Phu Quoc ecosystem brochure',
+      sourceUrl: 'https://sunsettown.com.vn/Ebook/ENG_BROCHURE%20HST%202S%20PHU%20QUOC_27032024_VIEW%20ko%20in.pdf',
+      proves: ['La Festa Square landmark grouping', 'Anh Duong Square cable-car station', 'Kiss Bridge and Kiss of the Sea named waterfront anchors'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-12',
+      kind: 'aerial-photo',
+      title: 'An Thoi fishing harbour with Sunset Town and cable-car tower',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:An_Thoi_fishing_harbour_Sunset_Town_Sun_World_Phu_Quoc_Vietnam.jpg',
+      capturedAt: '2026-04-11',
+      coordinates: { lat: 10.018615, lon: 104.007016 },
+      proves: ['An Thoi harbour context', 'Sunset Town massing in the background', 'cable-car tower visual context'],
+      confidence: 'high',
+      spatialUse: 'visual-only',
+      license: 'Wikimedia Commons source - verify file license before asset reuse',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-13',
+      kind: 'official',
+      title: 'Sun World - Sunset Bazaar central connection',
+      sourceUrl: 'https://sunworld.vn/vi/hon-thom/an-choi/khu-pho-thuong-mai-nghe-thuat-sunset-bazaar-co-gi-ma-ai-den-phu-quoc-cung-muon-di-19265',
+      capturedAt: '2026-05-20',
+      proves: ['Sunset Bazaar is central in Sunset Town', 'direct connection to Kiss Bridge', 'direct connection to Kiss of the Sea stage'],
+      confidence: 'high',
+      spatialUse: 'approved',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-14',
+      kind: 'aerial-photo',
+      title: 'Sunset Town aerial at night',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sunset_Town_Phu_Quoc_at_night.jpg',
+      capturedAt: '2026-04-25',
+      coordinates: { lat: 10.030084, lon: 104.007752 },
+      proves: ['hillside town massing', 'night lighting density', 'waterfront visual relationship'],
+      confidence: 'high',
+      spatialUse: 'visual-only',
+      license: 'Wikimedia Commons source - verify file license before asset reuse',
+      usage: 'reference-only'
+    },
+    {
       id: 'ST-REF-05',
       kind: 'official',
       title: 'Sun World - Sunset Town attractions 2026',

@@ -70,3 +70,54 @@ export interface PlaceManifest {
   segments: readonly WorldSegment[];
   references: readonly WorldReference[];
 }
+
+
+export type PlaceGraphNodeKind =
+  | 'district'
+  | 'square'
+  | 'landmark'
+  | 'transport'
+  | 'waterfront'
+  | 'venue';
+
+export interface PlaceGraphNode {
+  id: string;
+  label: string;
+  kind: PlaceGraphNodeKind;
+  spatialStatus: SpatialStatus;
+  confidence: Confidence;
+  referenceIds: readonly string[];
+}
+
+export type PlaceGraphRelation =
+  | 'contains'
+  | 'near'
+  | 'connects'
+  | 'faces'
+  | 'part-of';
+
+export interface PlaceGraphEdge {
+  from: string;
+  to: string;
+  relation: PlaceGraphRelation;
+  confidence: Confidence;
+  referenceIds: readonly string[];
+}
+
+export type WorldPlateKind =
+  | 'overview'
+  | 'central'
+  | 'square'
+  | 'waterfront'
+  | 'transport'
+  | 'graph';
+
+export interface WorldPlate {
+  id: string;
+  label: string;
+  kind: WorldPlateKind;
+  spatialStatus: SpatialStatus;
+  focusNodeIds: readonly string[];
+  referenceIds: readonly string[];
+  note: string;
+}
