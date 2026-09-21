@@ -9,7 +9,8 @@ export interface WorldReference {
   id: string;
   kind: 'official' | 'street-photo' | 'aerial-photo' | 'map' | 'video' | 'field-note';
   title: string;
-  sourceUrl: string;
+  sourceUrl?: string;
+  sourceNote?: string;
   capturedAt?: string;
   coordinates?: GeoPoint;
   proves: readonly string[];
@@ -80,12 +81,15 @@ export type PlaceGraphNodeKind =
   | 'waterfront'
   | 'venue';
 
+export type TerraceLevel = 'upper' | 'middle' | 'lower' | 'seafront';
+
 export interface PlaceGraphNode {
   id: string;
   label: string;
   kind: PlaceGraphNodeKind;
   spatialStatus: SpatialStatus;
   confidence: Confidence;
+  terrace?: TerraceLevel;
   referenceIds: readonly string[];
 }
 
@@ -94,7 +98,12 @@ export type PlaceGraphRelation =
   | 'near'
   | 'connects'
   | 'faces'
-  | 'part-of';
+  | 'part-of'
+  | 'above'
+  | 'below'
+  | 'inland-of'
+  | 'seaward-of'
+  | 'terraced-to';
 
 export interface PlaceGraphEdge {
   from: string;
