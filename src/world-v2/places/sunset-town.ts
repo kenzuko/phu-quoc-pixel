@@ -192,6 +192,38 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       usage: 'approved-source'
     },
     {
+      id: 'ST-REF-17',
+      kind: 'map',
+      title: 'Sunset Town plan cross-check - Clock Tower and Sunset Bazaar',
+      sourceNote: 'Cross-checked 2026-09-21 from current map/business listings. Clock Tower: 22J4+3RF (~10.03017, 104.00711). Sunset Bazaar: 22H4+QVJ / OSM-backed listing (~10.02945, 104.00719).',
+      proves: ['Clock Tower is north of Sunset Bazaar', 'Sunset Bazaar plan position is north of Cable Car Station'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-18',
+      kind: 'map',
+      title: 'An Thoi Cable Car Station plan anchor',
+      sourceUrl: 'https://mapcarta.com/W1185867234',
+      coordinates: { lat: 10.02704, lon: 104.00724 },
+      proves: ['Cable Car Station plan position', 'Cable Car Station lies south of Sunset Bazaar'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-19',
+      kind: 'map',
+      title: 'Kiss Bridge plan anchor',
+      sourceNote: 'Google Maps local code 22H3+7G4 cross-checked 2026-09-21, approximately 10.02814, 104.00381.',
+      coordinates: { lat: 10.028140625, lon: 104.0038125 },
+      proves: ['Kiss Bridge is west/seaward of the inland Clock Tower/Bazaar/Cable Car line', 'Kiss Bridge latitude lies between Sunset Bazaar and Cable Car Station'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
       id: 'ST-REF-05',
       kind: 'official',
       title: 'Sun World - Sunset Town attractions 2026',
