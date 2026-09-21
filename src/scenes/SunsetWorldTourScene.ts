@@ -248,7 +248,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('NODE POSITIONS LOCKED · MASSING MAY STILL CHANGE', 270, 611, '#8fb4bc', 0.5);
   }
 
-  private drawCentralVillage  private drawCentralVillage(g: Phaser.GameObjects.Graphics): void {
+  private drawCentralVillage(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
@@ -275,7 +275,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('NO ROUTE APPROVAL FROM THIS PLATE', 270, 606, '#8fb4bc', 0.5);
   }
 
-  private drawTransport  private drawTransport(g: Phaser.GameObjects.Graphics): void {
+  private drawTransport(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
