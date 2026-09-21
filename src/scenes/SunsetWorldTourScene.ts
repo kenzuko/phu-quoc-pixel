@@ -313,7 +313,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('KISS STAGE · 1 LEVEL DOWN', 373, 566, '#ffffff', 0.5);
   }
 
-  private drawApolloSquare  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
+  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
     this.drawSky(g, 445);
 
     g.fillStyle(0xc8b38b, 1);
@@ -392,7 +392,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('LAYOUT FROM YOUR DRAG EDITOR · NO GEO RE-NORMALIZATION', 270, 610, '#8fb4bc', 0.5);
   }
 
-  private drawPlaceGraph  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
+  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
@@ -461,7 +461,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     };
   }
 
-  private planPosition  private planPosition(id: string): { x: number; y: number } {
+  private planPosition(id: string): { x: number; y: number } {
     const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
     if (!node?.planPoint) return { x: 270, y: 340 };
 
