@@ -107,13 +107,21 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     referenceIds: ['ST-REF-13', 'ST-REF-17', 'ST-REF-20']
   },
   {
-    id: 'kiss-stage',
-    label: 'KISS OF THE SEA STAGE',
+    id: 'kiss-seating',
+    label: 'KISS SHOW SEATING',
     kind: 'waterfront',
     spatialStatus: 'verified',
     confidence: 'verified',
-    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['kiss-stage'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-20']
+    operatorPlanPoint: SUNSET_TOWN_OPERATOR_PLAN['kiss-seating'],
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-20', 'ST-REF-21']
+  },
+  {
+    id: 'kiss-show-stage',
+    label: 'KISS SHOW PERFORMANCE STAGE',
+    kind: 'waterfront',
+    spatialStatus: 'corroborated',
+    confidence: 'verified',
+    referenceIds: ['ST-REF-11', 'ST-REF-13', 'ST-REF-21']
   },
   {
     id: 'kiss-bridge',
@@ -145,11 +153,13 @@ export const SUNSET_TOWN_GRAPH_EDGES: readonly PlaceGraphEdge[] = [
   { from: 'sunset-bazaar', to: 'kiss-bridge', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] },
 
   // Verified local vertical relationship. Do not apply this to Sunset Bazaar.
-  { from: 'cable-car-station', to: 'kiss-stage', relation: 'above', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
-  { from: 'cable-car-station', to: 'kiss-stage', relation: 'step-down-to', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
-  { from: 'kiss-stage', to: 'kiss-bridge', relation: 'near', confidence: 'verified', referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-16'] },
-  { from: 'kiss-bridge', to: 'kiss-stage', relation: 'seaward-of', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16'] },
-  { from: 'sunset-bazaar', to: 'kiss-stage', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] }
+  { from: 'cable-car-station', to: 'kiss-seating', relation: 'above', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16', 'ST-REF-21'] },
+  { from: 'cable-car-station', to: 'kiss-seating', relation: 'step-down-to', confidence: 'verified', referenceIds: ['ST-REF-15', 'ST-REF-16', 'ST-REF-21'] },
+  { from: 'kiss-seating', to: 'kiss-show-stage', relation: 'inland-of', confidence: 'verified', referenceIds: ['ST-REF-21'] },
+  { from: 'kiss-show-stage', to: 'kiss-seating', relation: 'seaward-of', confidence: 'verified', referenceIds: ['ST-REF-21'] },
+  { from: 'kiss-show-stage', to: 'kiss-bridge', relation: 'within-arc-of', confidence: 'verified', referenceIds: ['ST-REF-21'] },
+  { from: 'kiss-bridge', to: 'kiss-show-stage', relation: 'seaward-of', confidence: 'verified', referenceIds: ['ST-REF-21'] },
+  { from: 'sunset-bazaar', to: 'kiss-seating', relation: 'connects', confidence: 'high', referenceIds: ['ST-REF-13'] }
 ] as const;
 
 export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
@@ -173,12 +183,12 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
   },
   {
     id: 'STP-03',
-    label: 'SOUTH CLUSTER · CABLE CAR / STAGE',
+    label: 'SOUTH CLUSTER · CABLE CAR / KISS SHOW',
     kind: 'transport',
     spatialStatus: 'verified',
-    focusNodeIds: ['cable-car-station', 'kiss-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Cable Car Station is south/inland in plan, near the bridge cluster, and sits one level above Kiss of the Sea Stage. Sunset Bazaar is not part of this vertical sequence.'
+    focusNodeIds: ['cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
+    referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
+    note: 'Cable Car Station sits one level above the Kiss Show seating area. The performance stage is a separate seaward node west of the seating and remains inside the large outer Kiss Bridge arc.'
   },
   {
     id: 'STP-04',
@@ -194,17 +204,17 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     label: 'WATERFRONT · PLAN + LEVEL',
     kind: 'waterfront',
     spatialStatus: 'verified',
-    focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
-    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Local node composition follows the operator-approved drag layout exactly. Sea edge is a separate scene axis fixed to the left; correcting the sea edge must not rotate or move the approved nodes. Cable Car -> Kiss Stage elevation remains separate.'
+    focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
+    referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
+    note: 'Local node composition follows the operator-approved drag layout exactly. Sea edge stays left. The approved Kiss point is seating; the show stage shifts west/seaward from it and sits inside the outer Kiss Bridge arc.'
   },
   {
     id: 'STP-06',
     label: 'PLAN GRAPH · ROUTE CANDIDATE QA',
     kind: 'graph',
     spatialStatus: 'verified',
-    focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-stage', 'kiss-bridge'],
+    focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local plan is the operator drag layout (operator-approved). A dashed route candidate may be inspected as hypothesis only; it does not authorize gameplay or change node positions.'
+    note: 'Approved local layout is frozen. Kiss Show now separates seating from the performance stage: seating stays at the approved point, the performance stage shifts west/seaward, and the outer Kiss Bridge arc wraps around it. Route remains hypothesis-only.'
   }
 ] as const;

@@ -225,7 +225,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       'apollo-square',
       'sunset-bazaar',
       'cable-car-station',
-      'kiss-stage',
+      'kiss-seating',
       'kiss-bridge'
     ] as const;
 
@@ -234,7 +234,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       const color =
         id === 'clock-tower' || id === 'kiss-bridge'
           ? '#ffe283'
-          : id === 'kiss-stage'
+          : id === 'kiss-seating'
             ? '#f0a17e'
             : '#d5ecea';
       this.drawPlanNode(g, id, p.x, p.y, color);
@@ -293,16 +293,19 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('NODES UNCHANGED', 512, 108, '#8fb4bc', 1);
 
     const cable = this.operatorPosition('cable-car-station');
-    const stage = this.operatorPosition('kiss-stage');
+    const seating = this.operatorPosition('kiss-seating');
+    const showStage = this.kissShowStagePosition();
     const bridge = this.operatorPosition('kiss-bridge');
 
+    this.drawKissShowGeometry(g);
     this.drawPlanNode(g, 'cable-car-station', cable.x, cable.y, '#ffe283');
-    this.drawPlanNode(g, 'kiss-stage', stage.x, stage.y, '#f0a17e');
+    this.drawPlanNode(g, 'kiss-seating', seating.x, seating.y, '#f0a17e');
+    this.drawPlanNode(g, 'kiss-show-stage', showStage.x, showStage.y, '#ff9f7f');
     this.drawPlanNode(g, 'kiss-bridge', bridge.x, bridge.y, '#ffe283');
 
     g.lineStyle(2, 0x8bd9d2, 0.58);
-    g.lineBetween(cable.x, cable.y, stage.x, stage.y);
-    g.lineBetween(stage.x, stage.y, bridge.x, bridge.y);
+    g.lineBetween(cable.x, cable.y, seating.x, seating.y);
+    g.lineBetween(seating.x, seating.y, showStage.x, showStage.y);
 
     // Separate elevation section. This does not alter the approved plan.
     g.fillStyle(0x123e4b, 0.96);
@@ -314,7 +317,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.lineStyle(3, 0xd3bd91, 1);
     g.lineBetween(232, 529, 304, 555);
     this.addPixelLabel('CABLE CAR · ABOVE', 157, 503, '#ffe283', 0.5);
-    this.addPixelLabel('KISS STAGE · 1 LEVEL DOWN', 373, 566, '#ffffff', 0.5);
+    this.addPixelLabel('KISS SEATING · 1 LEVEL DOWN', 373, 566, '#ffffff', 0.5);
   }
 
   private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
@@ -367,7 +370,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       'sunset-bazaar',
       'apollo-square',
       'cable-car-station',
-      'kiss-stage',
+      'kiss-seating',
       'kiss-bridge'
     ] as const;
 
@@ -376,18 +379,20 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       const color =
         id === 'clock-tower' || id === 'kiss-bridge'
           ? '#ffe283'
-          : id === 'kiss-stage'
+          : id === 'kiss-seating'
             ? '#f0a17e'
             : '#d5ecea';
       this.drawPlanNode(g, id, p.x, p.y, color);
     }
 
+    const showStage = this.kissShowStagePosition();
+    this.drawPlanNode(g, 'kiss-show-stage', showStage.x, showStage.y, '#ff9f7f');
+
     const links: readonly [string, string][] = [
       ['central-village', 'clock-tower'],
       ['clock-tower', 'sunset-bazaar'],
       ['sunset-bazaar', 'kiss-bridge'],
-      ['cable-car-station', 'kiss-stage'],
-      ['kiss-stage', 'kiss-bridge']
+      ['cable-car-station', 'kiss-seating']
     ];
     g.lineStyle(2, 0x8bd9d2, 0.42);
     for (const [a, b] of links) {
@@ -395,6 +400,8 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       const pb = this.operatorPosition(b);
       g.lineBetween(pa.x, pa.y, pb.x, pb.y);
     }
+    const seating = this.operatorPosition('kiss-seating');
+    g.lineBetween(seating.x, seating.y, showStage.x, showStage.y);
 
     this.drawRouteCandidate(g);
     this.addPixelLabel('LAYOUT FROM YOUR DRAG EDITOR · NO GEO RE-NORMALIZATION', 270, 610, '#8fb4bc', 0.5);
@@ -413,19 +420,21 @@ export class SunsetWorldTourScene extends Phaser.Scene {
       'sunset-bazaar',
       'apollo-square',
       'cable-car-station',
-      'kiss-stage',
+      'kiss-seating',
       'kiss-bridge'
     ] as const;
 
     const positions: Record<string, { x: number; y: number }> = {};
     for (const id of ids) positions[id] = this.operatorPosition(id);
+    positions['kiss-show-stage'] = this.kissShowStagePosition();
 
     const edges: readonly [string, string, 'plan' | 'level'][] = [
       ['central-village', 'clock-tower', 'plan'],
       ['clock-tower', 'sunset-bazaar', 'plan'],
       ['sunset-bazaar', 'kiss-bridge', 'plan'],
-      ['cable-car-station', 'kiss-stage', 'level'],
-      ['kiss-stage', 'kiss-bridge', 'plan']
+      ['cable-car-station', 'kiss-seating', 'level'],
+      ['kiss-seating', 'kiss-show-stage', 'plan'],
+      ['kiss-show-stage', 'kiss-bridge', 'plan']
     ];
 
     for (const [a, b, kind] of edges) {
@@ -444,11 +453,13 @@ export class SunsetWorldTourScene extends Phaser.Scene {
         p.y,
         id === 'clock-tower' || id === 'kiss-bridge'
           ? '#ffe283'
-          : id === 'kiss-stage'
+          : id === 'kiss-seating'
             ? '#f0a17e'
             : '#d5ecea'
       );
     }
+    const showStage = positions['kiss-show-stage'];
+    this.drawPlanNode(g, 'kiss-show-stage', showStage.x, showStage.y, '#ff9f7f');
 
     this.drawRouteCandidate(g);
     this.addPixelLabel('PLAN SOURCE: OPERATOR DRAG LAYOUT', 270, 584, '#8fb4bc', 0.5);
@@ -500,6 +511,48 @@ export class SunsetWorldTourScene extends Phaser.Scene {
           g.lineStyle(2, 0x9ddbd5, 0.22);
           g.strokeEllipse(x, y, width, height);
           break;
+        case 'audience-bowl':
+          g.fillStyle(0xcab48d, 0.48);
+          g.fillEllipse(x, y, width, height);
+          g.lineStyle(2, 0xf0d9ad, 0.42);
+          g.strokeEllipse(x, y, width, height);
+          g.strokeEllipse(x, y, width * 0.72, height * 0.68);
+          g.strokeEllipse(x, y, width * 0.46, height * 0.38);
+          break;
+        case 'performance-stage':
+          g.fillStyle(0xc65d52, 0.92);
+          g.fillEllipse(x, y, width, height);
+          g.lineStyle(3, 0xffb28f, 0.9);
+          g.strokeEllipse(x, y, width, height);
+          break;
+        case 'bridge-arc': {
+          g.lineStyle(7, 0xe6d5aa, 0.96);
+          const start = Phaser.Math.DegToRad(55);
+          const end = Phaser.Math.DegToRad(305);
+          const steps = 34;
+          let previousX = x + Math.cos(start) * width * 0.5;
+          let previousY = y + Math.sin(start) * height * 0.5;
+          for (let i = 1; i <= steps; i += 1) {
+            const angle = Phaser.Math.Linear(start, end, i / steps);
+            const nextX = x + Math.cos(angle) * width * 0.5;
+            const nextY = y + Math.sin(angle) * height * 0.5;
+            g.lineBetween(previousX, previousY, nextX, nextY);
+            previousX = nextX;
+            previousY = nextY;
+          }
+          g.lineStyle(2, 0xf7e9c7, 0.7);
+          previousX = x + Math.cos(start) * width * 0.43;
+          previousY = y + Math.sin(start) * height * 0.43;
+          for (let i = 1; i <= steps; i += 1) {
+            const angle = Phaser.Math.Linear(start, end, i / steps);
+            const nextX = x + Math.cos(angle) * width * 0.43;
+            const nextY = y + Math.sin(angle) * height * 0.43;
+            g.lineBetween(previousX, previousY, nextX, nextY);
+            previousX = nextX;
+            previousY = nextY;
+          }
+          break;
+        }
         case 'light-band':
           g.fillStyle(0x9d5048, 0.54);
           g.fillRoundedRect(x - width / 2, y - height / 2, width, height, 5);
@@ -533,6 +586,62 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     }
 
     this.addPixelLabel('ROUTE CANDIDATE · HYPOTHESIS ONLY', 270, 566, '#f0a17e', 0.5);
+  }
+
+  private kissShowStagePosition(): { x: number; y: number } {
+    const seating = this.operatorPosition('kiss-seating');
+    const stage = SUNSET_TOWN_COMPOSITION.find((element) => element.id === 'kiss-performance-stage');
+    if (!stage) return { x: seating.x - 50, y: seating.y };
+
+    return {
+      x: seating.x + stage.offset.x * 416,
+      y: seating.y + stage.offset.y * 330
+    };
+  }
+
+  private drawKissShowGeometry(g: Phaser.GameObjects.Graphics): void {
+    const ids = new Set(['kiss-audience-bowl', 'kiss-performance-stage', 'kiss-bridge-arc']);
+    for (const element of SUNSET_TOWN_COMPOSITION) {
+      if (!ids.has(element.id)) continue;
+
+      const anchor = this.operatorPosition(element.anchorId);
+      const x = anchor.x + element.offset.x * 416;
+      const y = anchor.y + element.offset.y * 330;
+      const width = element.size.x * 416;
+      const height = element.size.y * 330;
+
+      if (element.kind === 'audience-bowl') {
+        g.fillStyle(0xcab48d, 0.48);
+        g.fillEllipse(x, y, width, height);
+        g.lineStyle(2, 0xf0d9ad, 0.42);
+        g.strokeEllipse(x, y, width, height);
+        g.strokeEllipse(x, y, width * 0.72, height * 0.68);
+      }
+
+      if (element.kind === 'performance-stage') {
+        g.fillStyle(0xc65d52, 0.92);
+        g.fillEllipse(x, y, width, height);
+        g.lineStyle(3, 0xffb28f, 0.9);
+        g.strokeEllipse(x, y, width, height);
+      }
+
+      if (element.kind === 'bridge-arc') {
+        g.lineStyle(7, 0xe6d5aa, 0.96);
+        const start = Phaser.Math.DegToRad(55);
+        const end = Phaser.Math.DegToRad(305);
+        const steps = 34;
+        let previousX = x + Math.cos(start) * width * 0.5;
+        let previousY = y + Math.sin(start) * height * 0.5;
+        for (let i = 1; i <= steps; i += 1) {
+          const angle = Phaser.Math.Linear(start, end, i / steps);
+          const nextX = x + Math.cos(angle) * width * 0.5;
+          const nextY = y + Math.sin(angle) * height * 0.5;
+          g.lineBetween(previousX, previousY, nextX, nextY);
+          previousX = nextX;
+          previousY = nextY;
+        }
+      }
+    }
   }
 
   private operatorPosition(id: string): { x: number; y: number } {

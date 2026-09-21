@@ -234,6 +234,16 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       usage: 'approved-source'
     },
     {
+      id: 'ST-REF-21',
+      kind: 'field-note',
+      title: 'Operator-confirmed Kiss Show audience / stage / bridge geometry',
+      sourceNote: 'Operator correction dated 2026-09-21: the previously approved Kiss point is the audience/seating area, not the performance stage. The performance stage sits farther west/seaward from the seating while remaining inside the large Kiss Bridge arc. Kiss Bridge forms the outer seaward arc wrapping around the show stage.',
+      proves: ['approved Kiss point is audience seating', 'performance stage is west/seaward of seating', 'performance stage remains inside Kiss Bridge arc', 'Kiss Bridge is the large outer seaward arc around the performance stage'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
       id: 'ST-REF-05',
       kind: 'official',
       title: 'Sun World - Sunset Town attractions 2026',

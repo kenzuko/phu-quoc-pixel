@@ -113,7 +113,8 @@ export type PlaceGraphRelation =
   | 'below'
   | 'inland-of'
   | 'seaward-of'
-  | 'step-down-to';
+  | 'step-down-to'
+  | 'within-arc-of';
 
 export interface PlaceGraphEdge {
   from: string;
