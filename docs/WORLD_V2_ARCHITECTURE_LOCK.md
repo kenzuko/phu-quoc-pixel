@@ -189,8 +189,9 @@ When the operator corrects a local place layout in the spatial editor and suppli
 
 Rules:
 - preserve the exported node coordinates exactly
-- treat editor viewport orientation as metadata, not world orientation
-- render canonical local plan north-up unless the operator explicitly approves another world orientation
+- preserve the approved rendered node arrangement exactly
+- editor viewport orientation is part of reproducing that approved arrangement
+- sea edge / facing direction are separate composition axes and must not rotate the node layout
 - do not re-normalize the approved layout from geographic coordinates
 - keep geographic anchors as a separate cross-check layer
 - keep elevation as a separate layer
@@ -198,8 +199,8 @@ Rules:
 
 Sunset Town operator layout approved 2026-09-21:
 - editor capture orientation: east-up
-- world orientation: north-up
-- west / sea edge: left
+- rendered node arrangement: frozen exactly as operator approved
+- sea edge: left
 - Central Village facing: west toward sea
 - nodes: Central Village, Clock Tower, Sunset Bazaar, Apollo Square, Cable Car Station, Kiss of the Sea Stage, Kiss Bridge
 - source of truth: `sunset-town-operator-layout.ts`
@@ -231,16 +232,15 @@ A route candidate:
 Sunset Town first route candidate is QA-only and must not be treated as the NO BRAKES route.
 
 
-## Sunset Town west-facing correction
+## Sunset Town sea-axis-only correction
 
-Operator correction dated 2026-09-21 supersedes the previous use of East-up as a world-render orientation.
+Operator correction dated 2026-09-21 supersedes the previous attempt to rotate the entire node layout.
 
-Approved world reading:
-- north = up
-- south = down
-- west = left
-- east = right
+Approved rule:
+- keep every approved node and composition mass exactly where it was in the operator-approved layout
 - sea edge = left
-- Central Village looks west toward the sea
+- Central Village faces west toward the sea
+- moving the sea edge must not rotate, mirror, renormalize or otherwise reposition the approved node layout
+- compass/map orientation must not be inferred from the composition canvas unless separately approved
 
-The exported drag-editor coordinates remain valid. Only the interpretation of the editor viewport orientation was wrong.
+The prior north-up reinterpretation was incorrect because it changed node positions while attempting to fix only the sea direction.
