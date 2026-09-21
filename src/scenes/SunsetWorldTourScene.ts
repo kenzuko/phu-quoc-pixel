@@ -319,7 +319,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('BAZAAR IS NOT ON THIS VERTICAL CHAIN', 270, 590, '#f0a17e', 0.5);
   }
 
-  private drawApolloSquare  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
+  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
     this.drawSky(g, 445);
 
     g.fillStyle(0xc8b38b, 1);
@@ -401,7 +401,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('NO BAZAAR TERRACE RANK ASSIGNED', 270, 606, '#f0a17e', 0.5);
   }
 
-  private drawPlaceGraph  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
+  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
@@ -486,7 +486,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel(node.label, x, y - 19, color, 0.5);
   }
 
-  private drawFacade  private drawFacade(
+  private drawFacade(
     g: Phaser.GameObjects.Graphics,
     x: number,
     y: number,
