@@ -30,10 +30,28 @@ jobs:
         run: |
           set -euo pipefail
           npm ci --no-audit --no-fund
-          npm run build
+          VITE_BUILD_SHA="$GITHUB_SHA" npm run build
           test -f dist/CNAME
           grep -qx 'pixel.openphuquoc.com' dist/CNAME
           printf '%s\n' "$GITHUB_SHA" > dist/build.txt
+          cat > dist/latest.html <<EOF
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width,initial-scale=1">
+              <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+              <meta http-equiv="Pragma" content="no-cache">
+              <meta http-equiv="Expires" content="0">
+              <title>Pixel Island Latest</title>
+            </head>
+            <body>
+              <script>
+                location.replace('/?_build=${GITHUB_SHA}');
+              </script>
+            </body>
+          </html>
+          EOF
           touch dist/.nojekyll
 
       - name: Publish dist to gh-pages
