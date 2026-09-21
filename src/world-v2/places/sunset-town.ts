@@ -172,6 +172,26 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       usage: 'reference-only'
     },
     {
+      id: 'ST-REF-15',
+      kind: 'field-note',
+      title: 'Operator-confirmed Sunset Town terrace hierarchy',
+      sourceNote: 'User-provided spatial reference confirms: Cable Car Station is on an upper terrace; Sunset Bazaar sits higher/inland of Kiss of the Sea; Kiss of the Sea Stage is one level lower; Kiss Bridge is the seafront edge.',
+      proves: ['upper/middle/lower/seafront terrace hierarchy', 'Cable Car above Kiss Stage', 'Sunset Bazaar inland/above Kiss Stage', 'Kiss Bridge seaward of Kiss Stage'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
+      id: 'ST-REF-16',
+      kind: 'field-note',
+      title: 'Operator-confirmed relative layout from supplied Sunset Town map reference',
+      sourceNote: 'User-provided map reference confirms relative ordering between cable car area, Sunset Bazaar, Kiss Square/Kiss of the Sea, and Kiss Bridge. It also corrects the prior V2 inversion of Sunset Bazaar and Kiss Stage.',
+      proves: ['Sunset Bazaar is not below Kiss Stage', 'Kiss Stage sits lower toward the waterfront', 'Kiss Bridge lies beyond the stage toward the sea'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'approved-source'
+    },
+    {
       id: 'ST-REF-05',
       kind: 'official',
       title: 'Sun World - Sunset Town attractions 2026',

@@ -51,9 +51,21 @@ Rule: **Compress distance, not spatial truth.**
 
 A place is represented as connected zones, named nodes and evidence-backed relationships, not a mood board.
 
-The place graph may contain districts, squares, landmarks, transport anchors, waterfront anchors and venues. Edges describe only supported relationships such as contains, near, connects, faces or part-of.
+The place graph may contain districts, squares, landmarks, transport anchors, waterfront anchors and venues.
+
+The graph is not planar. Where the place is terraced or sloped, nodes must carry an elevation/terrace band and edges may express vertical and seaward relationships such as:
+- above / below
+- inland-of / seaward-of
+- terraced-to
+- contains / near / connects / faces / part-of
 
 A route is a separate product of evidence. The system must not convert a place graph into a driveable route simply because the graph is connected.
+
+For Sunset Town specifically, the currently approved hierarchy is:
+
+`upper: Central Village / Cable Car -> middle: Sunset Bazaar -> lower: Kiss of the Sea Stage -> seafront: Kiss Bridge`
+
+This hierarchy is spatial truth for V2 and must not be flattened or inverted by a world plate, map or gameplay route.
 
 A segment may define geographic anchor, direction/openness, slope, left and right spatial mass, landmarks visible from the segment, ordinary ambient actors, light/time state, allowed gameplay slots, and reference evidence.
 
@@ -146,3 +158,16 @@ A world plate:
 - must not imply a route order unless route evidence exists
 
 World plates are an inspection stage between the Reality Pack and gameplay. They are not decorative concept art and are not permission to invent missing streets.
+
+
+## Operator field-reference rule
+
+Direct operator/local corrections may be recorded as `field-note` evidence when they resolve spatial relationships that public maps or promotional diagrams flatten or misrepresent.
+
+A field-note:
+- must state exactly what relationship it confirms
+- may approve elevation / terrace / inland-seaward relations
+- must not be silently generalized into unrelated geometry
+- can override a prior V2 schematic assumption when the assumption is demonstrably wrong
+
+The Sunset Town terrace correction dated 2026-09-21 supersedes the earlier flat graph that inverted Sunset Bazaar and Kiss of the Sea Stage.
