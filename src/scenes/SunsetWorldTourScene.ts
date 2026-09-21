@@ -368,7 +368,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('SEAFRONT · KISS BRIDGE', 270, 570, '#d8f3ef', 0.5);
   }
 
-  private drawApolloSquare  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
+  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
     this.drawSky(g, 445);
 
     g.fillStyle(0xc8b38b, 1);
@@ -482,7 +482,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     }
   }
 
-  private drawPlaceGraph  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
+  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
@@ -553,7 +553,7 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     this.addPixelLabel('3D RELATION GRAPH · NOT A METRIC MAP', 270, 603, '#8fb4bc', 0.5);
   }
 
-  private drawFacade  private drawFacade(
+  private drawFacade(
     g: Phaser.GameObjects.Graphics,
     x: number,
     y: number,
