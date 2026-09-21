@@ -2,7 +2,10 @@ import Phaser from 'phaser';
 import { SceneKeys, type SceneKey } from '../../app/scene-keys';
 
 const allowedTransitions: Readonly<Record<SceneKey, readonly SceneKey[]>> = {
-  [SceneKeys.Boot]: [SceneKeys.Landing],
+  [SceneKeys.Boot]: [SceneKeys.V2Hub, SceneKeys.Landing],
+  [SceneKeys.V2Hub]: [SceneKeys.IslandMapV2, SceneKeys.SunsetWorldTour],
+  [SceneKeys.IslandMapV2]: [SceneKeys.V2Hub, SceneKeys.SunsetWorldTour],
+  [SceneKeys.SunsetWorldTour]: [SceneKeys.V2Hub, SceneKeys.IslandMapV2],
   [SceneKeys.Landing]: [SceneKeys.Airport],
   [SceneKeys.Airport]: [SceneKeys.Character, SceneKeys.Landing],
   [SceneKeys.Character]: [SceneKeys.IslandMap, SceneKeys.Airport],
