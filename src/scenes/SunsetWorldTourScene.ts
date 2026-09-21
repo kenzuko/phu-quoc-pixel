@@ -7,6 +7,7 @@ import {
   SUNSET_TOWN_GRAPH_NODES,
   SUNSET_TOWN_WORLD_PLATES
 } from '../world-v2/places/sunset-town-graph';
+import { SUNSET_TOWN_OPERATOR_PLAN_ORIENTATION } from '../world-v2/places/sunset-town-operator-layout';
 import type { WorldPlate } from '../world-v2/types';
 
 export class SunsetWorldTourScene extends Phaser.Scene {
@@ -281,45 +282,38 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    this.addPixelLabel('PLAN · NORTH UP', 26, 124, '#8bd9d2');
-    this.addPixelLabel('WEST / SEA', 26, 148, '#ffe283');
-    this.addPixelLabel('EAST / INLAND', 514, 148, '#ffe283', 1);
+    this.addPixelLabel('OPERATOR PLAN · EAST-UP', 26, 120, '#8bd9d2');
+    this.addPixelLabel('E ↑', 270, 108, '#ffffff', 0.5);
+    this.addPixelLabel('N ←', 28, 330, '#ffffff');
+    this.addPixelLabel('S →', 512, 330, '#ffffff', 1);
+    this.addPixelLabel('W / SEA ↓', 270, 586, '#ffe283', 0.5);
 
-    const cable = this.planPosition('cable-car-station');
-    const bridge = this.planPosition('kiss-bridge');
+    const cable = this.operatorPosition('cable-car-station');
+    const stage = this.operatorPosition('kiss-stage');
+    const bridge = this.operatorPosition('kiss-bridge');
 
-    // Verified plan anchors.
     this.drawPlanNode(g, 'cable-car-station', cable.x, cable.y, '#ffe283');
+    this.drawPlanNode(g, 'kiss-stage', stage.x, stage.y, '#f0a17e');
     this.drawPlanNode(g, 'kiss-bridge', bridge.x, bridge.y, '#ffe283');
 
-    // Stage plan point is not locked. Show the known local relation only.
-    const stageX = bridge.x + (cable.x - bridge.x) * 0.58;
-    const stageY = cable.y - 26;
-    g.lineStyle(2, 0xf0a17e, 0.9);
-    g.strokeCircle(stageX, stageY, 13);
-    this.addPixelLabel('KISS STAGE · RELATIVE ONLY', stageX, stageY - 28, '#f0a17e', 0.5);
+    g.lineStyle(2, 0x8bd9d2, 0.58);
+    g.lineBetween(cable.x, cable.y, stage.x, stage.y);
+    g.lineBetween(stage.x, stage.y, bridge.x, bridge.y);
 
-    g.lineStyle(2, 0x8bd9d2, 0.65);
-    g.lineBetween(cable.x, cable.y, stageX, stageY);
-    g.lineBetween(stageX, stageY, bridge.x, bridge.y);
-
-    // Elevation inset: only Cable Car -> Stage is verified as a level drop.
-    g.fillStyle(0x123e4b, 1);
-    g.fillRect(36, 442, 468, 134);
-    this.addPixelLabel('LOCAL ELEVATION SECTION', 54, 456, '#8bd9d2');
-
+    // Separate elevation section. This does not alter the approved plan.
+    g.fillStyle(0x123e4b, 0.96);
+    g.fillRect(34, 470, 472, 102);
+    this.addPixelLabel('LOCAL ELEVATION ONLY', 50, 482, '#8bd9d2');
     g.fillStyle(0xd3bd91, 1);
-    g.fillRect(76, 486, 180, 18);
-    g.fillRect(286, 526, 154, 18);
+    g.fillRect(82, 522, 150, 14);
+    g.fillRect(304, 548, 138, 14);
     g.lineStyle(3, 0xd3bd91, 1);
-    g.lineBetween(256, 495, 286, 535);
-
-    this.addPixelLabel('CABLE CAR · ABOVE', 164, 470, '#ffe283', 0.5);
-    this.addPixelLabel('KISS STAGE · 1 LEVEL DOWN', 362, 550, '#ffffff', 0.5);
-    this.addPixelLabel('BAZAAR IS NOT ON THIS VERTICAL CHAIN', 270, 590, '#f0a17e', 0.5);
+    g.lineBetween(232, 529, 304, 555);
+    this.addPixelLabel('CABLE CAR · ABOVE', 157, 503, '#ffe283', 0.5);
+    this.addPixelLabel('KISS STAGE · 1 LEVEL DOWN', 373, 566, '#ffffff', 0.5);
   }
 
-  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
+  private drawApolloSquare  private drawApolloSquare(g: Phaser.GameObjects.Graphics): void {
     this.drawSky(g, 445);
 
     g.fillStyle(0xc8b38b, 1);
@@ -354,106 +348,120 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    this.addPixelLabel('VERIFIED PLAN · NORTH UP', 26, 120, '#8bd9d2');
-    this.addPixelLabel('N', 270, 108, '#ffffff', 0.5);
-    this.addPixelLabel('W / SEA', 24, 334, '#ffe283');
-    this.addPixelLabel('E / INLAND', 516, 334, '#ffe283', 1);
+    this.addPixelLabel('OPERATOR-APPROVED RELATIVE PLAN', 26, 114, '#8bd9d2');
+    this.addPixelLabel('E ↑', 270, 104, '#ffffff', 0.5);
+    this.addPixelLabel('N ←', 24, 326, '#ffffff');
+    this.addPixelLabel('S →', 516, 326, '#ffffff', 1);
+    this.addPixelLabel('W / SEA ↓', 270, 592, '#ffe283', 0.5);
 
-    const clock = this.planPosition('clock-tower');
-    const bazaar = this.planPosition('sunset-bazaar');
-    const cable = this.planPosition('cable-car-station');
-    const bridge = this.planPosition('kiss-bridge');
+    const ids = [
+      'central-village',
+      'clock-tower',
+      'sunset-bazaar',
+      'apollo-square',
+      'cable-car-station',
+      'kiss-stage',
+      'kiss-bridge'
+    ] as const;
 
-    // Coast / sea field on west side.
-    g.fillStyle(0x246f82, 0.36);
-    g.fillRect(20, 150, 115, 370);
+    for (const id of ids) {
+      const p = this.operatorPosition(id);
+      const color =
+        id === 'clock-tower' || id === 'kiss-bridge'
+          ? '#ffe283'
+          : id === 'kiss-stage'
+            ? '#f0a17e'
+            : '#d5ecea';
+      this.drawPlanNode(g, id, p.x, p.y, color);
+    }
 
-    this.drawPlanNode(g, 'clock-tower', clock.x, clock.y, '#ffe283');
-    this.drawPlanNode(g, 'sunset-bazaar', bazaar.x, bazaar.y, '#ffffff');
-    this.drawPlanNode(g, 'cable-car-station', cable.x, cable.y, '#ffffff');
-    this.drawPlanNode(g, 'kiss-bridge', bridge.x, bridge.y, '#ffe283');
+    const links: readonly [string, string][] = [
+      ['central-village', 'clock-tower'],
+      ['clock-tower', 'sunset-bazaar'],
+      ['sunset-bazaar', 'kiss-bridge'],
+      ['cable-car-station', 'kiss-stage'],
+      ['kiss-stage', 'kiss-bridge']
+    ];
+    g.lineStyle(2, 0x8bd9d2, 0.42);
+    for (const [a, b] of links) {
+      const pa = this.operatorPosition(a);
+      const pb = this.operatorPosition(b);
+      g.lineBetween(pa.x, pa.y, pb.x, pb.y);
+    }
 
-    // Exact stage coordinate is deliberately not invented.
-    const stageX = bridge.x + (cable.x - bridge.x) * 0.56;
-    const stageY = cable.y - 34;
-    g.lineStyle(2, 0xf0a17e, 0.95);
-    g.strokeCircle(stageX, stageY, 14);
-    this.addPixelLabel('KISS STAGE', stageX, stageY - 28, '#f0a17e', 0.5);
-    this.addPixelLabel('RELATIVE', stageX, stageY + 14, '#f0a17e', 0.5);
-
-    // Horizontal plan facts.
-    g.lineStyle(2, 0x8bd9d2, 0.55);
-    g.lineBetween(bazaar.x, bazaar.y, cable.x, cable.y);
-    g.lineBetween(bridge.x, bridge.y, stageX, stageY);
-    g.lineBetween(stageX, stageY, cable.x, cable.y);
-
-    this.addPixelLabel('BAZAAR NORTH OF CABLE', 474, 300, '#bcd9dc', 1);
-    this.addPixelLabel('BRIDGE WEST / SEAWARD', 58, 526, '#bcd9dc');
-
-    // Small elevation legend, separate from the plan map.
-    g.fillStyle(0x123e4b, 1);
-    g.fillRect(290, 510, 218, 88);
-    this.addPixelLabel('ELEVATION ONLY', 308, 521, '#8bd9d2');
-    this.addPixelLabel('CABLE', 310, 548, '#ffe283');
-    this.addPixelLabel('↓ 1 LEVEL', 365, 548, '#ffffff');
-    this.addPixelLabel('STAGE', 432, 566, '#ffffff');
-
-    this.addPixelLabel('NO BAZAAR TERRACE RANK ASSIGNED', 270, 606, '#f0a17e', 0.5);
+    this.addPixelLabel('LAYOUT FROM YOUR DRAG EDITOR · NO GEO RE-NORMALIZATION', 270, 610, '#8fb4bc', 0.5);
   }
 
-  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
+  private drawPlaceGraph  private drawPlaceGraph(g: Phaser.GameObjects.Graphics): void {
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
 
-    this.addPixelLabel('PLAN GRAPH · NORTH UP', 26, 112, '#8bd9d2');
-    this.addPixelLabel('ELEVATION RELATIONS ARE DRAWN SEPARATELY', 26, 133, '#8fb4bc');
+    this.addPixelLabel('APPROVED PLAN GRAPH · EAST-UP', 26, 112, '#8bd9d2');
+    this.addPixelLabel('SOLID = PLAN RELATION · GOLD = LOCAL LEVEL RELATION', 26, 133, '#8fb4bc');
 
-    const ids = ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-bridge'] as const;
+    const ids = [
+      'central-village',
+      'clock-tower',
+      'sunset-bazaar',
+      'apollo-square',
+      'cable-car-station',
+      'kiss-stage',
+      'kiss-bridge'
+    ] as const;
+
     const positions: Record<string, { x: number; y: number }> = {};
-    for (const id of ids) positions[id] = this.planPosition(id);
+    for (const id of ids) positions[id] = this.operatorPosition(id);
 
-    // Exact plan edges only.
-    const planRelations = new Set(['north-of', 'south-of', 'east-of', 'west-of', 'connects']);
-    for (const edge of SUNSET_TOWN_GRAPH_EDGES) {
-      if (!planRelations.has(edge.relation)) continue;
-      const from = positions[edge.from];
-      const to = positions[edge.to];
-      if (!from || !to) continue;
-      g.lineStyle(2, 0x8bd9d2, edge.confidence === 'verified' ? 0.72 : 0.42);
-      g.lineBetween(from.x, from.y, to.x, to.y);
+    const edges: readonly [string, string, 'plan' | 'level'][] = [
+      ['central-village', 'clock-tower', 'plan'],
+      ['clock-tower', 'sunset-bazaar', 'plan'],
+      ['sunset-bazaar', 'kiss-bridge', 'plan'],
+      ['cable-car-station', 'kiss-stage', 'level'],
+      ['kiss-stage', 'kiss-bridge', 'plan']
+    ];
+
+    for (const [a, b, kind] of edges) {
+      const pa = positions[a];
+      const pb = positions[b];
+      g.lineStyle(kind === 'level' ? 3 : 2, kind === 'level' ? 0xf0c86e : 0x8bd9d2, 0.76);
+      g.lineBetween(pa.x, pa.y, pb.x, pb.y);
     }
 
     for (const id of ids) {
       const p = positions[id];
-      const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
-      if (!node) continue;
-      this.drawPlanNode(g, id, p.x, p.y, '#ffe283');
+      this.drawPlanNode(
+        g,
+        id,
+        p.x,
+        p.y,
+        id === 'clock-tower' || id === 'kiss-bridge'
+          ? '#ffe283'
+          : id === 'kiss-stage'
+            ? '#f0a17e'
+            : '#d5ecea'
+      );
     }
 
-    // Stage stays relational until its plan point is verified.
-    const cable = positions['cable-car-station'];
-    const bridge = positions['kiss-bridge'];
-    const stage = {
-      x: bridge.x + (cable.x - bridge.x) * 0.56,
-      y: cable.y - 34
-    };
-    g.lineStyle(2, 0xf0a17e, 0.9);
-    g.strokeCircle(stage.x, stage.y, 12);
-    this.addPixelLabel('KISS STAGE · RELATIVE', stage.x, stage.y - 25, '#f0a17e', 0.5);
-
-    // Dedicated section for the only locked local level relation.
-    g.fillStyle(0x123e4b, 1);
-    g.fillRect(28, 500, 484, 88);
-    this.addPixelLabel('LOCAL LEVEL SECTION', 46, 512, '#8bd9d2');
-    g.lineStyle(3, 0xf0c86e, 0.9);
-    g.lineBetween(190, 540, 350, 565);
-    this.addPixelLabel('CABLE · ABOVE', 118, 532, '#ffe283');
-    this.addPixelLabel('STAGE · BELOW', 358, 557, '#ffffff');
-
-    this.addPixelLabel('PLAN ≠ ELEVATION · ROUTE NOT LOCKED', 270, 603, '#8fb4bc', 0.5);
+    this.addPixelLabel('PLAN SOURCE: OPERATOR DRAG LAYOUT', 270, 584, '#8fb4bc', 0.5);
+    this.addPixelLabel('GEO + ELEVATION REMAIN SEPARATE DATA LAYERS', 270, 605, '#8fb4bc', 0.5);
   }
 
-  private planPosition(id: string): { x: number; y: number } {
+  private operatorPosition(id: string): { x: number; y: number } {
+    const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
+    if (!node?.operatorPlanPoint) return { x: 270, y: 340 };
+
+    const point = node.operatorPlanPoint;
+    const oriented = SUNSET_TOWN_OPERATOR_PLAN_ORIENTATION === 'east-up'
+      ? { x: 1 - point.y, y: point.x }
+      : point;
+
+    return {
+      x: 62 + oriented.x * 416,
+      y: 160 + oriented.y * 330
+    };
+  }
+
+  private planPosition  private planPosition(id: string): { x: number; y: number } {
     const node = SUNSET_TOWN_GRAPH_NODES.find((item) => item.id === id);
     if (!node?.planPoint) return { x: 270, y: 340 };
 
