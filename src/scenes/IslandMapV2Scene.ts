@@ -45,8 +45,10 @@ export class IslandMapV2Scene extends Phaser.Scene {
       this.drawFeatureLabel(feature, rect);
     }
 
+    const buildId = String(import.meta.env.VITE_BUILD_SHA ?? 'dev').slice(0, 7);
+
     this.add.text(width / 2, 842,
-      'COASTLINE: ADMIN GEOJSON · MAP SEMANTICS V2\nBAI SAO / RACH VEM = COAST · GRAND WORLD / SAFARI = AREA',
+      `COASTLINE: ADMIN GEOJSON · MAP SEMANTICS V2\nBAI SAO / RACH VEM = COAST · GRAND WORLD / SAFARI = AREA\nBUILD ${buildId}`,
       {
         fontFamily: 'monospace',
         fontSize: '8px',
