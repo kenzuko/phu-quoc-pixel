@@ -1,5 +1,5 @@
 import type { PlaceGraphEdge, PlaceGraphNode, WorldPlate } from '../types';
-import { SUNSET_TOWN_OPERATOR_PLAN } from './sunset-town-operator-layout';
+import { KISS_SHOW_SPATIAL_V2, SUNSET_TOWN_OPERATOR_PLAN } from './sunset-town-operator-layout';
 
 export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
   {
@@ -119,8 +119,9 @@ export const SUNSET_TOWN_GRAPH_NODES: readonly PlaceGraphNode[] = [
     id: 'kiss-show-stage',
     label: 'KISS SHOW PERFORMANCE STAGE',
     kind: 'waterfront',
-    spatialStatus: 'corroborated',
+    spatialStatus: 'verified',
     confidence: 'verified',
+    operatorPlanPoint: KISS_SHOW_SPATIAL_V2.kiss.performanceStage,
     referenceIds: ['ST-REF-11', 'ST-REF-13', 'ST-REF-21']
   },
   {
@@ -188,7 +189,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
-    note: 'Cable Car Station sits one level above the Kiss Show seating area. The performance stage is a separate seaward node west of the seating and remains inside the large outer Kiss Bridge arc.'
+    note: 'Cable Car Station sits one level above the Kiss Show seating area. Seating, performance stage and bridge geometry use the operator-edited spatial-v2 JSON. Kiss Bridge is the enclosing structure around the show stage.'
   },
   {
     id: 'STP-04',
@@ -206,7 +207,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
-    note: 'Local node composition follows the operator-approved drag layout exactly. Sea edge stays left. The approved Kiss point is seating; the show stage shifts west/seaward from it and sits inside the outer Kiss Bridge arc.'
+    note: 'Local node composition follows the operator-approved drag layouts exactly. Sea edge stays left. Kiss seating and performance stage use exact spatial-v2 points; the Kiss Bridge composition encloses the performance stage.'
   },
   {
     id: 'STP-06',
@@ -215,6 +216,6 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local layout is frozen. Kiss Show now separates seating from the performance stage: seating stays at the approved point, the performance stage shifts west/seaward, and the outer Kiss Bridge arc wraps around it. Route remains hypothesis-only.'
+    note: 'Approved local layout is frozen. Kiss Show separates seating, performance stage and bridge arc. Exact spatial-v2 geometry is operator-edited, and Kiss Bridge is treated as an enclosing structure around the performance stage. Route remains hypothesis-only.'
   }
 ] as const;
