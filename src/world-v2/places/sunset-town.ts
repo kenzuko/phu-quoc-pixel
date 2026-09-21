@@ -227,8 +227,8 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       id: 'ST-REF-20',
       kind: 'field-note',
       title: 'Operator-approved Sunset Town drag layout',
-      sourceNote: 'Approved in the interactive spatial editor on 2026-09-21. Orientation: east-up. Relative node positions for Central Village, Clock Tower, Sunset Bazaar, Apollo Square, Cable Car Station, Kiss of the Sea Stage, and Kiss Bridge must be preserved exactly for local world composition unless explicitly re-edited by the operator.',
-      proves: ['approved relative local layout', 'east-up composition orientation', 'corrected relative placement of Bazaar/Cable/Stage/Bridge'],
+      sourceNote: 'Approved in the interactive spatial editor on 2026-09-21. The editor viewport was east-up, but exported node coordinates are canonical plan coordinates. Operator correction: World V2 must render west at the left edge, east at the right, north up and south down; Central Village faces west toward the sea.',
+      proves: ['approved relative local layout', 'west/sea is left in World V2', 'Central Village faces west toward sea', 'corrected relative placement of Bazaar/Cable/Stage/Bridge'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'approved-source'
