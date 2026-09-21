@@ -81,15 +81,13 @@ export type PlaceGraphNodeKind =
   | 'waterfront'
   | 'venue';
 
-export type TerraceLevel = 'upper' | 'middle' | 'lower' | 'seafront';
-
 export interface PlaceGraphNode {
   id: string;
   label: string;
   kind: PlaceGraphNodeKind;
   spatialStatus: SpatialStatus;
   confidence: Confidence;
-  terrace?: TerraceLevel;
+  planPoint?: GeoPoint;
   referenceIds: readonly string[];
 }
 
@@ -99,11 +97,15 @@ export type PlaceGraphRelation =
   | 'connects'
   | 'faces'
   | 'part-of'
+  | 'north-of'
+  | 'south-of'
+  | 'east-of'
+  | 'west-of'
   | 'above'
   | 'below'
   | 'inland-of'
   | 'seaward-of'
-  | 'terraced-to';
+  | 'step-down-to';
 
 export interface PlaceGraphEdge {
   from: string;
