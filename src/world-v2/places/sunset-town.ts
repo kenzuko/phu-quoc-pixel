@@ -13,12 +13,12 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
     { id: 'st-waterfront', label: 'WATERFRONT', kind: 'waterfront', confidence: 'verified' }
   ],
   segments: [
-    { id: 'ST-01', label: 'UPPER STREET', zoneId: 'st-upper', order: 1, routeProgress: 0, slope: 'down', openness: 0.22, seaVisibility: 0, leftMass: 0.88, rightMass: 0.82, landmarkIds: [], allowedActors: ['pedestrian', 'service-cart', 'electric-shuttle'], gameplaySlots: ['street-edge', 'moving-vehicle'], referenceIds: ['ST-REF-01'], confidence: 'medium' },
-    { id: 'ST-02', label: 'APOLLO SQUARE', zoneId: 'st-apollo', order: 2, routeProgress: 0.2, slope: 'flat', openness: 0.58, seaVisibility: 0.08, leftMass: 0.54, rightMass: 0.48, landmarkIds: ['apollo-cafe'], allowedActors: ['pedestrian', 'photographer', 'electric-shuttle'], gameplaySlots: ['pedestrian-crossing', 'photographer', 'jo-trail'], referenceIds: ['ST-REF-01', 'ST-REF-02'], confidence: 'high' },
-    { id: 'ST-03', label: 'CENTRAL VILLAGE', zoneId: 'st-central', order: 3, routeProgress: 0.4, slope: 'down', openness: 0.48, seaVisibility: 0.18, leftMass: 0.72, rightMass: 0.68, landmarkIds: ['clock-tower'], allowedActors: ['pedestrian', 'service-cart', 'electric-shuttle'], gameplaySlots: ['street-edge', 'moving-vehicle', 'jo-trail'], referenceIds: ['ST-REF-03', 'ST-REF-05'], confidence: 'verified' },
-    { id: 'ST-04', label: 'DOWNHILL REVEAL', zoneId: 'st-descent', order: 4, routeProgress: 0.62, slope: 'steep-down', openness: 0.68, seaVisibility: 0.46, leftMass: 0.56, rightMass: 0.40, landmarkIds: ['clock-tower'], allowedActors: ['pedestrian', 'electric-shuttle'], gameplaySlots: ['moving-vehicle', 'jo-trail', 'near-miss'], referenceIds: ['ST-REF-02', 'ST-REF-04'], confidence: 'medium' },
-    { id: 'ST-05', label: 'WATERFRONT OPENING', zoneId: 'st-waterfront', order: 5, routeProgress: 0.82, slope: 'down', openness: 0.86, seaVisibility: 0.78, leftMass: 0.34, rightMass: 0.18, landmarkIds: ['kiss-bridge'], allowedActors: ['pedestrian', 'photographer'], gameplaySlots: ['jo-trail', 'near-miss'], referenceIds: ['ST-REF-04', 'ST-REF-05'], confidence: 'high' },
-    { id: 'ST-06', label: 'SEA REVEAL', zoneId: 'st-waterfront', order: 6, routeProgress: 1, slope: 'flat', openness: 1, seaVisibility: 1, leftMass: 0.16, rightMass: 0.08, landmarkIds: ['kiss-bridge'], allowedActors: ['pedestrian'], gameplaySlots: ['signature-moment', 'finish'], referenceIds: ['ST-REF-04'], confidence: 'verified' }
+    { id: 'ST-01', label: 'UPPER STREET', zoneId: 'st-upper', order: 1, routeProgress: 0, spatialStatus: 'hypothesis', slope: 'down', openness: 0.22, seaVisibility: 0, leftMass: 0.88, rightMass: 0.82, landmarkIds: [], allowedActors: ['pedestrian', 'service-cart', 'electric-shuttle'], gameplaySlots: ['street-edge', 'moving-vehicle'], referenceIds: ['ST-REF-01', 'ST-REF-09'], confidence: 'medium' },
+    { id: 'ST-02', label: 'APOLLO SQUARE', zoneId: 'st-apollo', order: 2, routeProgress: 0.2, spatialStatus: 'visual-only', slope: 'flat', openness: 0.58, seaVisibility: 0.08, leftMass: 0.54, rightMass: 0.48, landmarkIds: ['apollo-cafe'], allowedActors: ['pedestrian', 'photographer', 'electric-shuttle'], gameplaySlots: ['pedestrian-crossing', 'photographer', 'jo-trail'], referenceIds: ['ST-REF-01', 'ST-REF-02', 'ST-REF-07'], confidence: 'high' },
+    { id: 'ST-03', label: 'CENTRAL VILLAGE', zoneId: 'st-central', order: 3, routeProgress: 0.4, spatialStatus: 'corroborated', slope: 'down', openness: 0.48, seaVisibility: 0.18, leftMass: 0.72, rightMass: 0.68, landmarkIds: ['clock-tower'], allowedActors: ['pedestrian', 'service-cart', 'electric-shuttle'], gameplaySlots: ['street-edge', 'moving-vehicle', 'jo-trail'], referenceIds: ['ST-REF-03', 'ST-REF-05', 'ST-REF-08', 'ST-REF-09'], confidence: 'verified' },
+    { id: 'ST-04', label: 'DOWNHILL REVEAL', zoneId: 'st-descent', order: 4, routeProgress: 0.62, spatialStatus: 'hypothesis', slope: 'steep-down', openness: 0.68, seaVisibility: 0.46, leftMass: 0.56, rightMass: 0.40, landmarkIds: ['clock-tower'], allowedActors: ['pedestrian', 'electric-shuttle'], gameplaySlots: ['moving-vehicle', 'jo-trail', 'near-miss'], referenceIds: ['ST-REF-02', 'ST-REF-04', 'ST-REF-09'], confidence: 'medium' },
+    { id: 'ST-05', label: 'WATERFRONT OPENING', zoneId: 'st-waterfront', order: 5, routeProgress: 0.82, spatialStatus: 'corroborated', slope: 'down', openness: 0.86, seaVisibility: 0.78, leftMass: 0.34, rightMass: 0.18, landmarkIds: ['kiss-bridge'], allowedActors: ['pedestrian', 'photographer'], gameplaySlots: ['jo-trail', 'near-miss'], referenceIds: ['ST-REF-04', 'ST-REF-05'], confidence: 'high' },
+    { id: 'ST-06', label: 'SEA REVEAL', zoneId: 'st-waterfront', order: 6, routeProgress: 1, spatialStatus: 'corroborated', slope: 'flat', openness: 1, seaVisibility: 1, leftMass: 0.16, rightMass: 0.08, landmarkIds: ['kiss-bridge'], allowedActors: ['pedestrian'], gameplaySlots: ['signature-moment', 'finish'], referenceIds: ['ST-REF-04'], confidence: 'verified' }
   ],
   references: [
     {
@@ -76,6 +76,40 @@ export const SUNSET_TOWN_V2: PlaceManifest = {
       sourceUrl: 'https://mapcarta.com/W1185867234',
       coordinates: { lat: 10.02704, lon: 104.00724 },
       proves: ['An Thoi cable-car station position', 'Sunset Town transport anchor'],
+      confidence: 'verified',
+      spatialUse: 'approved',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-07',
+      kind: 'official',
+      title: 'Sun World - Apollo Cafe at Apollo Square, Sunset Town',
+      sourceUrl: 'https://sunworld.vn/vi/hon-thom/check-in/apollo-cafe-sunset-town-tuyet-tac-thi-tran-hoang-hon-lon-nguoc-cua-bill-bensley-20200',
+      capturedAt: '2026-07-16',
+      proves: ['Apollo Cafe is at Apollo Square', 'Apollo Square is in central Sunset Town', 'sea-facing visual context'],
+      confidence: 'high',
+      spatialUse: 'visual-only',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-08',
+      kind: 'street-photo',
+      title: 'Clock Tower at sunset - Sunset Town',
+      sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sunset-town.jpg',
+      capturedAt: '2026-04-04',
+      coordinates: { lat: 10.0269, lon: 104.007917 },
+      proves: ['Clock Tower appearance', 'sunset lighting', 'street-scale visual context'],
+      confidence: 'high',
+      spatialUse: 'visual-only',
+      license: 'Wikimedia Commons source - verify file license before asset reuse',
+      usage: 'reference-only'
+    },
+    {
+      id: 'ST-REF-09',
+      kind: 'official',
+      title: 'Sun World - Sunset Town hillside facing west',
+      sourceUrl: 'https://sunworld.vn/hon-thom/an-choi/thi-tran-hoang-hon-phu-quochtml',
+      proves: ['Sunset Town is built on a hillside', 'town faces west toward the sea', 'Clock Tower is central'],
       confidence: 'verified',
       spatialUse: 'approved',
       usage: 'reference-only'
