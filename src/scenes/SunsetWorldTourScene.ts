@@ -7,7 +7,16 @@ import {
   SUNSET_TOWN_GRAPH_NODES,
   SUNSET_TOWN_WORLD_PLATES
 } from '../world-v2/places/sunset-town-graph';
-import { SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION } from '../world-v2/places/sunset-town-operator-layout';
+import {
+  KISS_BRIDGE_LONG_C_REVIEW_V1,
+  KISS_SHOW_SPATIAL_V2,
+  SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION,
+  SUNSET_TOWN_OPERATOR_PLAN
+} from '../world-v2/places/sunset-town-operator-layout';
+import {
+  isKissStageInsideLongC,
+  sampleKissBridgeLongC
+} from '../world-v2/places/kiss-bridge-geometry';
 import {
   SUNSET_TOWN_COMPOSITION,
   SUNSET_TOWN_ROUTE_CANDIDATE,
@@ -285,29 +294,38 @@ export class SunsetWorldTourScene extends Phaser.Scene {
   }
 
   private drawTransport(g: Phaser.GameObjects.Graphics): void {
+    // STP-03 is an explicitly labelled close-up. All approved raw nodes remain
+    // unchanged: only this plate's camera shows the oversized seaward C in full.
     g.fillStyle(0x0b3447, 1);
     g.fillRect(0, 72, 540, 538);
+    g.fillStyle(0x226f83, 0.52);
+    g.fillRect(32, 153, 218, 278);
+    g.fillStyle(0x35584d, 0.25);
+    g.fillRect(252, 153, 242, 278);
 
-    this.addPixelLabel('OPERATOR PLAN · ORIGINAL LAYOUT', 26, 120, '#8bd9d2');
-    this.addPixelLabel('SEA / WEST ←', 28, 330, '#ffe283');
-    this.addPixelLabel('NODES UNCHANGED', 512, 108, '#8fb4bc', 1);
+    this.addPixelLabel('KISS SHOW · LONG OPEN-C BRIDGE CLOSE-UP', 26, 115, '#8bd9d2');
+    this.addPixelLabel('SEA / WEST ←', 36, 269, '#ffe283');
+    this.addPixelLabel('LOCAL CAMERA ONLY · APPROVED POINTS UNCHANGED', 270, 444, '#8fb4bc', 0.5);
 
-    const cable = this.operatorPosition('cable-car-station');
-    const seating = this.operatorPosition('kiss-seating');
-    const showStage = this.kissShowStagePosition();
-    const bridge = this.operatorPosition('kiss-bridge');
+    const place = (point: { x: number; y: number }) =>
+      this.kissDetailPosition(this.editorProjectedPoint(point));
+    const cable = place(SUNSET_TOWN_OPERATOR_PLAN['cable-car-station']);
+    const seating = place(KISS_SHOW_SPATIAL_V2.kiss.seating);
+    const stage = place(KISS_SHOW_SPATIAL_V2.kiss.performanceStage);
 
-    this.drawKissShowGeometry(g);
-    this.drawPlanNode(g, 'cable-car-station', cable.x, cable.y, '#ffe283');
-    this.drawPlanNode(g, 'kiss-seating', seating.x, seating.y, '#f0a17e');
-    this.drawPlanNode(g, 'kiss-show-stage', showStage.x, showStage.y, '#ff9f7f');
-    this.drawPlanNode(g, 'kiss-bridge', bridge.x, bridge.y, '#ffe283');
-
+    this.drawKissShowGeometry(g, (point) => this.kissDetailPosition(point), 418 / 0.86, 262 / 0.58);
     g.lineStyle(2, 0x8bd9d2, 0.58);
     g.lineBetween(cable.x, cable.y, seating.x, seating.y);
-    g.lineBetween(seating.x, seating.y, showStage.x, showStage.y);
+    g.lineBetween(seating.x, seating.y, stage.x, stage.y);
+    this.drawPlanNode(g, 'cable-car-station', cable.x, cable.y, '#ffe283');
+    this.drawPlanNode(g, 'kiss-seating', seating.x, seating.y, '#f0a17e');
+    this.drawPlanNode(g, 'kiss-show-stage', stage.x, stage.y, '#ff9f7f');
 
-    // Separate elevation section. This does not alter the approved plan.
+    if (!isKissStageInsideLongC()) {
+      this.addPixelLabel('REVIEW REQUIRED · STAGE IS OUTSIDE LONG-C MOUTH', 270, 425, '#ff9f7f', 0.5);
+    }
+
+    // Retain the approved local elevation fact independently from plan view.
     g.fillStyle(0x123e4b, 0.96);
     g.fillRect(34, 470, 472, 102);
     this.addPixelLabel('LOCAL ELEVATION ONLY', 50, 482, '#8bd9d2');
@@ -525,34 +543,9 @@ export class SunsetWorldTourScene extends Phaser.Scene {
           g.lineStyle(3, 0xffb28f, 0.9);
           g.strokeEllipse(x, y, width, height);
           break;
-        case 'bridge-arc': {
-          g.lineStyle(element.arc?.stroke ?? 8, 0xe6d5aa, 0.96);
-          const start = Phaser.Math.DegToRad(element.arc?.startDeg ?? 55);
-          const end = Phaser.Math.DegToRad(element.arc?.endDeg ?? 305);
-          const steps = 34;
-          let previousX = x + Math.cos(start) * width * 0.5;
-          let previousY = y + Math.sin(start) * height * 0.5;
-          for (let i = 1; i <= steps; i += 1) {
-            const angle = Phaser.Math.Linear(start, end, i / steps);
-            const nextX = x + Math.cos(angle) * width * 0.5;
-            const nextY = y + Math.sin(angle) * height * 0.5;
-            g.lineBetween(previousX, previousY, nextX, nextY);
-            previousX = nextX;
-            previousY = nextY;
-          }
-          g.lineStyle(2, 0xf7e9c7, 0.7);
-          previousX = x + Math.cos(start) * width * 0.43;
-          previousY = y + Math.sin(start) * height * 0.43;
-          for (let i = 1; i <= steps; i += 1) {
-            const angle = Phaser.Math.Linear(start, end, i / steps);
-            const nextX = x + Math.cos(angle) * width * 0.43;
-            const nextY = y + Math.sin(angle) * height * 0.43;
-            g.lineBetween(previousX, previousY, nextX, nextY);
-            previousX = nextX;
-            previousY = nextY;
-          }
+        case 'bridge-long-c':
+          this.drawLongCBridge(g, (point) => this.worldProjectedPosition(point));
           break;
-        }
         case 'light-band':
           g.fillStyle(0x9d5048, 0.54);
           g.fillRoundedRect(x - width / 2, y - height / 2, width, height, 5);
@@ -594,49 +587,89 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     return this.compositionPosition(stage);
   }
 
-  private drawKissShowGeometry(g: Phaser.GameObjects.Graphics): void {
-    const ids = new Set(['kiss-audience-bowl', 'kiss-performance-stage', 'kiss-bridge-arc']);
-    for (const element of SUNSET_TOWN_COMPOSITION) {
-      if (!ids.has(element.id)) continue;
-
-      const position = this.compositionPosition(element);
-      const x = position.x;
-      const y = position.y;
-      const width = element.size.x * 416;
-      const height = element.size.y * 330;
-
-      if (element.kind === 'audience-bowl') {
-        g.fillStyle(0xcab48d, 0.48);
-        g.fillEllipse(x, y, width, height);
-        g.lineStyle(2, 0xf0d9ad, 0.42);
-        g.strokeEllipse(x, y, width, height);
-        g.strokeEllipse(x, y, width * 0.72, height * 0.68);
+  private drawLongCBridge(
+    g: Phaser.GameObjects.Graphics,
+    project: (point: { x: number; y: number }) => { x: number; y: number }
+  ): void {
+    const raw = sampleKissBridgeLongC(36);
+    const pts = raw.map(project);
+    const width = KISS_BRIDGE_LONG_C_REVIEW_V1.proposal.bridgeWidthPx;
+    const paint = (thickness: number, color: number, alpha: number): void => {
+      g.lineStyle(thickness, color, alpha);
+      for (let i = 1; i < pts.length; i += 1) {
+        g.lineBetween(pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
       }
+    };
+    // Continuous walkway with edge and center highlights, not an oval/ellipse.
+    paint(width + 5, 0x503e32, 0.97);
+    paint(width, 0xd5b47c, 1);
+    paint(Math.max(5, width - 10), 0xe9d3a6, 0.95);
+    paint(2, 0xffebc6, 0.65);
 
-      if (element.kind === 'performance-stage') {
-        g.fillStyle(0xc65d52, 0.92);
-        g.fillEllipse(x, y, width, height);
-        g.lineStyle(3, 0xffb28f, 0.9);
-        g.strokeEllipse(x, y, width, height);
-      }
-
-      if (element.kind === 'bridge-arc') {
-        g.lineStyle(element.arc?.stroke ?? 8, 0xe6d5aa, 0.96);
-        const start = Phaser.Math.DegToRad(element.arc?.startDeg ?? 55);
-        const end = Phaser.Math.DegToRad(element.arc?.endDeg ?? 305);
-        const steps = 34;
-        let previousX = x + Math.cos(start) * width * 0.5;
-        let previousY = y + Math.sin(start) * height * 0.5;
-        for (let i = 1; i <= steps; i += 1) {
-          const angle = Phaser.Math.Linear(start, end, i / steps);
-          const nextX = x + Math.cos(angle) * width * 0.5;
-          const nextY = y + Math.sin(angle) * height * 0.5;
-          g.lineBetween(previousX, previousY, nextX, nextY);
-          previousX = nextX;
-          previousY = nextY;
-        }
+    // Short railing posts make the long bridge read as a real structure.
+    g.lineStyle(2, 0x73503e, 0.95);
+    for (let i = 3; i < pts.length - 3; i += 6) {
+      const before = pts[i - 2];
+      const after = pts[i + 2];
+      const dx = after.x - before.x;
+      const dy = after.y - before.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const nx = -dy / length;
+      const ny = dx / length;
+      for (const side of [-1, 1]) {
+        const rim = side * width * 0.47;
+        g.lineBetween(
+          pts[i].x + nx * rim, pts[i].y + ny * rim,
+          pts[i].x + nx * (rim + side * 4), pts[i].y + ny * (rim + side * 4)
+        );
       }
     }
+  }
+
+  private drawKissShowGeometry(
+    g: Phaser.GameObjects.Graphics,
+    project: (point: { x: number; y: number }) => { x: number; y: number },
+    widthScale: number,
+    heightScale: number
+  ): void {
+    this.drawLongCBridge(g, project);
+    const approved = KISS_SHOW_SPATIAL_V2.kiss;
+    const seating = project(this.editorProjectedPoint(approved.seating));
+    const stage = project(this.editorProjectedPoint(approved.performanceStage));
+
+    g.fillStyle(0xcab48d, 0.64);
+    g.fillEllipse(
+      seating.x, seating.y,
+      approved.seatingSize.width * widthScale,
+      approved.seatingSize.height * heightScale
+    );
+    g.lineStyle(2, 0xf0d9ad, 0.78);
+    g.strokeEllipse(
+      seating.x, seating.y,
+      approved.seatingSize.width * widthScale,
+      approved.seatingSize.height * heightScale
+    );
+    g.fillStyle(0xc65d52, 0.95);
+    g.fillEllipse(
+      stage.x, stage.y,
+      approved.performanceStageSize.width * widthScale,
+      approved.performanceStageSize.height * heightScale
+    );
+    g.lineStyle(3, 0xffb28f, 0.92);
+    g.strokeEllipse(
+      stage.x, stage.y,
+      approved.performanceStageSize.width * widthScale,
+      approved.performanceStageSize.height * heightScale
+    );
+  }
+
+  private kissDetailPosition(point: { x: number; y: number }): { x: number; y: number } {
+    // One uniform zoom/translation for all STP-03 elements, not individual
+    // node movement. Includes the operator's valid off-canvas sea coordinates.
+    return {
+      x: 58 + ((point.x + 0.33) / 0.86) * 418,
+      y: 157 + ((point.y - 0.52) / 0.58) * 262
+    };
   }
 
   private compositionPosition(
@@ -651,15 +684,18 @@ export class SunsetWorldTourScene extends Phaser.Scene {
     };
   }
 
-  private editorPointPosition(point: { x: number; y: number }): { x: number; y: number } {
-    const oriented = SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION === 'east-up'
+  private editorProjectedPoint(point: { x: number; y: number }): { x: number; y: number } {
+    return SUNSET_TOWN_EDITOR_CAPTURE_ORIENTATION === 'east-up'
       ? { x: 1 - point.y, y: point.x }
       : point;
+  }
 
-    return {
-      x: 62 + oriented.x * 416,
-      y: 160 + oriented.y * 330
-    };
+  private worldProjectedPosition(point: { x: number; y: number }): { x: number; y: number } {
+    return { x: 62 + point.x * 416, y: 160 + point.y * 330 };
+  }
+
+  private editorPointPosition(point: { x: number; y: number }): { x: number; y: number } {
+    return this.worldProjectedPosition(this.editorProjectedPoint(point));
   }
 
   private operatorPosition(id: string): { x: number; y: number } {
