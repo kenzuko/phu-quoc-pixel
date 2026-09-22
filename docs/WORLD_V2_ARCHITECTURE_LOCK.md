@@ -269,3 +269,39 @@ For World Tour rendering:
 - Kiss Bridge is an enclosing structure around the performance stage, not a separate POI arc beside it
 - the supplied Sunset Town reference image clarifies this composition relationship but does not replace the operator-edited JSON coordinates
 - all non-Kiss approved nodes remain frozen
+
+
+## Kiss Bridge long open-C supersession - operator review 2026-09-22
+
+The operator supplied `kiss-show-long-c-review-v1` after rejecting the old
+near-circular/elliptical bridge. This **supersedes the bridge render only**.
+The earlier `kiss-show-spatial-v2` seating/stage points and dimensions remain
+unchanged, as do all other approved Sunset Town nodes, the left sea edge and
+the Central Village west-facing lock.
+
+The new long-C proposal uses already **east-up-projected relative points**,
+not geographic coordinates and not raw editor spatial-v2 coordinates:
+
+- top landward end: `(-0.01485662512276423, 0.5669987109347245)`
+- outer seaward spine: `(-0.26820065566514034, 0.8002338587712265)`
+- bottom landward end: `(-0.0039012075857965556, 1.0454737568640189)`
+- bridge walkway width: `23 px` in the reference World Tour canvas
+- bend: `0.1`
+- stage inside bridge mouth: `true`
+
+The curve is rendered as two smooth spans THROUGH those three exact
+control points. It is a single extended pedestrian bridge bending like an
+open, elongated C: two landward arms and one outer seaward spine, enveloping
+the Kiss Show performance stage. Do **not** use the legacy
+`kiss-show-spatial-v2.bridgeArc` ellipse as visible geometry again. Preserve
+those old fields only as historical operator input. The existing
+`kiss-bridge` graph anchor remains a *legacy reference POI*, not a bridge
+center; the long-C proposal is the actual relative visual geometry.
+
+Some sea-facing curve coordinates are deliberately outside the original
+[0,1] normalized canvas. Do not clamp, normalize, translate only the bridge,
+or rotate approved nodes just to fit it. STP-03 uses a clearly labelled
+local camera/close-up that projects cable station, seating, stage and the
+entire bridge with **the same transformation**, without mutating world data.
+Other World Tour plates may clip seaward portions; STP-03 is the full-form QA
+view. No gameplay route is approved by this change.
