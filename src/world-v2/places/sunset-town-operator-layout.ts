@@ -25,6 +25,31 @@ export const KISS_SHOW_SPATIAL_V2 = {
   }
 } as const;
 
+
+/**
+ * Operator-supplied long, open C-shaped Kiss Bridge outline. The three control
+ * points are ALREADY east-up-projected; do not project them a second time.
+ * This replaces only the legacy ellipse render, not the approved stage/seating
+ * positions or any non-Kiss node.
+ */
+export const KISS_BRIDGE_LONG_C_REVIEW_V1 = {
+  version: 'kiss-show-long-c-review-v1',
+  seaEdge: 'left',
+  editorProjection: 'east-up',
+  fixedContext: true,
+  approvedSpatialV2: KISS_SHOW_SPATIAL_V2,
+  proposal: {
+    kind: 'long-open-C-bridge',
+    pointSystem: 'east-up-projected-relative',
+    topLandwardEnd: { x: -0.01485662512276423, y: 0.5669987109347245 },
+    seawardSpine: { x: -0.26820065566514034, y: 0.8002338587712265 },
+    bottomLandwardEnd: { x: -0.0039012075857965556, y: 1.0454737568640189 },
+    bridgeWidthPx: 23,
+    bend: 0.1,
+    stageInsideBridge: true
+  }
+} as const;
+
 /**
  * Operator-approved relative layout supplied 2026-09-21.
  *
