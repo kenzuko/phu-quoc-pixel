@@ -9,7 +9,7 @@ export type SunsetCompositionKind =
   | 'light-band'
   | 'audience-bowl'
   | 'performance-stage'
-  | 'bridge-arc';
+  | 'bridge-long-c';
 
 export interface SunsetCompositionElement {
   id: string;
@@ -18,11 +18,6 @@ export interface SunsetCompositionElement {
   offset: RelativePlanPoint;
   absoluteCenter?: RelativePlanPoint;
   size: RelativePlanPoint;
-  arc?: {
-    startDeg: number;
-    endDeg: number;
-    stroke: number;
-  };
   confidence: 'verified' | 'corroborated' | 'visual-only';
   note: string;
 }
@@ -109,31 +104,15 @@ export const SUNSET_TOWN_COMPOSITION: readonly SunsetCompositionElement[] = [
     note: 'Exact operator-edited spatial-v2 performance-stage point. Do not derive it from a seating offset.'
   },
   {
-    id: 'kiss-bridge-arc',
-    kind: 'bridge-arc',
-    anchorId: 'kiss-seating',
-    offset: { x: 0, y: 0 },
-    absoluteCenter: KISS_SHOW_SPATIAL_V2.kiss.bridgeCenter,
-    size: {
-      x: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.width,
-      y: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.height
-    },
-    arc: {
-      startDeg: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.startDeg,
-      endDeg: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.endDeg,
-      stroke: KISS_SHOW_SPATIAL_V2.kiss.bridgeArc.stroke
-    },
-    confidence: 'verified',
-    note: 'Exact operator-edited bridge arc control. Composition meaning remains: Kiss Bridge encloses the performance stage.'
-  },
-  {
-    id: 'bridge-sea-opening',
-    kind: 'sea-opening',
+    id: 'kiss-bridge-long-c',
+    kind: 'bridge-long-c',
     anchorId: 'kiss-bridge',
-    offset: { x: -0.02, y: 0.02 },
-    size: { x: 0.23, y: 0.18 },
+    offset: { x: 0, y: 0 },
+    // Metadata only: runtime follows the three exact operator control points.
+    // No ellipse center or seated-stage offset is used to draw this bridge.
+    size: { x: 0.2642994480793438, y: 0.4784750459292944 },
     confidence: 'verified',
-    note: 'Keep visual breathing room and open water around the Kiss Bridge outer arc.'
+    note: 'Operator-edited long open C bridge; its spine is seaward and its two landward ends flank the performance stage.'
   }
 ] as const;
 
