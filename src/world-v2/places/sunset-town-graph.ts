@@ -189,7 +189,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-06', 'ST-REF-11', 'ST-REF-15', 'ST-REF-16', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
-    note: 'Cable Car Station sits one level above the Kiss Show seating area. Seating, performance stage and bridge geometry use the operator-edited spatial-v2 JSON. Kiss Bridge is the enclosing structure around the show stage.'
+    note: 'Cable Car Station sits one level above the Kiss Show seating area. Seating, performance stage and bridge geometry use the operator-edited spatial-v2 JSON. Kiss Bridge renders as the operator-edited long open C wrapping the performance stage; its legacy POI anchor is not the curve center.'
   },
   {
     id: 'STP-04',
@@ -207,7 +207,7 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20', 'ST-REF-21'],
-    note: 'Local node composition follows the operator-approved drag layouts exactly. Sea edge stays left. Kiss seating and performance stage use exact spatial-v2 points; the Kiss Bridge composition encloses the performance stage.'
+    note: 'Local node composition follows the operator-approved drag layouts exactly. Sea edge stays left. Kiss seating and performance stage use exact spatial-v2 points; the long open-C Kiss Bridge extends out toward the sea and wraps the performance stage.'
   },
   {
     id: 'STP-06',
@@ -216,6 +216,6 @@ export const SUNSET_TOWN_WORLD_PLATES: readonly WorldPlate[] = [
     spatialStatus: 'verified',
     focusNodeIds: ['clock-tower', 'sunset-bazaar', 'cable-car-station', 'kiss-seating', 'kiss-show-stage', 'kiss-bridge'],
     referenceIds: ['ST-REF-03', 'ST-REF-11', 'ST-REF-13', 'ST-REF-15', 'ST-REF-16', 'ST-REF-17', 'ST-REF-18', 'ST-REF-19', 'ST-REF-20'],
-    note: 'Approved local layout is frozen. Kiss Show separates seating, performance stage and bridge arc. Exact spatial-v2 geometry is operator-edited, and Kiss Bridge is treated as an enclosing structure around the performance stage. Route remains hypothesis-only.'
+    note: 'Approved local layout is frozen. Kiss Show separates seating, performance stage and long open-C bridge shape. Exact spatial-v2 stage/seating geometry and operator-edited three-point bridge outline are separate locks; no ellipse render. Route remains hypothesis-only.'
   }
 ] as const;
